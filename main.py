@@ -63,5 +63,6 @@ class MyApp(ShowBase):
         return Task.cont
 
 
-app = MyApp()
-app.run()
+if __name__ in ['__main__', 'main']:
+    app = MyApp()
+    app.run()
