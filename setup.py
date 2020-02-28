@@ -14,12 +14,13 @@ setup(
         'build_apps': {
             'console_apps': {'hello_world': 'main.py'},
             'platforms': [
-                # 'manylinux1_x86_64',
-                'win_amd64',
+                'manylinux1_x86_64',
+                # 'win_amd64',
                 # 'macosx_10_6_x86_64'
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
-            'include_patterns': ['**/*.egg.pz', '**/*.egg']
+            'include_patterns': ['**/*.egg.pz', '**/*.egg', '**/*.jpg', '**/*.png'],
+            'exclude_patterns': ['venv/*']
         }
     }
 )

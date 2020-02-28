@@ -1,1 +1,2 @@
 panda3d==1.10.5
+setuptools==30.0.0
