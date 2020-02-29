@@ -26,7 +26,7 @@ class MyApp(ShowBase):
         self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
 
         # Load and transform the panda actor.
-        self.pandaActor = Actor("models/panda-model",
+        self.pandaActor = Actor("models/jacob-panda-model",
                                 {"walk": "models/jacob-panda-walk4"})
         self.pandaActor.setScale(0.005, 0.005, 0.005)
         self.pandaActor.reparentTo(self.render)
@@ -35,10 +35,10 @@ class MyApp(ShowBase):
 
         # Create the four lerp intervals needed for the panda to
         # walk back and forth.
-        posInterval1 = self.pandaActor.posInterval(5,
+        posInterval1 = self.pandaActor.posInterval(13,
                                                    Point3(0, -10, 0),
                                                    startPos=Point3(0, 10, 0))
-        posInterval2 = self.pandaActor.posInterval(5,
+        posInterval2 = self.pandaActor.posInterval(13,
                                                    Point3(0, 10, 0),
                                                    startPos=Point3(0, -10, 0))
         hprInterval1 = self.pandaActor.hprInterval(3,
