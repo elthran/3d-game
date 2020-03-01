@@ -12,7 +12,7 @@ class MyApp(ShowBase):
         ShowBase.__init__(self)
 
         # Disable the camera trackball controls.
-        # self.disableMouse()
+        self.disableMouse()
 
         # Load the environment model.
         self.scene = self.loader.loadModel("models/environment")
@@ -23,22 +23,19 @@ class MyApp(ShowBase):
         self.scene.setPos(-8, 42, 0)
 
         # Add the spinCameraTask procedure to the task manager.
-        # self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
-
-        self.eggModel = self.loader.loadModel("models/egg_head.egg")
-        # Reparent the model to render.
-        self.eggModel.reparentTo(self.render)
-        self.eggModel.setScale(0.25, 0.25, 0.25)
-        self.eggModel.setPos(0, 0, 0)
-
+        self.taskMgr.add(self.spinCameraTask, "SpinCameraTask")
 
         # Load and transform the panda actor.
-        self.pandaActor = Actor("models/jacob-panda-model",
-                                {"walk": "models/jacob-panda-walk4"})
-        self.pandaActor.setScale(0.005, 0.005, 0.005)
+        self.pandaActor = self.loader.loadModel("models/my_egg.egg")
         self.pandaActor.reparentTo(self.render)
-        # Loop its animation.
-        self.pandaActor.loop("walk")
+
+        # # Load and transform the panda actor.
+        # self.pandaActor = Actor("models/jacob-panda-model",
+        #                         {"walk": "models/jacob-panda-walk4"})
+        # self.pandaActor.setScale(0.005, 0.005, 0.005)
+        # self.pandaActor.reparentTo(self.render)
+        # # Loop its animation.
+        # self.pandaActor.loop("walk")
 
         # Create the four lerp intervals needed for the panda to
         # walk back and forth.
