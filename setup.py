@@ -19,7 +19,7 @@ setup(
                 # 'macosx_10_6_x86_64'
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
-            'include_patterns': ['models/*.egg.pz', 'models/maps/*.jpg', 'models/maps/*.png'],
+            'include_patterns': ['models/**/*'],
             'exclude_patterns': ['venv/']
         }
     }
