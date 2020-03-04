@@ -1,3 +1,5 @@
+from math import copysign
+
 from panda3d.core import Vec2
 
 from Objects.templates import GameObject
@@ -104,3 +106,46 @@ class TrainingDummyMonster(Monster):
         self.actor.setH(heading)
 
 
+class TrapMonster(Monster):
+    def __init__(self, pos):
+        Monster.__init__(self,
+                         pos=pos,
+                         model_name="Models/Misc/trap",
+                         model_animation={"stand": "Models/Misc/trap-stand",
+                                          "walk": "Models/Misc/trap-walk",},
+                         health_max=100.0,
+                         speed_max=10.0,
+                         collider_name="trap_monster")
+
+        base.pusher.addCollider(self.collider, self.actor)
+        base.cTrav.addCollider(self.collider, base.pusher)
+
+        self.moveInX = False
+
+        self.moveDirection = 0
+
+        # This will allow us to prevent multiple collisions with the player during movement
+        self.ignorePlayer = False
+
+    def runLogic(self, player, time_delta):
+        """
+
+        """
+        if self.moveDirection != 0:
+            self.walking = True
+            if self.moveInX:
+                self.velocity.addX(self.moveDirection * self.acceleration * time_delta)
+            else:
+                self.velocity.addY(self.moveDirection * self.acceleration * time_delta)
+        else:
+            self.walking = False
+            diff = player.actor.getPos() - self.actor.getPos()
+            if self.moveInX:
+                detector = diff.y
+                movement = diff.x
+            else:
+                detector = diff.x
+                movement = diff.y
+
+            if abs(detector) < 0.5:
+                self.moveDirection = copysign(1, movement)

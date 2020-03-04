@@ -1,2 +1,3 @@
 from .heroes import Hero
-from .monsters import TrainingDummyMonster
+from .monsters import TrainingDummyMonster, TrapMonster
+from .interactives import CrateInteractive
