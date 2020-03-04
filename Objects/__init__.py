@@ -1,2 +1,2 @@
 from .heroes import Hero
-from .monsters import WalkingMonster
+from .monsters import TrainingDummyMonster

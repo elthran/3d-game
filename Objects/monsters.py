@@ -48,7 +48,7 @@ class Monster(GameObject):
         pass
 
 
-class WalkingMonster(Monster):
+class TrainingDummyMonster(Monster):
     def __init__(self, pos):
         Monster.__init__(self,
                          pos=pos,
@@ -60,7 +60,7 @@ class WalkingMonster(Monster):
                                           "spawn" : "Models/Misc/simpleEnemy-spawn"},
                          health_max=3.0,
                          speed_max=7.0,
-                         collider_name="walkingEnemy")
+                         collider_name="training_dummy_monster")
 
         self.attack_distance = 0.75
 
@@ -102,3 +102,5 @@ class WalkingMonster(Monster):
             self.velocity.set(0, 0, 0)
 
         self.actor.setH(heading)
+
+

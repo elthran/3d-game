@@ -3,7 +3,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import AmbientLight, DirectionalLight, CollisionHandlerPusher, CollisionNode, CollisionTraverser, \
     CollisionTube, Vec3, Vec4, WindowProperties
 
-from Objects import Hero, WalkingMonster
+from Objects import Hero, TrainingDummyMonster
 
 
 class Game(ShowBase):
@@ -86,7 +86,7 @@ class Game(ShowBase):
 
         self.hero = Hero()
 
-        self.tempEnemy = WalkingMonster(Vec3(5, 0, 0))
+        self.tempEnemy = TrainingDummyMonster(Vec3(5, 0, 0))
 
     def updateKeyMap(self, controlName, controlState):
         self.keyMap[controlName] = controlState
