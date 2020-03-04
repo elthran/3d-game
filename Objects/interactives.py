@@ -23,18 +23,15 @@ class CrateInteractive(Interactive):
         Interactive.__init__(self,
                              pos=pos,
                              model_name="Models/Misc/trap",
-                             model_animation={"stand": "Models/Misc/trap-stand",
-                                              "walk": "Models/Misc/trap-walk", },
+                             model_animation={"stand": "Models/Misc/trap-stand"},
                              health_max=100.0,
-                             speed_max=10.0,
-                             collider_name="trap_monster")
+                             speed_max=0.0,
+                             collider_name="crate_interactive")
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
 
-        self.moveInX = False
+        self.actor.loop("stand")
 
-        self.moveDirection = 0
 
-        # This will allow us to prevent multiple collisions with the player during movement
-        self.ignorePlayer = False
+
