@@ -36,7 +36,7 @@ class Game(ShowBase):
         self.camera.setPos(0, 0, 32)
         self.camera.setP(-90)
 
-        KeyMap.initialize(self)
+        self.key_mapper = KeyMapper.initialize(self)
 
         self.pusher = CollisionHandlerPusher()
         self.cTrav = CollisionTraverser()
@@ -86,7 +86,7 @@ class Game(ShowBase):
         # Get the amount of time since the last update
         time_delta = globalClock.getDt()
 
-        self.hero.update(self.key_map, time_delta)
+        self.hero.update(self.key_mapper, time_delta)
 
         self.training_dummy_monster.update(self.hero, time_delta)
 

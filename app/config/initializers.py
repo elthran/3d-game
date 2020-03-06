@@ -1,31 +1,51 @@
-class KeyMap:
+class KeyMapper:
+    class Key:
+        OFF = 0
+        ON = 1
+
+        def __init__(self, name, state=OFF):
+            self.name = name
+            self.state = state
+
+        def toggle(self):
+            if self.state == self.ON:
+                self.state = self.OFF
+            else:
+                self.state = self.ON
+
+        def set_on(self):
+            self.state = self.ON
+
+        def set_off(self):
+            self.state = self.OFF
+
+        @property
+        def on(self):
+            return self.state == self.ON
+
+        @property
+        def off(self):
+            return self.state == self.OFF
+
+
     @classmethod
     def initialize(cls, app):
-        cls(app)
+        return cls(app)
 
     def __init__(self, app):
-        self.app = app
+        self.up = self.Key("up")
+        self.down = self.Key("down")
+        self.left = self.Key("left")
+        self.right = self.Key("right")
+        self.shoot = self.Key("shoot")
 
-        self.key_map = {
-            "up": False,
-            "down": False,
-            "left": False,
-            "right": False,
-            "shoot": False
-        }
-
-        self.app.accept("w", self.update_key_map, ["up", True])
-        self.app.accept("w-up", self.update_key_map, ["up", False])
-        self.app.accept("s", self.update_key_map, ["down", True])
-        self.app.accept("s-up", self.update_key_map, ["down", False])
-        self.app.accept("a", self.update_key_map, ["left", True])
-        self.app.accept("a-up", self.update_key_map, ["left", False])
-        self.app.accept("d", self.update_key_map, ["right", True])
-        self.app.accept("d-up", self.update_key_map, ["right", False])
-        self.app.accept("mouse1", self.update_key_map, ["shoot", True])
-        self.app.accept("mouse1-up", self.update_key_map, ["shoot", False])
-
-        self.app.key_map = self.key_map
-
-    def update_key_map(self, controlName, controlState):
-        self.key_map[controlName] = controlState
+        app.accept("w", self.up.set_on)
+        app.accept("w-up", self.up.set_off)
+        app.accept("s", self.down.set_on)
+        app.accept("s-up", self.down.set_off)
+        app.accept("a", self.left.set_on)
+        app.accept("a-up", self.left.set_off)
+        app.accept("d", self.right.set_on)
+        app.accept("d-up", self.right.set_off)
+        app.accept("mouse1", self.shoot.set_on)
+        app.accept("mouse1-up", self.shoot.set_off)

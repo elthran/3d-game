@@ -28,16 +28,16 @@ class Hero(GameObject):
         self.walking = False
 
         # If we're  pushing a movement key, add a relevant amount to our velocity.
-        if keys["up"]:
+        if keys.up.on:
             self.walking = True
             self.velocity.addY(self.acceleration * time_delta)
-        if keys["down"]:
+        if keys.down.on:
             self.walking = True
             self.velocity.addY(-self.acceleration * time_delta)
-        if keys["left"]:
+        if keys.left.on:
             self.walking = True
             self.velocity.addX(-self.acceleration * time_delta)
-        if keys["right"]:
+        if keys.right.on:
             self.walking = True
             self.velocity.addX(self.acceleration * time_delta)
 
