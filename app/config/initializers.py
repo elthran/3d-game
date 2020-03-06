@@ -6,7 +6,7 @@ class KeyMap:
     def __init__(self, app):
         self.app = app
 
-        self.app.key_map = {
+        self.key_map = {
             "up": False,
             "down": False,
             "left": False,
@@ -25,5 +25,7 @@ class KeyMap:
         self.app.accept("mouse1", self.update_key_map, ["shoot", True])
         self.app.accept("mouse1-up", self.update_key_map, ["shoot", False])
 
+        self.app.key_map = self.key_map
+
     def update_key_map(self, controlName, controlState):
-        self.app.key_map[controlName] = controlState
+        self.key_map[controlName] = controlState
