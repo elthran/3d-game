@@ -6,8 +6,8 @@ from Objects.templates import GameObject
 
 
 class Monster(GameObject):
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max, collider_name):
-        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max, collider_name)
+    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
+        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
 
         self.experience_rewarded = 1
 
@@ -61,8 +61,7 @@ class TrainingDummyMonster(Monster):
                                           "die": "Models/Misc/simpleEnemy-die",
                                           "spawn": "Models/Misc/simpleEnemy-spawn"},
                          health_max=3.0,
-                         speed_max=7.0,
-                         collider_name="training_dummy_monster")
+                         speed_max=7.0)
 
         self.attack_distance = 0.75
 
@@ -115,8 +114,7 @@ class SlidingCrateMonster(Monster):
                          model_animation={"stand": "Models/Misc/trap-stand",
                                           "walk": "Models/Misc/trap-walk"},
                          health_max=100.0,
-                         speed_max=10.0,
-                         collider_name="sliding_crate_monster")
+                         speed_max=10.0)
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)

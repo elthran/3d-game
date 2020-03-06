@@ -7,7 +7,7 @@ FRICTION = 150.0
 
 
 class GameObject:
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max, collider_name):
+    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
         self.actor = Actor(model_name, model_animation)
         self.actor.reparentTo(render)
         self.actor.setPos(pos)
@@ -22,8 +22,9 @@ class GameObject:
 
         self.walking = False
 
+        self.collider_name = self.__class__.__name__
         # Note the "collider_name"--this will be used for collision-events, later...
-        collider_node = CollisionNode(collider_name)
+        collider_node = CollisionNode(self.collider_name)
         collider_node.addSolid(CollisionSphere(0, 0, 0, 0.3))
         self.collider = self.actor.attachNewNode(collider_node)
         self.collider.setPythonTag("owner", self)

@@ -63,9 +63,8 @@ class Game(ShowBase):
 
         self.pusher.add_in_pattern("%fn-into-%in")
         self.accept("sliding_crate_monster-into-wall", self.stop_sliding_crate_monster)
-        self.accept("sliding_crate_monster-into-training_dummy_monster", self.stop_sliding_crate_monster)
+        self.accept("sliding_crate_monster-into-training_dummy_monster", self.sliding_crate_monster_hits_unit)
         self.accept("sliding_crate_monster-into-hero", self.sliding_crate_monster_hits_unit)
-        self.accept("sliding_crate_monster-into-crate_interactive", self.sliding_crate_monster_hits_unit)
 
         wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
         wallNode = CollisionNode("wall")

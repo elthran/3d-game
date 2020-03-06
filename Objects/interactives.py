@@ -2,8 +2,8 @@ from Objects.templates import GameObject
 
 
 class Interactive(GameObject):
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max, collider_name):
-        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max, collider_name)
+    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
+        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
 
     def update(self, player, time_delta):
         """
@@ -25,8 +25,7 @@ class CrateInteractive(Interactive):
                              model_name="Models/Misc/trap",
                              model_animation={"stand": "Models/Misc/trap-stand"},
                              health_max=100.0,
-                             speed_max=0.0,
-                             collider_name="crate_interactive")
+                             speed_max=0.0)
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)

@@ -11,8 +11,7 @@ class Hero(GameObject):
                             model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
                                              "walk": "Models/PandaChan/a_p3d_chan_run"},
                             health_max=5,
-                            speed_max=10,
-                            collider_name="hero")
+                            speed_max=10)
 
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
