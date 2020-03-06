@@ -36,24 +36,7 @@ class Game(ShowBase):
         self.camera.setPos(0, 0, 32)
         self.camera.setP(-90)
 
-        self.keyMap = {
-            "up": False,
-            "down": False,
-            "left": False,
-            "right": False,
-            "shoot": False
-        }
-
-        self.accept("w", self.updateKeyMap, ["up", True])
-        self.accept("w-up", self.updateKeyMap, ["up", False])
-        self.accept("s", self.updateKeyMap, ["down", True])
-        self.accept("s-up", self.updateKeyMap, ["down", False])
-        self.accept("a", self.updateKeyMap, ["left", True])
-        self.accept("a-up", self.updateKeyMap, ["left", False])
-        self.accept("d", self.updateKeyMap, ["right", True])
-        self.accept("d-up", self.updateKeyMap, ["right", False])
-        self.accept("mouse1", self.updateKeyMap, ["shoot", True])
-        self.accept("mouse1-up", self.updateKeyMap, ["shoot", False])
+        KeyMap.initialize(self)
 
         self.pusher = CollisionHandlerPusher()
         self.cTrav = CollisionTraverser()
@@ -98,9 +81,6 @@ class Game(ShowBase):
         self.crate_interactive = CrateInteractive(Vec3(-2, 3, 0))
 
         self.sliding_crate_monster = SlidingCrateMonster(Vec3(2, 7, 0))
-
-    def updateKeyMap(self, controlName, controlState):
-        self.keyMap[controlName] = controlState
 
     def update(self, task):
         # Get the amount of time since the last update
