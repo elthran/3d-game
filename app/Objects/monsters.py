@@ -2,7 +2,7 @@ from math import copysign
 
 from panda3d.core import Vec2
 
-from Objects.templates import GameObject
+from app.Objects.templates import GameObject
 
 
 class Monster(GameObject):

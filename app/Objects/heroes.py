@@ -1,6 +1,6 @@
 from panda3d.core import Vec3
 
-from Objects.templates import GameObject
+from app.Objects.templates import GameObject
 
 
 class Hero(GameObject):

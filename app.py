@@ -4,8 +4,7 @@ from direct.gui.OnscreenText import OnscreenText
 from panda3d.core import AmbientLight, DirectionalLight, CollisionHandlerPusher, CollisionNode, CollisionTraverser, \
     CollisionTube, Vec3, Vec4, WindowProperties
 
-from Objects import *
-
+from app import *
 
 class Game(ShowBase):
     def __init__(self):
