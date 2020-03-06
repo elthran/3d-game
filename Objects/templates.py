@@ -29,6 +29,7 @@ class GameObject:
         self.collider = self.actor.attachNewNode(collider_node)
         self.collider.setPythonTag("owner", self)
         self.collider.show()
+        print(self.collider_name)
 
     def update_position(self, time_delta):
         """

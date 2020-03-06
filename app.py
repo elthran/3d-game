@@ -62,30 +62,30 @@ class Game(ShowBase):
         self.pusher.setHorizontal(True)
 
         self.pusher.add_in_pattern("%fn-into-%in")
-        self.accept("sliding_crate_monster-into-wall", self.stop_sliding_crate_monster)
-        self.accept("sliding_crate_monster-into-training_dummy_monster", self.sliding_crate_monster_hits_unit)
-        self.accept("sliding_crate_monster-into-hero", self.sliding_crate_monster_hits_unit)
+        self.accept("SlidingCrateMonster-into-Wall", self.stop_sliding_crate_monster)
+        self.accept("SlidingCrateMonster-into-TrainingDummyMonster", self.sliding_crate_monster_hits_unit)
+        self.accept("SlidingCrateMonster-into-Hero", self.sliding_crate_monster_hits_unit)
 
         wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
-        wallNode = CollisionNode("wall")
+        wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setY(8.0)
 
         wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
-        wallNode = CollisionNode("wall")
+        wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setY(-8.0)
 
         wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
-        wallNode = CollisionNode("wall")
+        wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setX(8.0)
 
         wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
-        wallNode = CollisionNode("wall")
+        wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setX(-8.0)
@@ -141,7 +141,7 @@ class Game(ShowBase):
                         trap.ignorePlayer = True
                 # If it hits a non-hero unit, take away 10 health.
                 else:
-                    obj.alterHealth(-10)
+                    obj.update_health(-10)
 
 
 if __name__ in ['__main__', 'main']:
