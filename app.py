@@ -30,7 +30,7 @@ class Game(ShowBase):
 
         render.setShaderAuto()
 
-        self.environment = loader.loadModel("Models/Misc/environment")
+        self.environment = loader.loadModel(Application.root("Models/Misc/environment"))
         self.environment.reparentTo(render)
 
         self.camera.setPos(0, 0, 32)
