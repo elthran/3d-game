@@ -136,6 +136,7 @@ class Game(ShowBase):
                 if isinstance(obj, Hero):
                     # If it hits a hero for the first time, do 1 damage and set the flag to have hit hero.
                     if not trap.ignorePlayer:
+                        print(f"Hit! You are at {obj.health} health.")
                         obj.update_health(-1)
                         self.display_damage.setText = f'Damage taken: {5 - obj.health}'
                         trap.ignorePlayer = True
