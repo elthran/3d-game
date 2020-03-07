@@ -2,10 +2,10 @@ from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 
 from panda3d.core import AmbientLight, DirectionalLight, CollisionHandlerPusher, CollisionNode, CollisionTraverser, \
-    CollisionTube, Vec3, Vec4, WindowProperties, loadPrcFile
+    CollisionTube, Vec3, Vec4, WindowProperties
 
 from app import *
-loadPrcFile('Config.prc')
+
 
 class Game(ShowBase):
     def __init__(self):
