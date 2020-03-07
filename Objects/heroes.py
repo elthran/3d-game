@@ -1,5 +1,6 @@
-from panda3d.core import Vec3
+from panda3d.core import Vec3, CollisionRay, CollisionNode, CollisionHandlerQueue
 
+from Objects.monsters import Monster
 from Objects.templates import GameObject
 
 
@@ -19,6 +20,22 @@ class Hero(GameObject):
         # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
+
+        # THE COLLISION RAY ATTACK
+        self.ray = CollisionRay(0, 0, 0, 0, 1, 0)
+
+        rayNode = CollisionNode("playerRay")
+        rayNode.addSolid(self.ray)
+
+        self.rayNodePath = render.attachNewNode(rayNode)
+        self.rayQueue = CollisionHandlerQueue()
+
+        '''We want this ray to collide with things, so tell our traverser about it. However, note that,
+        unlike with "CollisionHandlerPusher", we don't have to tell our "CollisionHandlerQueue" about it.
+        '''
+        base.cTrav.addCollider(self.rayNodePath, self.rayQueue)
+
+        self.damagePerSecond = -5.0
 
         self.actor.loop("stand")
 
@@ -40,6 +57,19 @@ class Hero(GameObject):
         if keys["right"]:
             self.walking = True
             self.velocity.addX(self.acceleration * time_delta)
+        if keys["shoot"]:
+            if self.rayQueue.getNumEntries() > 0:
+                self.rayQueue.sortEntries()
+                rayHit = self.rayQueue.getEntry(0)
+                hitPos = rayHit.getSurfacePoint(render)
+
+                hitNodePath = rayHit.getIntoNodePath()
+                print(hitNodePath)
+                if hitNodePath.hasPythonTag("owner"):
+                    hitObject = hitNodePath.getPythonTag("owner")
+                    print("hitting with laser:", hitObject.__class__.__name__)
+                    if not isinstance(hitObject, Monster):
+                        hitObject.update_health(self.damagePerSecond * time_delta)
 
         # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
         # Else set them to loop stand.
@@ -56,3 +86,8 @@ class Hero(GameObject):
             if not stand_control.isPlaying():
                 self.actor.stop("walk")
                 self.actor.loop("stand")
+
+    def cleanup(self):
+        base.cTrav.removeCollider(self.rayNodePath)
+
+        GameObject.cleanup(self)

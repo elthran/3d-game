@@ -1,8 +1,8 @@
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 
-from panda3d.core import AmbientLight, DirectionalLight, CollisionHandlerPusher, CollisionNode, CollisionTraverser, \
-    CollisionTube, Vec3, Vec4, WindowProperties
+from panda3d.core import AmbientLight, DirectionalLight, CollisionHandlerPusher, CollisionNode, CollisionRay, \
+    CollisionHandlerQueue, CollisionTraverser, CollisionTube, Vec3, Vec4, WindowProperties
 
 from Objects import *
 
@@ -136,9 +136,11 @@ class Game(ShowBase):
                 if isinstance(obj, Hero):
                     # If it hits a hero for the first time, do 1 damage and set the flag to have hit hero.
                     if not trap.ignorePlayer:
-                        print(f"Hit! You are at {obj.health} health.")
                         obj.update_health(-1)
-                        self.display_damage.setText = f'Damage taken: {5 - obj.health}'
+                        print(f"Hit! You are at {obj.health} health.")
+                        self.display_damage.destroy()
+                        self.display_damage = OnscreenText(text=f'Damage taken: {5 - obj.health}', pos=(1, -0.9), scale=0.07)
+                        # self.display_damage.setText = f'Damage taken: {5 - obj.health}'
                         trap.ignorePlayer = True
                 # If it hits a non-hero unit, take away 10 health.
                 else:
