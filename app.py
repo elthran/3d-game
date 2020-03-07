@@ -14,9 +14,9 @@ class Game(ShowBase):
 
         self.display_damage = OnscreenText(text='Damage taken: 0', pos=(1, -0.9), scale=0.07)
 
-        properties = WindowProperties()
-        properties.setSize(1000, 750)
-        self.win.requestProperties(properties)
+        # properties = WindowProperties()
+        # properties.setSize(1000, 750)
+        # self.win.requestProperties(properties)
 
         main_light = DirectionalLight("main light")
         self.main_light_node_path = render.attachNewNode(main_light)
@@ -30,7 +30,7 @@ class Game(ShowBase):
 
         render.setShaderAuto()
 
-        self.environment = loader.loadModel(Application.root("Models/Misc/environment"))
+        self.environment = loader.loadModel("Models/Misc/environment")
         self.environment.reparentTo(render)
 
         self.camera.setPos(0, 0, 32)
