@@ -12,8 +12,6 @@ class Game(ShowBase):
 
         self.disableMouse()
 
-        self.display_damage = OnscreenText(text='Damage taken: 0', pos=(1, -0.9), scale=0.07)
-
         # properties = WindowProperties()
         # properties.setSize(1000, 750)
         # self.win.requestProperties(properties)
@@ -76,6 +74,8 @@ class Game(ShowBase):
 
         self.hero = Hero()
 
+        self.display_damage = OnscreenText(text=f'Damage taken: {5 - self.hero.health}', pos=(1, -0.9), scale=0.07)
+
         self.training_dummy_monster = TrainingDummyMonster(Vec3(5, 0, 0))
 
         self.crate_interactive = CrateInteractive(Vec3(-2, 3, 0))
@@ -115,9 +115,12 @@ class Game(ShowBase):
                 if isinstance(obj, Hero):
                     # If it hits a hero for the first time, do 1 damage and set the flag to have hit hero.
                     if not trap.ignorePlayer:
-                        print(f"Hit! You are at {obj.health} health.")
                         obj.update_health(-1)
-                        self.display_damage.setText = f'Damage taken: {5 - obj.health}'
+                        self.display_damage.destroy()
+                        self.display_damage = OnscreenText(text=f'Damage taken: {5 - obj.health}',
+                                                           pos=(1, -0.9),
+                                                           scale=0.07)
+                        # self.display_damage.setText = f'Damage taken: {5 - obj.health}'
                         trap.ignorePlayer = True
                 # If it hits a non-hero unit, take away 10 health.
                 else:
