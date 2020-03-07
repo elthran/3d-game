@@ -12,14 +12,14 @@ setup(
     python_requires='>=3.6',
     options={
         'build_apps': {
-            'console_apps': {'tutorial': 'Game.py'},
+            'console_apps': {'launch_game': 'app.py'},
             'platforms': [
                 'manylinux1_x86_64',
                 # 'win_amd64',
                 # 'macosx_10_6_x86_64'
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
-            'include_patterns': ['models/**/*', 'Fonts/*', 'Sounds/*', 'UI/*', 'Music/*', 'GameObject.py'],
+            'include_patterns': ['Models/**/*', 'Fonts/*', 'Sounds/*', 'UI/*', 'Music/*', '**/*.py'],
             'exclude_patterns': ['venv/']
         }
     }
