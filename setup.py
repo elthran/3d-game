@@ -22,8 +22,20 @@ setup(
                 # 'macosx_10_6_x86_64'
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
-            'include_patterns': ['Models/**/*', 'Fonts/*', 'Sounds/*', 'UI/*', 'Music/*', '**/*.py'],
-            'exclude_patterns': ['venv/', '.venv/']
+            'include_patterns': [
+                'Models/**/*',
+                'Fonts/*',
+                'Sounds/*',
+                'UI/*',
+                'Music/*',
+                '**/*.py',
+                'Config.prc'
+            ],
+            'exclude_patterns': [
+                'venv/',
+                '.venv/',
+                'build/'
+            ]
         }
     }
 )
