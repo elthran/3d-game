@@ -15,7 +15,7 @@ setup(
     python_requires='>=3.6',
     options={
         'build_apps': {
-            'console_apps': {'launch_game': 'app.py'},
+            'console_apps': {'launch_game': 'main.py'},
             'platforms': [
                 'manylinux1_x86_64',
                 # 'win_amd64',
