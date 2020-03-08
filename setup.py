@@ -7,7 +7,10 @@ setup(
     author_email='elthran@gmail.com',
     description='A 3d game.',
     url="https://github.com/elthran/3d-game",
-    install_requires=["panda3d==1.10.5"],
+    install_requires=[
+        "panda3d==1.10.5",
+        "pip==19.3.1",
+    ],
     classifiers=["Programming Language :: Python :: 3.6"],
     python_requires='>=3.6',
     options={
@@ -20,7 +23,7 @@ setup(
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
             'include_patterns': ['Models/**/*', 'Fonts/*', 'Sounds/*', 'UI/*', 'Music/*', '**/*.py'],
-            'exclude_patterns': ['venv/']
+            'exclude_patterns': ['venv/', '.venv/']
         }
     }
 )
