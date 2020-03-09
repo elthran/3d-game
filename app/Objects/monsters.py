@@ -1,6 +1,6 @@
 from math import copysign
 
-from panda3d.core import Vec2
+from panda3d.core import Vec2, BitMask32
 
 from app.Objects.templates import GameObject
 
@@ -65,6 +65,12 @@ class TrainingDummyMonster(Monster):
 
         self.attack_distance = 0.75
 
+        '''bit masks?'''
+        mask = BitMask32()
+        mask.setBit(2)
+        self.collider.node().setIntoCollideMask(mask)
+        '''end of bit masks?'''
+
         self.acceleration = 100.0
 
         # A reference vector, used to determine
@@ -118,6 +124,17 @@ class SlidingCrateMonster(Monster):
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
+
+        '''bit masks?'''
+        mask = BitMask32()
+        mask.setBit(2)
+        mask.setBit(1)
+        self.collider.node().setIntoCollideMask(mask)
+        mask = BitMask32()
+        mask.setBit(2)
+        mask.setBit(1)
+        self.collider.node().setFromCollideMask(mask)
+        '''end of bit masks?'''
 
         self.moveInX = False
 
