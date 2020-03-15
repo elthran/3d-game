@@ -1,4 +1,4 @@
-from panda3d.core import CollisionRay, CollisionHandlerQueue, Vec3, CollisionNode, BitMask32, Vec2, Plane, Point3
+from app.config.initializers.panda3d import *
 
 from app.objects.monsters import SlidingCrateMonster
 from app.objects.templates import GameObject
