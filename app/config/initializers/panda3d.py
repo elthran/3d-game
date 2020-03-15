@@ -10,5 +10,3 @@ from panda3d.core import(
     WindowProperties,
     loadPrcFile,
 )
-
-loadPrcFile('app/config/Config.prc')
