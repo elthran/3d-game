@@ -123,5 +123,4 @@ class Game(ShowBase):
 
 
 if __name__ in ['__main__', 'main']:
-    game = Game()
     game.run()

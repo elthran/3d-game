@@ -8,5 +8,3 @@ class Application:
     @classmethod
     def root(cls, path=''):
         return os.path.join(cls.ROOT, path)
-
-loadPrcFile('app/config/Config.prc')
