@@ -5,8 +5,6 @@ class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
-        self.disableMouse()
-
         # properties = WindowProperties()
         # properties.setSize(1000, 750)
         # self.win.requestProperties(properties)
