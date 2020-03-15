@@ -1,6 +1,7 @@
 from app.config.initializers.game import *
 
-
+# NOTE render is some kind of implict global defined by
+# instantiating the game object.
 main_light = DirectionalLight("main light")
 game.main_light_node_path = render.attachNewNode(main_light)
 game.main_light_node_path.setHpr(45, -45, 0)
