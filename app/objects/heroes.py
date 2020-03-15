@@ -1,7 +1,7 @@
 from panda3d.core import CollisionRay, CollisionHandlerQueue, Vec3, CollisionNode, BitMask32, Vec2, Plane, Point3
 
-from app.Objects.monsters import SlidingCrateMonster
-from app.Objects.templates import GameObject
+from app.objects.monsters import SlidingCrateMonster
+from app.objects.templates import GameObject
 
 
 class Hero(GameObject):
@@ -50,7 +50,7 @@ class Hero(GameObject):
         self.collider.node().setFromCollideMask(mask)
         # After we've made our ray-node:
         mask = BitMask32()
-        '''Note that we set a different bit here! This means that the ray's mask and the collider's mask don't match, 
+        '''Note that we set a different bit here! This means that the ray's mask and the collider's mask don't match,
         and so the ray won't collide with the collider.'''
         mask.setBit(2)
         rayNode.setFromCollideMask(mask)
