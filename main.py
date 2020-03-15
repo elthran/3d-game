@@ -9,17 +9,6 @@ class Game(ShowBase):
         # properties.setSize(1000, 750)
         # self.win.requestProperties(properties)
 
-        main_light = DirectionalLight("main light")
-        self.main_light_node_path = render.attachNewNode(main_light)
-        self.main_light_node_path.setHpr(45, -45, 0)
-        render.setLight(self.main_light_node_path)
-
-        ambient_light = AmbientLight("ambient light")
-        ambient_light.setColor(Vec4(0.2, 0.2, 0.2, 1))
-        self.ambient_light_node_path = render.attachNewNode(ambient_light)
-        render.setLight(self.ambient_light_node_path)
-
-        render.setShaderAuto()
 
         self.environment = loader.loadModel("Models/Misc/environment")
         self.environment.reparentTo(render)
