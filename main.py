@@ -29,8 +29,6 @@ class Game(ShowBase):
         self.camera.setPos(0, 0, 32)
         self.camera.setP(-90)
 
-        self.key_mapper = KeyMapper.initialize(self)
-
         self.pusher = CollisionHandlerPusher()
         self.cTrav = CollisionTraverser()
 
@@ -123,4 +121,5 @@ class Game(ShowBase):
 
 
 if __name__ in ['__main__', 'main']:
+    # game = Game()
     game.run()
