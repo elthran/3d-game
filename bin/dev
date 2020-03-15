@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 activate () {
+  echo "This does NOT work yet."
+  exit 1
   source .venv/3d-game/bin/activate
 }
 
@@ -26,6 +28,20 @@ debug () {
 }
 
 main () {
+  if [[ -z "$1" || "$1" == "-h" || "$1" == "--help" ]]; then
+    echo "
+dev
+  -h --help  List possibly command usages.
+  boot       Boot the app in development mode - python main.py
+  build      Build the app - python setup.py build_apps
+  launch     Launch the built version of the game -
+               build/manylinux1_x86_64/launch_game
+  clean      Clean the build directory - rm -rf build/*
+  debug      Debug this script - echo \"\\\$@=\$@\"
+"
+  exit 0
+  fi
+
   eval "$@"
 }
 
