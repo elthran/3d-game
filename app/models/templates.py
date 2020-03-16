@@ -1,7 +1,3 @@
-
-from direct.actor.Actor import Actor
-
-
 FRICTION = 150.0
 
 
