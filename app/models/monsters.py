@@ -1,5 +1,3 @@
-from panda3d.core import Vec2, BitMask32
-
 from app.models.templates import GameObject
 
 

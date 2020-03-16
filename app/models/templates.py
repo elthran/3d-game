@@ -1,4 +1,3 @@
-from panda3d.core import CollisionNode, CollisionSphere, Vec3
 
 from direct.actor.Actor import Actor
 

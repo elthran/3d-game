@@ -5,6 +5,7 @@ from panda3d.core import(
     CollisionHandlerQueue,
     CollisionNode,
     CollisionRay,
+    CollisionSphere,
     CollisionTraverser,
     CollisionTube,
     DirectionalLight,
