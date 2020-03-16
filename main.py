@@ -10,9 +10,6 @@ class Game(ShowBase):
         # self.win.requestProperties(properties)
 
 
-        self.camera.setPos(0, 0, 32)
-        self.camera.setP(-90)
-
         self.pusher = CollisionHandlerPusher()
         self.cTrav = CollisionTraverser()
 
