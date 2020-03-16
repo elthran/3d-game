@@ -10,9 +10,6 @@ class Game(ShowBase):
         # self.win.requestProperties(properties)
 
 
-        self.environment = loader.loadModel("Models/Misc/environment")
-        self.environment.reparentTo(render)
-
         self.camera.setPos(0, 0, 32)
         self.camera.setP(-90)
 
