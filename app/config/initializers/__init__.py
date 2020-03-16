@@ -1,4 +1,5 @@
 # Import external libraries
+from app.config.initializers.math import *
 from app.config.initializers.direct import *
 from app.config.initializers.panda3d import *
 
