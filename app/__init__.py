@@ -1,2 +1,2 @@
 from app.config import *
-from app.objects import *
+from app.models import *

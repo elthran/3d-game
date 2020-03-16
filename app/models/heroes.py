@@ -1,7 +1,5 @@
-from app.config.initializers.panda3d import *
-
-from app.objects.monsters import SlidingCrateMonster
-from app.objects.templates import GameObject
+from app.models.monsters import SlidingCrateMonster
+from app.models.templates import GameObject
 
 
 class Hero(GameObject):

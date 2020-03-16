@@ -1,4 +1,4 @@
-from app.objects.templates import GameObject
+from app.models.templates import GameObject
 
 
 class Interactive(GameObject):
