@@ -1,4 +1,4 @@
-from app.config.initializers.game import *
+from app.models import *
 
 
 class CollisionController:
