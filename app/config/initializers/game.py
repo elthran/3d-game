@@ -1,6 +1,7 @@
 from app.config.initializers.direct import *
 from app.config.initializers.panda3d import *
 from app.components import *
+from app.models import *
 
 
 class Game(ShowBase):
