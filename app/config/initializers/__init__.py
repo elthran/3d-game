@@ -13,3 +13,4 @@ from app.config.initializers.environment import *
 from app.config.initializers.key_mapper import *
 from app.config.initializers.lighting import *
 from app.config.initializers.mouse import *
+from app.config.initializers.task_manager import *

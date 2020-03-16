@@ -9,7 +9,6 @@ class Game(ShowBase):
         # properties.setSize(1000, 750)
         # self.win.requestProperties(properties)
 
-        self.updateTask = taskMgr.add(self.update, "update")
 
         self.hero = Hero()
 
@@ -20,18 +19,6 @@ class Game(ShowBase):
         self.crate_interactive = CrateInteractive(Vec3(-2, 3, 0))
 
         self.sliding_crate_monster = SlidingCrateMonster(Vec3(2, 7, 0))
-
-    def update(self, task):
-        # Get the amount of time since the last update
-        time_delta = globalClock.getDt()
-
-        self.hero.update(self.key_mapper, time_delta)
-
-        self.training_dummy_monster.update(self.hero, time_delta)
-
-        self.sliding_crate_monster.update(self.hero, time_delta)
-
-        return task.cont
 
 
 if __name__ in ['__main__', 'main']:
