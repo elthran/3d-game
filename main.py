@@ -9,17 +9,6 @@ class Game(ShowBase):
         # properties.setSize(1000, 750)
         # self.win.requestProperties(properties)
 
-
-        self.pusher = CollisionHandlerPusher()
-        self.cTrav = CollisionTraverser()
-
-        self.pusher.setHorizontal(True)
-
-        self.pusher.add_in_pattern("%fn-into-%in")
-        self.accept("SlidingCrateMonster-into-Wall", self.stop_sliding_crate_monster)
-        self.accept("SlidingCrateMonster-into-TrainingDummyMonster", self.sliding_crate_monster_hits_unit)
-        self.accept("SlidingCrateMonster-into-Hero", self.sliding_crate_monster_hits_unit)
-
         wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
         wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
@@ -67,38 +56,6 @@ class Game(ShowBase):
         self.sliding_crate_monster.update(self.hero, time_delta)
 
         return task.cont
-
-    def stop_sliding_crate_monster(self, entry):
-        collider = entry.getFromNodePath()
-        if collider.hasPythonTag("owner"):
-            trap = collider.getPythonTag("owner")
-            trap.moveDirection = 0
-            trap.ignorePlayer = False
-
-    def sliding_crate_monster_hits_unit(self, entry):
-        collider = entry.getFromNodePath()
-        if collider.hasPythonTag("owner"):
-            trap = collider.getPythonTag("owner")
-            # We don't want stationary traps to do damage, so ignore the collision if the "moveDirection" is 0
-            if trap.moveDirection == 0:
-                return
-
-            collider = entry.getIntoNodePath()
-            if collider.hasPythonTag("owner"):
-                obj = collider.getPythonTag("owner")
-                if isinstance(obj, Hero):
-                    # If it hits a hero for the first time, do 1 damage and set the flag to have hit hero.
-                    if not trap.ignorePlayer:
-                        obj.update_health(-1)
-                        self.display_damage.destroy()
-                        self.display_damage = OnscreenText(text=f'Damage taken: {5 - obj.health}',
-                                                           pos=(1, -0.9),
-                                                           scale=0.07)
-                        # self.display_damage.setText = f'Damage taken: {5 - obj.health}'
-                        trap.ignorePlayer = True
-                # If it hits a non-hero unit, take away 10 health.
-                else:
-                    obj.update_health(-10)
 
 
 if __name__ in ['__main__', 'main']:

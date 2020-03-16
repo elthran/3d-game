@@ -8,6 +8,7 @@ from app.config.initializers.game import *
 
 # Modify to the game instance to add features and set settings.
 from app.config.initializers.camera import *
+from app.config.initializers.collisions import *
 from app.config.initializers.environment import *
 from app.config.initializers.lighting import *
 from app.config.initializers.mouse import *
