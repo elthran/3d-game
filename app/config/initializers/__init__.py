@@ -10,6 +10,6 @@ from app.config.initializers.game import *
 from app.config.initializers.camera import *
 from app.config.initializers.collisions import *
 from app.config.initializers.environment import *
+from app.config.initializers.key_mapper import *
 from app.config.initializers.lighting import *
 from app.config.initializers.mouse import *
-from app.config.initializers.key_mapper import *
