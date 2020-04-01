@@ -1,19 +1,21 @@
 from math import copysign
+from random import uniform
 
-from panda3d.core import Vec2, BitMask32
+from panda3d.core import Vec2, BitMask32, CollisionNode, CollisionSegment, CollisionHandlerQueue
 
-from app.Objects.templates import GameObject
+from app.Objects.physicals import PhysicalObject
+from app.Objects.characters import CharacterObject
 
 
-class Monster(GameObject):
+class Monster(CharacterObject):
     def __init__(self, pos, model_name, model_animation, health_max, speed_max):
-        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
+        CharacterObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
 
         self.experience_rewarded = 1
 
     def update(self, player, time_delta):
         """
-        In short, update as a GameObject, then run whatever enemy-specific logic is to be done.
+        In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
         without re-writing the rest.
 
@@ -21,7 +23,7 @@ class Monster(GameObject):
         :param time_delta:
         :return:
         """
-        GameObject.update_position(self, time_delta)
+        CharacterObject.update_position(self, time_delta)
 
         self.run_logic(player, time_delta)
 
@@ -63,7 +65,41 @@ class TrainingDummyMonster(Monster):
                          health_max=3.0,
                          speed_max=7.0)
 
+        self.actor.play("spawn")
+
         self.attack_distance = 0.75
+
+        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
+        segment_node = CollisionNode("enemyAttackSegment")
+        segment_node.addSolid(self.attack_segment)
+
+        # Attack player code
+        '''A mask that matches the player's, so that the enemy's attack will hit the player-character,
+        but not the enemy-character (or other enemies)'''
+        mask = BitMask32()
+        mask.setBit(1)
+
+        segment_node.setFromCollideMask(mask)
+
+        mask = BitMask32()
+
+        segment_node.setIntoCollideMask(mask)
+
+        self.attack_segment_node_path = render.attachNewNode(segment_node)
+        self.segment_queue = CollisionHandlerQueue()
+
+        base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
+
+        '''How much damage the enemy's attack does.
+         That is, this results in the player-character's health being reduced by one.'''
+        self.attack_damage = 1
+
+        # The delay between the start of an attack, and the attack (potentially) landing
+        self.attack_delay = 0.3
+        self.attack_delay_timer = 0
+        # How long to wait between attacks
+        self.attack_wait_timer = 0
+        # End of attack player code
 
         '''bit masks?'''
         mask = BitMask32()
@@ -89,27 +125,85 @@ class TrainingDummyMonster(Monster):
         :param time_delta:
         :return:
         """
+        spawnControl = self.actor.getAnimControl("spawn")
+        if spawnControl is not None and spawnControl.isPlaying():
+            return
 
         vector_to_player = player.actor.getPos() - self.actor.getPos()
-
         vector_to_player_2D = vector_to_player.getXy()
-
         distance_to_player = vector_to_player_2D.length()
-
         vector_to_player_2D.normalize()
-
         heading = self.y_vector.signedAngleDeg(vector_to_player_2D)
 
-        if distance_to_player > self.attack_distance * 0.9:
-            self.walking = True
-            vector_to_player.setZ(0)
-            vector_to_player.normalize()
-            self.velocity += vector_to_player * self.acceleration * time_delta
-        else:
+        if distance_to_player > self.attack_distance * 0.9:  # It is not close enough to attack
+            attack_control = self.actor.getAnimControl("attack")
+            if not attack_control.isPlaying():
+                self.walking = True
+                vector_to_player.setZ(0)
+                vector_to_player.normalize()
+                self.velocity += vector_to_player * self.acceleration * time_delta
+                self.attack_wait_timer = 0.2
+                self.attack_delay_timer = 0
+        else:  # It is close enough to attack
             self.walking = False
             self.velocity.set(0, 0, 0)
+            # If we're waiting for an attack to land...
+            if self.attack_delay_timer > 0:
+                self.attack_delay_timer -= time_delta
+                # If the time has come for the attack to land...
+                if self.attack_delay_timer <= 0:
+                    # Check for a hit..
+                    if self.segment_queue.getNumEntries() > 0:
+                        self.segment_queue.sortEntries()
+                        segment_hit = self.segment_queue.getEntry(0)
+
+                        hit_node_path = segment_hit.getIntoNodePath()
+                        if hit_node_path.hasPythonTag("owner"):
+                            # Apply damage!
+                            hit_object = hit_node_path.getPythonTag("owner")
+                            hit_object.update_health(-self.attack_damage)
+                            self.attack_wait_timer = 1.0
+            # If we're instead waiting to be allowed to attack...
+            elif self.attack_wait_timer > 0:
+                self.attack_wait_timer -= time_delta
+                # If the wait has ended...
+                if self.attack_wait_timer <= 0:
+                    '''Start an attack! (And set the wait-timer to a random amount, to vary things a little bit.)'''
+                    self.attack_wait_timer = uniform(0.5, 0.7)
+                    self.attack_delay_timer = self.attack_delay
+                    self.actor.play("attack")
 
         self.actor.setH(heading)
+
+        '''Set the segment's start- and end- points. 
+        "getQuat" returns a quaternion--a representation of orientation 
+        or rotation--that represents the NodePath's orientation. This is useful here, 
+        because Panda's quaternion class has methods to get forward, right, and up vectors for that orientation.
+        Thus, what we're doing is making the segment point "forwards".'''
+        self.attack_segment.setPointA(self.actor.getPos())
+        self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.attack_distance)
+
+    def update_health(self, health_delta):
+        self.health += health_delta
+
+        if self.health > self.health_max:
+            self.health = self.health_max
+
+        print(f"Monster health: {self.health}/{self.health_max}")
+
+        self.update_health_visual()
+
+    def update_health_visual(self):
+        perc = self.health / self.health_max
+        if perc < 0:
+            perc = 0
+        # The parameters here are red, green, blue, and alpha
+        self.actor.setColorScale(perc, perc, perc, 1)
+
+    def cleanup(self):
+        base.cTrav.removeCollider(self.attack_segment_node_path)
+        self.attack_segment_node_path.removeNode()
+        GameObject.cleanup(self)
 
 
 class SlidingCrateMonster(Monster):

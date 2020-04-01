@@ -1,13 +1,13 @@
-from app.Objects.templates import GameObject
+from app.Objects.characters import CharacterObject
 
 
-class Interactive(GameObject):
+class Interactive(CharacterObject):
     def __init__(self, pos, model_name, model_animation, health_max, speed_max):
-        GameObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
+        CharacterObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
 
     def update(self, player, time_delta):
         """
-        In short, update as a GameObject, then run whatever enemy-specific logic is to be done.
+        In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
         without re-writing the rest.
 
@@ -15,7 +15,7 @@ class Interactive(GameObject):
         :param time_delta:
         :return:
         """
-        GameObject.update_position(self, time_delta)
+        PhysicalObject.update_position(self, time_delta)
 
 
 class CrateInteractive(Interactive):
