@@ -1,2 +1,2 @@
-from app.config import *
-from app.Objects import *
+from .config import *
+from .Objects import *

@@ -1,2 +1,2 @@
-from app.config.application import Application
-from app.config.initializers import *
+from .initializers import *
+from .application import Application

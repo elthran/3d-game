@@ -50,7 +50,7 @@ class Hero(CharacterObject):
         self.collider.node().setFromCollideMask(mask)
         # After we've made our ray-node:
         mask = BitMask32()
-        '''Note that we set a different bit here! This means that the ray's mask and the collider's mask don't match, 
+        '''Note that we set a different bit here! This means that the ray's mask and the collider's mask don't match,
         and so the ray won't collide with the collider.'''
         mask.setBit(2)
         rayNode.setFromCollideMask(mask)
