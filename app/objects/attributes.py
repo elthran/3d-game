@@ -1,4 +1,12 @@
-class CharacterAttribute:
+class Attributes:
+    def __init__(self, character):
+        self.character = character
+        self.agility = Agility(character)
+        self.strength = Strength(character)
+        self.vitality = Vitality(character)
+
+
+class Attribute:
     def __init__(self, character):
         self.character = character
         self.name = None
@@ -6,22 +14,22 @@ class CharacterAttribute:
         self.level = 1
 
 
-class Agility(CharacterAttribute):
+class Agility(Attribute):
     def __init__(self, character):
-        CharacterAttribute.__init__(self, character)
+        super().__init__(character)
         self.name = 'Agility '
         self.description = 'How fast your character can walk.'
 
 
-class Strength(CharacterAttribute):
+class Strength(Attribute):
     def __init__(self, character):
-        CharacterAttribute.__init__(self, character)
+        super().__init__(character)
         self.name = 'Strength'
         self.description = 'How much damage your character does.'
 
 
-class Vitality(CharacterAttribute):
+class Vitality(Attribute):
     def __init__(self, character):
-        CharacterAttribute.__init__(self, character)
+        super().__init__(character)
         self.name = 'Vitality'
         self.description = 'How much health the character has.'

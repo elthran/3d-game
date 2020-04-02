@@ -1,5 +1,5 @@
-from app.Objects.character_attributes import Agility, Strength, Vitality
-from app.Objects.character_proficiencies import BaseDamage, BaseHealth, MovementSpeed
+from app.Objects.attributes import Attributes
+from app.Objects.proficiencies import Proficiencies
 from app.Objects.constants_physics import FRICTION
 from app.Objects.physicals import PhysicalObject
 
@@ -8,20 +8,11 @@ class CharacterObject(PhysicalObject):
     def __init__(self, starting_position=None, model_name=None, model_animation=None):
         super().__init__(starting_position, model_name, model_animation)
 
-        self.agility = Agility(self)
-        self.strength = Strength(self)
-        self.vitality = Vitality(self)
-
-        self.base_damage = BaseDamage(self)
-        self.base_health = BaseHealth(self)
-        self.movement_speed = MovementSpeed(self)
-
-        self.health_max = 10
-        self.health = 10
-
-        self.speed_max = 10
-
+        self.attributes = Attributes(self)
+        self.proficiencies = Proficiencies(self)
+        self.proficiencies.health_current.health = self.proficiencies.health_maximum.value
         self.walking = False
+        self.invulnerable = False
 
     def update_position(self, time_delta):
         """
@@ -32,10 +23,10 @@ class CharacterObject(PhysicalObject):
         :return:
         """
         speed = self.velocity.length()
-        if speed > self.speed_max:
+        if speed > self.proficiencies.movement_speed_base.value:
             self.velocity.normalize()
-            self.velocity *= self.speed_max
-            speed = self.speed_max
+            self.velocity *= self.proficiencies.movement_speed_base.value
+            speed = self.proficiencies.movement_speed_base.value
 
         if not self.walking:
             friction_value = FRICTION * time_delta
@@ -51,7 +42,15 @@ class CharacterObject(PhysicalObject):
         self.actor.setPos(self.actor.getPos() + self.velocity * time_delta)
 
     def update_health(self, health_delta):
-        self.health += health_delta
+        if self.invulnerable:
+            pass
+        else:
+            self.proficiencies.health_current.health += health_delta
+            if self.proficiencies.health_current.health > self.proficiencies.health_maximum.value:
+                self.proficiencies.health_current.health = self.proficiencies.health_maximum.value
+        print(f"{self.__class__.__name__} health: "
+              f"{self.proficiencies.health_current.health}/{self.proficiencies.health_maximum.value}")
+        self.update_health_visual()
 
-        if self.health > self.health_max:
-            self.health = self.health_max
+    def update_health_visual(self):
+        pass

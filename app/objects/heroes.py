@@ -1,9 +1,8 @@
 from panda3d.core import CollisionRay, CollisionHandlerQueue, Vec3, Vec4, CollisionNode, \
-    BitMask32, Vec2, Plane, Point3, PointLight, TextNode
+    Vec2, Plane, Point3, PointLight, TextNode
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
-from .physicals import PhysicalObject
 from .constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
 from .monsters import SlidingCrateMonster
 from .characters import CharacterObject
@@ -72,7 +71,7 @@ class Hero(CharacterObject):
                                     mayChange=True,
                                     align=TextNode.ALeft)
         self.health_icons = []
-        for i in range(self.health_max):
+        for i in range(self.proficiencies.health_maximum.value):
             icon = OnscreenImage(image="UI/health.png",
                                  pos=(-1.275 + i * 0.075, 0, 0.95),
                                  scale=0.04)
@@ -244,23 +243,9 @@ class Hero(CharacterObject):
             if self.damageTakenModelTimer <= 0:
                 self.damageTakenModel.hide()
 
-    def update_health(self, health_delta):
-        self.damageTakenModel.show()
-        self.damageTakenModel.setH(uniform(0.0, 360.0))
-        self.damageTakenModelTimer = self.damageTakenModelDuration
-
-        self.health += health_delta
-
-        if self.health > self.health_max:
-            self.health = self.health_max
-
-        print(f"Hero health: {self.health}/{self.health_max}")
-
-        self.update_health_UI()
-
-    def update_health_UI(self):
+    def update_health_visual(self):
         for index, icon in enumerate(self.health_icons):
-            if index < self.health:
+            if index < self.proficiencies.health_current.health:
                 icon.show()
             else:
                 icon.hide()
@@ -268,9 +253,9 @@ class Hero(CharacterObject):
     def update_score(self):
         self.scoreUI.setText(str(self.score))
 
-    def cleanup(self):
+    def remove_object_from_world(self):
         base.cTrav.removeCollider(self.rayNodePath)
-        PhysicalObject.cleanup(self)
+        self.remove_object_from_world()
         self.beamHitModel.removeNode()
         render.clearLight(self.beamHitLightNodePath)
         self.beamHitLightNodePath.removeNode()
@@ -284,3 +269,6 @@ class WizardHero(Hero):
         super().__init__(starting_position=Vec3(0, 0, 0), model_name="Models/PandaChan/act_p3d_chan",
                          model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
                                           "walk": "Models/PandaChan/a_p3d_chan_run"})
+        self.attributes.agility.level = 3
+        self.attributes.strength.level = 3
+        self.attributes.vitality.level = 3

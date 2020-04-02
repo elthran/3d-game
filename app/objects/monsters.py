@@ -1,7 +1,7 @@
 from math import copysign
 from random import uniform
 
-from panda3d.core import Vec2, BitMask32, CollisionNode, CollisionSegment, CollisionHandlerQueue
+from panda3d.core import Vec2, CollisionNode, CollisionSegment, CollisionHandlerQueue
 
 from app.Objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
 from app.Objects.characters import CharacterObject
@@ -63,10 +63,11 @@ class TrainingDummyMonster(Monster):
                                           "attack": "Models/Misc/simpleEnemy-attack",
                                           "die": "Models/Misc/simpleEnemy-die",
                                           "spawn": "Models/Misc/simpleEnemy-spawn"})
-
-        self.actor.play("spawn")
-
-        self.attack_distance = 0.75
+        self.attributes.agility.level = 1
+        self.attributes.strength.level = 1
+        self.attributes.vitality.level = 1
+        self.proficiencies.attack_melee_distance.hardcoded_value = 0.75
+        self.acceleration = 100.0
 
         self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
         segment_node = CollisionNode("enemyAttackSegment")
@@ -85,8 +86,6 @@ class TrainingDummyMonster(Monster):
 
         '''How much damage the enemy's attack does.
          That is, this results in the player-character's health being reduced by one.'''
-        self.attack_damage = 1
-
         # The delay between the start of an attack, and the attack (potentially) landing
         self.attack_delay = 0.3
         self.attack_delay_timer = 0
@@ -96,8 +95,6 @@ class TrainingDummyMonster(Monster):
 
         self.collider.node().setIntoCollideMask(MASK_MONSTER)
         '''end of bit masks?'''
-
-        self.acceleration = 100.0
 
         # A reference vector, used to determine
         # which way to face the Actor.
@@ -125,7 +122,7 @@ class TrainingDummyMonster(Monster):
         vector_to_player_2D.normalize()
         heading = self.y_vector.signedAngleDeg(vector_to_player_2D)
 
-        if distance_to_player > self.attack_distance * 0.9:  # It is not close enough to attack
+        if distance_to_player > self.proficiencies.attack_melee_distance.value * 0.9:  # It is not close enough to attack
             attack_control = self.actor.getAnimControl("attack")
             if not attack_control.isPlaying():
                 self.walking = True
@@ -151,7 +148,7 @@ class TrainingDummyMonster(Monster):
                         if hit_node_path.hasPythonTag("owner"):
                             # Apply damage!
                             hit_object = hit_node_path.getPythonTag("owner")
-                            hit_object.update_health(-self.attack_damage)
+                            hit_object.update_health(-self.proficiencies.damage_base.value)
                             self.attack_wait_timer = 1.0
             # If we're instead waiting to be allowed to attack...
             elif self.attack_wait_timer > 0:
@@ -171,29 +168,19 @@ class TrainingDummyMonster(Monster):
         because Panda's quaternion class has methods to get forward, right, and up vectors for that orientation.
         Thus, what we're doing is making the segment point "forwards".'''
         self.attack_segment.setPointA(self.actor.getPos())
-        self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.attack_distance)
-
-    def update_health(self, health_delta):
-        self.health += health_delta
-
-        if self.health > self.health_max:
-            self.health = self.health_max
-
-        print(f"Monster health: {self.health}/{self.health_max}")
-
-        self.update_health_visual()
+        self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.proficiencies.attack_melee_distance.value)
 
     def update_health_visual(self):
-        perc = self.health / self.health_max
-        if perc < 0:
-            perc = 0
+        color_shade = self.proficiencies.health_current.health /self.proficiencies.health_maximum.value
+        if color_shade < 0:
+            color_shade = 0
         # The parameters here are red, green, blue, and alpha
-        self.actor.setColorScale(perc, perc, perc, 1)
+        self.actor.setColorScale(color_shade, color_shade, color_shade, 1)
 
-    def cleanup(self):
+    def remove_object_from_world(self):
         base.cTrav.removeCollider(self.attack_segment_node_path)
         self.attack_segment_node_path.removeNode()
-        GameObject.cleanup(self)
+        self.remove_object_from_world()
 
 
 class SlidingCrateMonster(Monster):
@@ -201,10 +188,13 @@ class SlidingCrateMonster(Monster):
         super().__init__(starting_position, model_name="Models/Misc/trap",
                          model_animation={"stand": "Models/Misc/trap-stand",
                                           "walk": "Models/Misc/trap-walk"})
+        self.attributes.agility = 5
+        self.attributes.strength = 1
+        self.attributes.vitality = 1
+        self.invulnerable = True
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
-
 
         self.moveInX = False
 
@@ -232,6 +222,3 @@ class SlidingCrateMonster(Monster):
 
             if abs(detector) < 0.5:
                 self.moveDirection = copysign(1, movement)
-
-    def update_health(self, health_delta):
-        pass
