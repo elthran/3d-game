@@ -3,14 +3,9 @@ from panda3d.core import CollisionNode, CollisionSphere, Vec3
 from direct.actor.Actor import Actor
 
 
-FRICTION = 150.0
-
-
 class PhysicalObject:
-    def __init__(self, pos, model_name, model_animation):
-        self.actor = Actor(model_name, model_animation)
-        self.actor.reparentTo(render)
-        self.actor.setPos(pos)
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        self.actor = self.create_actor(starting_position, model_name, model_animation)
 
         self.velocity = Vec3(0, 0, 0)
         self.acceleration = 300.0
@@ -22,6 +17,12 @@ class PhysicalObject:
         self.collider = self.actor.attachNewNode(collider_node)
         self.collider.setPythonTag("owner", self)
         self.collider.show()
+
+    def create_actor(self, starting_position, model_name, model_animation):
+        self.actor = Actor(model_name, model_animation)
+        self.actor.reparentTo(render)
+        self.actor.setPos(starting_position)
+        return self.actor
 
     def cleanup(self):
         # Remove various nodes, and clear the Python-tag--see below!

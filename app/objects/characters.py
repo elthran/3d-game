@@ -1,20 +1,25 @@
+from app.Objects.character_attributes import Agility, Strength, Vitality
+from app.Objects.character_proficiencies import BaseDamage, BaseHealth, MovementSpeed
+from app.Objects.constants_physics import FRICTION
 from app.Objects.physicals import PhysicalObject
-
-FRICTION = 150.0
 
 
 class CharacterObject(PhysicalObject):
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
-        PhysicalObject.__init__(self, pos, model_name, model_animation)
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position, model_name, model_animation)
 
-        # self.character_skills = CharacterSkills()
+        self.agility = Agility(self)
+        self.strength = Strength(self)
+        self.vitality = Vitality(self)
 
-        # self.character_attributes = CharacterAttributes()
+        self.base_damage = BaseDamage(self)
+        self.base_health = BaseHealth(self)
+        self.movement_speed = MovementSpeed(self)
 
-        self.health_max = health_max
-        self.health = health_max
+        self.health_max = 10
+        self.health = 10
 
-        self.speed_max = speed_max
+        self.speed_max = 10
 
         self.walking = False
 

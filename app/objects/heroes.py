@@ -3,16 +3,21 @@ from panda3d.core import CollisionRay, CollisionHandlerQueue, Vec3, Vec4, Collis
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
-from app.Objects.monsters import SlidingCrateMonster
-from app.Objects.characters import CharacterObject
+from .physicals import PhysicalObject
+from .constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
+from .monsters import SlidingCrateMonster
+from .characters import CharacterObject
 
 from math import sin
 from random import uniform
 
 
 class Hero(CharacterObject):
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
-        CharacterObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position, model_name, model_animation)
+        # Set the collider for Hero's to be Hero.
+        self.collider.node().setIntoCollideMask(MASK_HERO)
+        self.collider.node().setFromCollideMask(MASK_HERO)
 
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
@@ -40,22 +45,9 @@ class Hero(CharacterObject):
 
         self.yVector = Vec2(0, 1)
 
-        '''bit masks?'''
-        mask = BitMask32()
-        mask.setBit(1)
-        # This is the important one for preventing ray-collisions. The other is more a gameplay decision.
-        self.collider.node().setIntoCollideMask(mask)
-        mask = BitMask32()
-        mask.setBit(1)
-        self.collider.node().setFromCollideMask(mask)
         # After we've made our ray-node:
-        mask = BitMask32()
-        '''Note that we set a different bit here! This means that the ray's mask and the collider's mask don't match,
-        and so the ray won't collide with the collider.'''
-        mask.setBit(2)
-        rayNode.setFromCollideMask(mask)
-        mask = BitMask32()
-        rayNode.setIntoCollideMask(mask)
+        rayNode.setFromCollideMask(MASK_MONSTER)
+        rayNode.setIntoCollideMask(MASK_NOTHING)
         '''end of bit masks?'''
 
         '''The laser model?'''
@@ -126,7 +118,7 @@ class Hero(CharacterObject):
         # ----------------------
 
     def update(self, keys, time_delta):
-        CharacterObject.update_position(self, time_delta)
+        self.update_position(time_delta)
 
         # ------------------------------------------- NEW CODE
         # Update the hero's knowledge of where the mouse is
@@ -278,7 +270,7 @@ class Hero(CharacterObject):
 
     def cleanup(self):
         base.cTrav.removeCollider(self.rayNodePath)
-        GameObject.cleanup(self)
+        PhysicalObject.cleanup(self)
         self.beamHitModel.removeNode()
         render.clearLight(self.beamHitLightNodePath)
         self.beamHitLightNodePath.removeNode()
@@ -287,22 +279,8 @@ class Hero(CharacterObject):
             icon.removeNode()
 
 
-class CurrentHero(Hero):
-    def __init__(self):
-        Hero.__init__(self,
-                      pos=Vec3(0, 0, 0),
-                      model_name="Models/PandaChan/act_p3d_chan",
-                      model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
-                                       "walk": "Models/PandaChan/a_p3d_chan_run"},
-                      health_max=5,
-                      speed_max=10)
-
-
-class TestModelHero(Hero):
-    def __init__(self):
-        Hero.__init__(self,
-                      pos=Vec3(-1, 0, 0),
-                      model_name="Models/TestHero/drui-dude",
-                      model_animation={},
-                      health_max=5,
-                      speed_max=10)
+class WizardHero(Hero):
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position=Vec3(0, 0, 0), model_name="Models/PandaChan/act_p3d_chan",
+                         model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
+                                          "walk": "Models/PandaChan/a_p3d_chan_run"})

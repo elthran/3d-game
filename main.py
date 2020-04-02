@@ -123,14 +123,14 @@ class Game(ShowBase):
         # level--enemies, traps, etc.--before
         # starting a new one.
         # self.cleanup()
-        self.hero = CurrentHero()
+        self.hero = WizardHero()
         # self.temp_hero = TestModelHero()
         self.maxEnemies = 2
         self.spawnInterval = self.initialSpawnInterval
         self.display_damage = OnscreenText(text=f'Damage taken: {5 - self.hero.health}', pos=(1, -0.9), scale=0.07)
-        self.training_dummy_monster = TrainingDummyMonster(pos=Vec3(5, 0, 0))
-        self.crate_interactive = CrateInteractive(pos=Vec3(-2, 3, 0))
-        self.sliding_crate_monster = SlidingCrateMonster(pos=Vec3(2, 7, 0))
+        self.training_dummy_monster = TrainingDummyMonster(starting_position=Vec3(5, 0, 0))
+        # self.crate_interactive = CrateInteractive(starting_position=Vec3(-2, 3, 0))
+        self.sliding_crate_monster = SlidingCrateMonster(starting_position=Vec3(2, 7, 0))
 
     def update(self, task):
         # Get the amount of time since the last update

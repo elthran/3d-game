@@ -3,13 +3,16 @@ from random import uniform
 
 from panda3d.core import Vec2, BitMask32, CollisionNode, CollisionSegment, CollisionHandlerQueue
 
-from app.Objects.physicals import PhysicalObject
+from app.Objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
 from app.Objects.characters import CharacterObject
 
 
 class Monster(CharacterObject):
-    def __init__(self, pos, model_name, model_animation, health_max, speed_max):
-        CharacterObject.__init__(self, pos, model_name, model_animation, health_max, speed_max)
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position, model_name, model_animation)
+        # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
+        self.collider.node().setIntoCollideMask(MASK_HERO_AND_MONSTER)
+        self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
 
         self.experience_rewarded = 1
 
@@ -23,7 +26,7 @@ class Monster(CharacterObject):
         :param time_delta:
         :return:
         """
-        CharacterObject.update_position(self, time_delta)
+        self.update_position(time_delta)
 
         self.run_logic(player, time_delta)
 
@@ -53,17 +56,13 @@ class Monster(CharacterObject):
 
 
 class TrainingDummyMonster(Monster):
-    def __init__(self, pos):
-        Monster.__init__(self,
-                         pos=pos,
-                         model_name="Models/Misc/simpleEnemy",
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position, model_name="Models/Misc/simpleEnemy",
                          model_animation={"stand": "Models/Misc/simpleEnemy-stand",
                                           "walk": "Models/Misc/simpleEnemy-walk",
                                           "attack": "Models/Misc/simpleEnemy-attack",
                                           "die": "Models/Misc/simpleEnemy-die",
-                                          "spawn": "Models/Misc/simpleEnemy-spawn"},
-                         health_max=3.0,
-                         speed_max=7.0)
+                                          "spawn": "Models/Misc/simpleEnemy-spawn"})
 
         self.actor.play("spawn")
 
@@ -76,14 +75,8 @@ class TrainingDummyMonster(Monster):
         # Attack player code
         '''A mask that matches the player's, so that the enemy's attack will hit the player-character,
         but not the enemy-character (or other enemies)'''
-        mask = BitMask32()
-        mask.setBit(1)
-
-        segment_node.setFromCollideMask(mask)
-
-        mask = BitMask32()
-
-        segment_node.setIntoCollideMask(mask)
+        segment_node.setFromCollideMask(MASK_HERO)
+        segment_node.setIntoCollideMask(MASK_NOTHING)
 
         self.attack_segment_node_path = render.attachNewNode(segment_node)
         self.segment_queue = CollisionHandlerQueue()
@@ -101,10 +94,7 @@ class TrainingDummyMonster(Monster):
         self.attack_wait_timer = 0
         # End of attack player code
 
-        '''bit masks?'''
-        mask = BitMask32()
-        mask.setBit(2)
-        self.collider.node().setIntoCollideMask(mask)
+        self.collider.node().setIntoCollideMask(MASK_MONSTER)
         '''end of bit masks?'''
 
         self.acceleration = 100.0
@@ -207,28 +197,14 @@ class TrainingDummyMonster(Monster):
 
 
 class SlidingCrateMonster(Monster):
-    def __init__(self, pos):
-        Monster.__init__(self,
-                         pos=pos,
-                         model_name="Models/Misc/trap",
+    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+        super().__init__(starting_position, model_name="Models/Misc/trap",
                          model_animation={"stand": "Models/Misc/trap-stand",
-                                          "walk": "Models/Misc/trap-walk"},
-                         health_max=100.0,
-                         speed_max=10.0)
+                                          "walk": "Models/Misc/trap-walk"})
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
 
-        '''bit masks?'''
-        mask = BitMask32()
-        mask.setBit(2)
-        mask.setBit(1)
-        self.collider.node().setIntoCollideMask(mask)
-        mask = BitMask32()
-        mask.setBit(2)
-        mask.setBit(1)
-        self.collider.node().setFromCollideMask(mask)
-        '''end of bit masks?'''
 
         self.moveInX = False
 
