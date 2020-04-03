@@ -16,7 +16,7 @@ class Monster(CharacterObject):
 
         self.experience_rewarded = 1
 
-    def update(self, player, time_delta):
+    def update(self, time_delta, player=None):
         """
         In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
@@ -26,7 +26,7 @@ class Monster(CharacterObject):
         :param time_delta:
         :return:
         """
-        self.update_position(time_delta)
+        CharacterObject.update(self, time_delta)
 
         self.run_logic(player, time_delta)
 
@@ -171,7 +171,7 @@ class TrainingDummyMonster(Monster):
         self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.proficiencies.attack_melee_distance.value)
 
     def update_health_visual(self):
-        color_shade = self.proficiencies.health_current.health /self.proficiencies.health_maximum.value
+        color_shade = self.proficiencies.health.current /self.proficiencies.health.value
         if color_shade < 0:
             color_shade = 0
         # The parameters here are red, green, blue, and alpha

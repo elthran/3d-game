@@ -3,9 +3,7 @@ class Proficiencies:
         self.character = character
         self.attack_melee_distance = AttackMeleeDistance(character)
         self.damage_base = DamageBase(character)
-        self.health_base = HealthBase(character)
-        self.health_current = HealthCurrent(character)
-        self.health_maximum = HealthMaximum(character)
+        self.health = Health(character)
         self.movement_speed_base = MovementSpeedBase(character)
 
 
@@ -24,8 +22,9 @@ class CharacterProficiency:
 
     @property
     def value(self):
-        value = self.hardcoded_value if self.hardcoded_value else self.formula
-        return value
+        if self.hardcoded_value:
+            return self.hardcoded_value
+        return self.formula
 
     @property
     def __str__(self):
@@ -59,47 +58,29 @@ class DamageBase(CharacterProficiency):
         return f'{self.level} * 1 + {self.character_attribute.level} * 1'
 
 
-class HealthBase(CharacterProficiency):
+class Health(CharacterProficiency):
     def __init__(self, character):
         super().__init__(character)
-        self.name = 'BaseHealth'
+        self.name = 'Health'
         self.description = 'Determines maximum health.'
         self.character_attribute = character.attributes.vitality
+        self._current = self.value
 
     @property
     def formula(self):
         return self.level * 1 + self.character_attribute.level * 5
 
     @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, new_value):
+        self._current = max(min(self.value, new_value), 0)
+
+    @property
     def __str__(self):
         return f'{self.level} * 1 + {self.character_attribute.level} * 5'
-
-
-class HealthCurrent(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
-        self.name = 'HealthCurrent'
-        self.description = 'Your current health.'
-        self.health = 1
-
-    @property
-    def value(self):
-        return self.value
-
-    @property
-    def __str__(self):
-        return {self.character.proficiencies.health_maximum}
-
-
-class HealthMaximum(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
-        self.name = 'HealthMaximum'
-        self.description = 'Your maximum health.'
-
-    @property
-    def formula(self):
-        return self.character.proficiencies.health_base.value + self.level
 
 
 class MovementSpeedBase(CharacterProficiency):

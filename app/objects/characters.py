@@ -1,3 +1,4 @@
+from app.Objects.abilities import Abilities
 from app.Objects.attributes import Attributes
 from app.Objects.proficiencies import Proficiencies
 from app.Objects.constants_physics import FRICTION
@@ -10,11 +11,11 @@ class CharacterObject(PhysicalObject):
 
         self.attributes = Attributes(self)
         self.proficiencies = Proficiencies(self)
-        self.proficiencies.health_current.health = self.proficiencies.health_maximum.value
+        self.abilities = Abilities(self)
         self.walking = False
         self.invulnerable = False
 
-    def update_position(self, time_delta):
+    def update(self, time_delta):
         """
         If we're going faster than our maximum speed, set the velocity-vector's length to that maximum.
         If we're walking, don't worry about friction.
@@ -45,11 +46,11 @@ class CharacterObject(PhysicalObject):
         if self.invulnerable:
             pass
         else:
-            self.proficiencies.health_current.health += health_delta
-            if self.proficiencies.health_current.health > self.proficiencies.health_maximum.value:
-                self.proficiencies.health_current.health = self.proficiencies.health_maximum.value
+            self.proficiencies.health.current += health_delta
+            if self.proficiencies.health.current > self.proficiencies.health.value:
+                self.proficiencies.health.current = self.proficiencies.health.value
         print(f"{self.__class__.__name__} health: "
-              f"{self.proficiencies.health_current.health}/{self.proficiencies.health_maximum.value}")
+              f"{self.proficiencies.health.current}/{self.proficiencies.health.value}")
         self.update_health_visual()
 
     def update_health_visual(self):
