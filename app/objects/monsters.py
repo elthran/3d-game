@@ -68,6 +68,7 @@ class TrainingDummyMonster(Monster):
         self.attributes.vitality.level = 1
         self.proficiencies.attack_melee_distance.hardcoded_value = 0.75
         self.acceleration = 100.0
+        self.refresh()
 
         # Attack player code
         '''A mask that matches the player's, so that the enemy's attack will hit the player-character,
@@ -99,6 +100,7 @@ class TrainingDummyMonster(Monster):
         # Since the character faces along
         # the y-direction, we use the y-axis.
         self.y_vector = Vec2(0, 1)
+
 
     def run_logic(self, player, time_delta):
         """

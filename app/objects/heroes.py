@@ -3,8 +3,10 @@ from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
 from .physicals import PhysicalObject
-from .constants_physics import MASK_HERO
+from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER
 from .characters import CharacterObject
+
+import random
 
 
 class Hero(CharacterObject):
@@ -12,7 +14,7 @@ class Hero(CharacterObject):
         super().__init__(*args, **kwargs)
         # Set the collider for Hero's to be Hero.
         self.collider.node().setIntoCollideMask(MASK_HERO)
-        self.collider.node().setFromCollideMask(MASK_HERO)
+        self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
 
         # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
         base.pusher.addCollider(self.collider, self.actor)
