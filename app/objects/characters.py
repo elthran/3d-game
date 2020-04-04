@@ -1,8 +1,8 @@
-from app.Objects.abilities import Abilities
-from app.Objects.attributes import Attributes
-from app.Objects.proficiencies import Proficiencies
-from app.Objects.constants_physics import FRICTION
-from app.Objects.physicals import PhysicalObject
+from app.objects.abilities import Abilities
+from app.objects.attributes import Attributes
+from app.objects.proficiencies import Proficiencies
+from app.objects.constants_physics import FRICTION
+from app.objects.physicals import PhysicalObject
 
 
 class CharacterObject(PhysicalObject):

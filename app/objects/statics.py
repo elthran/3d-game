@@ -1,4 +1,4 @@
-from app.Objects.physicals import PhysicalObject
+from app.objects.physicals import PhysicalObject
 
 
 class StaticObject(PhysicalObject):

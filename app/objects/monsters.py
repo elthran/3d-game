@@ -3,8 +3,8 @@ from random import uniform
 
 from panda3d.core import Vec2, CollisionNode, CollisionSegment, CollisionHandlerQueue
 
-from app.Objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
-from app.Objects.characters import CharacterObject
+from app.objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
+from app.objects.characters import CharacterObject
 
 
 class Monster(CharacterObject):

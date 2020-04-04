@@ -1,4 +1,4 @@
-from app.Objects.characters import CharacterObject
+from app.objects.characters import CharacterObject
 
 
 # class Interactive(CharacterObject):
