@@ -6,8 +6,8 @@ from app.objects.physicals import PhysicalObject
 
 
 class CharacterObject(PhysicalObject):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
-        super().__init__(starting_position, model_name, model_animation, damage_taken_model)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         self.attributes = Attributes(self)
         self.proficiencies = Proficiencies(self)

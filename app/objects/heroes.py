@@ -8,8 +8,8 @@ from .characters import CharacterObject
 
 
 class Hero(CharacterObject):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
-        super().__init__(starting_position, model_name, model_animation, damage_taken_model)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         # Set the collider for Hero's to be Hero.
         self.collider.node().setIntoCollideMask(MASK_HERO)
         self.collider.node().setFromCollideMask(MASK_HERO)
