@@ -46,26 +46,19 @@ class CharacterObject(PhysicalObject):
         # Move the character, using our velocity and the time since the last update.
         self.actor.setPos(self.actor.getPos() + self.velocity * time_delta)
 
-        # Check if damage_taken_model can be refreshed
-        if self.damage_taken_model and self.damage_taken_model_timer > 0:
-            self.damage_taken_model_timer -= time_delta
-            self.damage_taken_model.setScale(2.0 - self.damage_taken_model_timer / self.damage_taken_model_duration)
-            if self.damage_taken_model_timer <= 0:
-                self.damage_taken_model.hide()
-
     def update_health(self, health_delta):
-        if self.invulnerable:
-            pass
-        else:
-            previous_health = self.proficiencies.health.current
-            self.proficiencies.health.current += health_delta
-            if self.proficiencies.health.current > self.proficiencies.health.value:
-                self.proficiencies.health.current = self.proficiencies.health.value
-            if previous_health > 0 >= self.proficiencies.health.current:
-                print("You died.")
+        # if self.invulnerable:
+        #     pass
+        # else:
+        previous_health = self.proficiencies.health.current
+
+        self.proficiencies.health.current += health_delta
+        if self.proficiencies.health.current > self.proficiencies.health.value:
+            self.proficiencies.health.current = self.proficiencies.health.value
+        if previous_health > 0 >= self.proficiencies.health.current:
+            print("You died.")
         print(f"{self.__class__.__name__} health: "
               f"{self.proficiencies.health.current}/{self.proficiencies.health.value}")
-        self.update_health_visual()
 
     def update_health_visual(self):
         pass

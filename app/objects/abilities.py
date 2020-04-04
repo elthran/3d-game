@@ -3,8 +3,8 @@ from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec
 from .constants_physics import MASK_MONSTER, MASK_NOTHING
 from .physicals import PhysicalObject
 
-from math import sin
-from random import uniform
+import math
+import random
 
 
 class Abilities:
@@ -91,7 +91,7 @@ class FrostRay(Ability):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, time_delta, active, firing_vector, origin):
+    def update(self, active=None, firing_vector=None, origin=None, time_delta=None):
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
         # runs down (and the scale is at its lowest), reset the timer
@@ -99,10 +99,44 @@ class FrostRay(Ability):
         self.beam_hit_timer -= time_delta
         if self.beam_hit_timer <= 0:
             self.beam_hit_timer = self.beam_hit_pulse_rate
-            self.model_collision.setH(uniform(0.0, 360.0))
-        self.model_collision.setScale(sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
+            self.model_collision.setH(random.uniform(0.0, 360.0))
+        self.model_collision.setScale(math.sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
 
-        if not active:
+        if active:
+            if self.ray_queue.getNumEntries() > 0:
+                scored_hit = False
+                self.ray_queue.sortEntries()
+                ray_hit = self.ray_queue.getEntry(0)
+                hit_pos = ray_hit.getSurfacePoint(render)
+                hit_node_path = ray_hit.getIntoNodePath()
+                print(hit_node_path)
+                if hit_node_path.hasPythonTag("owner"):
+                    hit_object = hit_node_path.getPythonTag("owner")
+                    hit_object.update_health(-(self.damage_per_second * time_delta))
+                    scored_hit = True
+                # Find out how long the beam is, and scale the beam-model accordingly.
+                beam_length = (hit_pos - self.character.actor.getPos()).length()
+                self.model.setSy(beam_length)
+                self.model.show()
+                if scored_hit:
+                    self.model_collision.show()
+                    self.model_collision.setPos(hit_pos)
+                    self.beam_hit_light_node_path.setPos(hit_pos + Vec3(0, 0, 0.5))
+                    # If the light hasn't already been set here, set it
+                    if not render.hasLight(self.beam_hit_light_node_path):
+                        # Apply the light to the scene, so that it
+                        # illuminates things
+                        render.setLight(self.beam_hit_light_node_path)
+                else:
+                    # If the light has been set here, remove it
+                    # See explanation in the tutorial-text below...
+                    if render.hasLight(self.beam_hit_light_node_path):
+                        # Clear the light from the scene, so that it
+                        # no longer illuminates anything
+                        render.clearLight(self.beam_hit_light_node_path)
+                    self.model_collision.hide()
+
+        else:
             if render.hasLight(self.beam_hit_light_node_path):
                 # Clear the light from the scene, so that it
                 # no longer illuminates anything
@@ -110,40 +144,6 @@ class FrostRay(Ability):
             # If we're not shooting, don't show the beam-model.
             self.model.hide()
             self.model_collision.hide()
-            return
-
-        if self.ray_queue.getNumEntries() > 0:
-            scored_hit = False
-            self.ray_queue.sortEntries()
-            ray_hit = self.ray_queue.getEntry(0)
-            hit_pos = ray_hit.getSurfacePoint(render)
-            hit_node_path = ray_hit.getIntoNodePath()
-            print(hit_node_path)
-            if hit_node_path.hasPythonTag("owner"):
-                hit_object = hit_node_path.getPythonTag("owner")
-                hit_object.update_health(-(self.damage_per_second * time_delta))
-                scored_hit = True
-            # Find out how long the beam is, and scale the beam-model accordingly.
-            beam_length = (hit_pos - self.character.actor.getPos()).length()
-            self.model.setSy(beam_length)
-            self.model.show()
-            if scored_hit:
-                self.model_collision.show()
-                self.model_collision.setPos(hit_pos)
-                self.beam_hit_light_node_path.setPos(hit_pos + Vec3(0, 0, 0.5))
-                # If the light hasn't already been set here, set it
-                if not render.hasLight(self.beam_hit_light_node_path):
-                    # Apply the light to the scene, so that it
-                    # illuminates things
-                    render.setLight(self.beam_hit_light_node_path)
-            else:
-                # If the light has been set here, remove it
-                # See explanation in the tutorial-text below...
-                if render.hasLight(self.beam_hit_light_node_path):
-                    # Clear the light from the scene, so that it
-                    # no longer illuminates anything
-                    render.clearLight(self.beam_hit_light_node_path)
-                self.model_collision.hide()
 
         if firing_vector.length() > 0.001:
             self.ray.setOrigin(origin)

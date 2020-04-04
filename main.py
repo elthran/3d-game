@@ -137,11 +137,10 @@ class Game(ShowBase):
         # Get the amount of time since the last update
         time_delta = globalClock.getDt()
 
-        self.hero.update(time_delta, self.key_mapper)
+        self.hero.update(self.key_mapper, time_delta)
 
-        self.training_dummy_monster.update(time_delta, self.hero)
-
-        self.sliding_crate_monster.update(time_delta, self.hero)
+        self.training_dummy_monster.update(self.hero, time_delta)
+        self.sliding_crate_monster.update(self.hero, time_delta)
 
         return task.cont
 

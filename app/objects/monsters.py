@@ -16,7 +16,7 @@ class Monster(CharacterObject):
 
         self.experience_rewarded = 1
 
-    def update(self, time_delta, player=None):
+    def update(self, player, time_delta):
         """
         In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
@@ -110,9 +110,9 @@ class TrainingDummyMonster(Monster):
         :param time_delta:
         :return:
         """
-        spawnControl = self.actor.getAnimControl("spawn")
-        if spawnControl is not None and spawnControl.isPlaying():
-            return
+        # spawnControl = self.actor.getAnimControl("spawn")
+        # if spawnControl is not None and spawnControl.isPlaying():
+        #     return
 
         vector_to_player = player.actor.getPos() - self.actor.getPos()
         vector_to_player_2D = vector_to_player.getXy()
@@ -165,8 +165,12 @@ class TrainingDummyMonster(Monster):
         or rotation--that represents the NodePath's orientation. This is useful here,
         because Panda's quaternion class has methods to get forward, right, and up vectors for that orientation.
         Thus, what we're doing is making the segment point "forwards".'''
-        self.attack_segment.setPointA(self.actor.getPos())
-        self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.proficiencies.attack_melee_distance.value)
+        # self.attack_segment.setPointA(self.actor.getPos())
+        # self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.proficiencies.attack_melee_distance.value)
+
+    def update_health(self, health_delta):
+        CharacterObject.update_health(self, health_delta)
+        self.update_health_visual()
 
     def update_health_visual(self):
         color_shade = self.proficiencies.health.current /self.proficiencies.health.value

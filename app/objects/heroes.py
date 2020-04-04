@@ -41,12 +41,44 @@ class Hero(CharacterObject):
             icon.setTransparency(True)
             self.health_icons.append(icon)
 
-    def update(self, time_delta, keys=None):
+    def update(self, keys, time_delta):
         CharacterObject.update(self, time_delta)
+
+        self.walking = False
+        if keys.up.on:
+            self.walking = True
+            self.velocity.addY(self.acceleration * time_delta)
+        if keys.down.on:
+            self.walking = True
+            self.velocity.addY(-self.acceleration * time_delta)
+        if keys.left.on:
+            self.walking = True
+            self.velocity.addX(-self.acceleration * time_delta)
+        if keys.right.on:
+            self.walking = True
+            self.velocity.addX(self.acceleration * time_delta)
+
+        # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
+        # Else set them to loop stand.
+        if self.walking:
+            stand_control = self.actor.getAnimControl("stand")
+            if stand_control.isPlaying():
+                stand_control.stop()
+            walk_control = self.actor.getAnimControl("walk")
+            if not walk_control.isPlaying():
+                self.actor.loop("walk")
+        else:
+            stand_control = self.actor.getAnimControl("stand")
+            if not stand_control.isPlaying():
+                self.actor.stop("walk")
+                self.actor.loop("stand")
 
         # Update the hero's knowledge of where the mouse is
         mouse_watcher = base.mouseWatcherNode
-        mouse_position = mouse_watcher.getMouse() if mouse_watcher.hasMouse() else self.last_mouse_pos
+        if mouse_watcher.hasMouse():
+            mouse_position = mouse_watcher.getMouse()
+        else:
+            mouse_position = self.last_mouse_pos
         mouse_position_3d = Point3()
         near_point = Point3()
         far_point = Point3()
@@ -64,38 +96,27 @@ class Hero(CharacterObject):
         firing_vector.normalize()
         heading = self.y_vector.signedAngleDeg(firing_vector_2d)
         self.actor.setH(heading)
-        self.last_mouse_pos = mouse_position
 
-        self.walking = False
-        if keys.up.on:
-            self.walking = True
-            self.velocity.addY(self.acceleration * time_delta)
-        if keys.down.on:
-            self.walking = True
-            self.velocity.addY(-self.acceleration * time_delta)
-        if keys.left.on:
-            self.walking = True
-            self.velocity.addX(-self.acceleration * time_delta)
-        if keys.right.on:
-            self.walking = True
-            self.velocity.addX(self.acceleration * time_delta)
         for ability in self.abilities:
-            ability.update(time_delta=time_delta, active=keys.shoot.on, firing_vector=firing_vector, origin=self.actor.getPos())
+            ability.update(active=keys.shoot.on, firing_vector=firing_vector, origin=self.actor.getPos(), time_delta=time_delta)
 
-        # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
-        # Else set them to loop stand.
-        if self.walking:
-            stand_control = self.actor.getAnimControl("stand")
-            if stand_control.isPlaying():
-                stand_control.stop()
-            walk_control = self.actor.getAnimControl("walk")
-            if not walk_control.isPlaying():
-                self.actor.loop("walk")
-        else:
-            stand_control = self.actor.getAnimControl("stand")
-            if not stand_control.isPlaying():
-                self.actor.stop("walk")
-                self.actor.loop("stand")
+        self.last_mouse_pos = mouse_position
+        # Check if damage_taken_model can be refreshed
+        if self.damage_taken_model and self.damage_taken_model_timer > 0:
+            self.damage_taken_model_timer -= time_delta
+            self.damage_taken_model.setScale(2.0 - self.damage_taken_model_timer / self.damage_taken_model_duration)
+            if self.damage_taken_model_timer <= 0:
+                self.damage_taken_model.hide()
+
+    def update_health(self, health_delta):
+        CharacterObject.update_health(self, health_delta)
+
+        self.update_health_visual()
+
+        self.damage_taken_model.show()
+        self.damage_taken_model.setH(random.uniform(0.0, 360.0))
+        self.damage_taken_model_timer = self.damage_taken_model_duration
+
 
     def update_health_visual(self):
         for index, icon in enumerate(self.health_icons):
