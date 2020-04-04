@@ -160,9 +160,9 @@ class TrainingDummyMonster(Monster):
 
         self.actor.setH(heading)
 
-        '''Set the segment's start- and end- points. 
-        "getQuat" returns a quaternion--a representation of orientation 
-        or rotation--that represents the NodePath's orientation. This is useful here, 
+        '''Set the segment's start- and end- points.
+        "getQuat" returns a quaternion--a representation of orientation
+        or rotation--that represents the NodePath's orientation. This is useful here,
         because Panda's quaternion class has methods to get forward, right, and up vectors for that orientation.
         Thus, what we're doing is making the segment point "forwards".'''
         self.attack_segment.setPointA(self.actor.getPos())
