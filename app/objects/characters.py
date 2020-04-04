@@ -17,10 +17,10 @@ class CharacterObject(PhysicalObject):
 
         self.actor.loop("stand")
 
-        self.refresh()
-
     def refresh(self):
-        self.proficiencies.health.current = self.proficiencies.health.value
+        self.attributes.refresh()
+        self.proficiencies.refresh()
+        self.abilities.refresh()
 
     def update(self, time_delta):
         """

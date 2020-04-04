@@ -127,5 +127,6 @@ class WizardHero(Hero):
         self.attributes.agility.level = 3
         self.attributes.strength.level = 3
         self.attributes.vitality.level = 3
+        self.refresh()
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)

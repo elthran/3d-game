@@ -12,6 +12,9 @@ class Abilities:
         self.character = character
         self.frost_ray = FrostRay(character)
 
+    def refresh(self):
+        pass
+
     def __iter__(self):
         return iter([self.frost_ray])
 

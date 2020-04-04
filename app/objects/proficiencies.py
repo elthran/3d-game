@@ -7,6 +7,9 @@ class Proficiencies:
         self.health = Health(character)
         self.movement_speed_base = MovementSpeedBase(character)
 
+    def refresh(self):
+        self.health.current = self.health.value
+
 
 class CharacterProficiency:
     def __init__(self, character):

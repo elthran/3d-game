@@ -5,6 +5,9 @@ class Attributes:
         self.strength = Strength(character)
         self.vitality = Vitality(character)
 
+    def refresh(self):
+        pass
+
 
 class Attribute:
     def __init__(self, character):
