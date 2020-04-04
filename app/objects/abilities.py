@@ -1,4 +1,4 @@
-from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec2, Plane, Vec3, PointLight, Vec4
+from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4
 
 from .constants_physics import MASK_MONSTER, MASK_NOTHING
 from .physicals import PhysicalObject
@@ -19,6 +19,9 @@ class Abilities:
 class Ability:
     def __init__(self, character):
         self.character = character
+        self.model = None  # The basic model of the animation
+        self.model_collision = None  # The model when the animation collides with another object
+        self.damage_per_second = None
 
     def update(self, time_delta, active, firingVector, origin):
         pass
@@ -39,8 +42,10 @@ class FrostRay(Ability):
 
     def physics_init(self):
         self.ray = CollisionRay(0, 0, 0, 0, 1, 0)
-
         ray_node = CollisionNode(self.__class__.__name__)
+        # After we've made our ray-node:
+        ray_node.setFromCollideMask(MASK_MONSTER)
+        ray_node.setIntoCollideMask(MASK_NOTHING)
         ray_node.addSolid(self.ray)
         self.ray_node_path = render.attachNewNode(ray_node)
         self.ray_queue = CollisionHandlerQueue()
@@ -48,26 +53,22 @@ class FrostRay(Ability):
         unlike with "CollisionHandlerPusher", we don't have to tell our "CollisionHandlerQueue" about it.'''
         base.cTrav.addCollider(self.ray_node_path, self.ray_queue)
 
-        # After we've made our ray-node:
-        ray_node.setFromCollideMask(MASK_MONSTER)
-        ray_node.setIntoCollideMask(MASK_NOTHING)
-
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
-        self.beam_model = loader.loadModel("Models/Misc/bambooLaser")
-        self.beam_model.reparentTo(self.character.actor)
-        self.beam_model.setZ(1.5)
+        self.model = loader.loadModel("Models/Misc/bambooLaser")
+        self.model.reparentTo(self.character.actor)
+        self.model.setZ(1.5)
         # This prevents lights from affecting this particular node
-        self.beam_model.setLightOff()
+        self.model.setLightOff()
         # We don't start out firing the laser, so we have it initially hidden.
-        self.beam_model.hide()
+        self.model.hide()
 
         '''The laser's hit animation'''
-        self.beam_hit_model = loader.loadModel("Models/Misc/bambooLaserHit")
-        self.beam_hit_model.reparentTo(render)
-        self.beam_hit_model.setZ(1.5)
-        self.beam_hit_model.setLightOff()
-        self.beam_hit_model.hide()
+        self.model_collision = loader.loadModel("Models/Misc/bambooLaserHit")
+        self.model_collision.reparentTo(render)
+        self.model_collision.setZ(1.5)
+        self.model_collision.setLightOff()
+        self.model_collision.hide()
 
         self.beam_hit_pulse_rate = 0.15
         self.beam_hit_timer = 0
@@ -87,11 +88,7 @@ class FrostRay(Ability):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, time_delta, active, firingVector, origin):
-        if firingVector.length() > 0.001:
-            self.ray.setOrigin(origin)
-            self.ray.setDirection(firingVector)
-
+    def update(self, time_delta, active, firing_vector, origin):
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
         # runs down (and the scale is at its lowest), reset the timer
@@ -99,8 +96,8 @@ class FrostRay(Ability):
         self.beam_hit_timer -= time_delta
         if self.beam_hit_timer <= 0:
             self.beam_hit_timer = self.beam_hit_pulse_rate
-            self.beam_hit_model.setH(uniform(0.0, 360.0))
-        self.beam_hit_model.setScale(sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
+            self.model_collision.setH(uniform(0.0, 360.0))
+        self.model_collision.setScale(sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
 
         if not active:
             if render.hasLight(self.beam_hit_light_node_path):
@@ -108,8 +105,8 @@ class FrostRay(Ability):
                 # no longer illuminates anything
                 render.clearLight(self.beam_hit_light_node_path)
             # If we're not shooting, don't show the beam-model.
-            self.beam_model.hide()
-            self.beam_hit_model.hide()
+            self.model.hide()
+            self.model_collision.hide()
             return
 
         if self.ray_queue.getNumEntries() > 0:
@@ -125,11 +122,11 @@ class FrostRay(Ability):
                 scored_hit = True
             # Find out how long the beam is, and scale the beam-model accordingly.
             beam_length = (hit_pos - self.character.actor.getPos()).length()
-            self.beam_model.setSy(beam_length)
-            self.beam_model.show()
+            self.model.setSy(beam_length)
+            self.model.show()
             if scored_hit:
-                self.beam_hit_model.show()
-                self.beam_hit_model.setPos(hit_pos)
+                self.model_collision.show()
+                self.model_collision.setPos(hit_pos)
                 self.beam_hit_light_node_path.setPos(hit_pos + Vec3(0, 0, 0.5))
                 # If the light hasn't already been set here, set it
                 if not render.hasLight(self.beam_hit_light_node_path):
@@ -143,8 +140,18 @@ class FrostRay(Ability):
                     # Clear the light from the scene, so that it
                     # no longer illuminates anything
                     render.clearLight(self.beam_hit_light_node_path)
-                self.beam_hit_model.hide()
+                self.model_collision.hide()
+
+        if firing_vector.length() > 0.001:
+            self.ray.setOrigin(origin)
+            self.ray.setDirection(firing_vector)
 
     def remove_object_from_world(self):
+        self.model_collision.removeNode()
+
         base.cTrav.removeCollider(self.ray_node_path)
+
+        render.clearLight(self.beam_hit_light_node_path)
+        self.beam_hit_light_node_path.removeNode()
+
         PhysicalObject.remove_object_from_world(self)

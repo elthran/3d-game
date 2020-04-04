@@ -8,8 +8,8 @@ from app.Objects.characters import CharacterObject
 
 
 class Monster(CharacterObject):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None):
-        super().__init__(starting_position, model_name, model_animation)
+    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
+        super().__init__(starting_position, model_name, model_animation, damage_taken_model)
         # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
         self.collider.node().setIntoCollideMask(MASK_HERO_AND_MONSTER)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
@@ -56,7 +56,7 @@ class Monster(CharacterObject):
 
 
 class TrainingDummyMonster(Monster):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
         super().__init__(starting_position, model_name="Models/Misc/simpleEnemy",
                          model_animation={"stand": "Models/Misc/simpleEnemy-stand",
                                           "walk": "Models/Misc/simpleEnemy-walk",
@@ -69,16 +69,14 @@ class TrainingDummyMonster(Monster):
         self.proficiencies.attack_melee_distance.hardcoded_value = 0.75
         self.acceleration = 100.0
 
-        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
-        segment_node = CollisionNode("enemyAttackSegment")
-        segment_node.addSolid(self.attack_segment)
-
         # Attack player code
         '''A mask that matches the player's, so that the enemy's attack will hit the player-character,
         but not the enemy-character (or other enemies)'''
+        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
+        segment_node = CollisionNode("enemyAttackSegment")
+        segment_node.addSolid(self.attack_segment)
         segment_node.setFromCollideMask(MASK_HERO)
         segment_node.setIntoCollideMask(MASK_NOTHING)
-
         self.attack_segment_node_path = render.attachNewNode(segment_node)
         self.segment_queue = CollisionHandlerQueue()
 
@@ -184,7 +182,7 @@ class TrainingDummyMonster(Monster):
 
 
 class SlidingCrateMonster(Monster):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None):
+    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
         super().__init__(starting_position, model_name="Models/Misc/trap",
                          model_animation={"stand": "Models/Misc/trap-stand",
                                           "walk": "Models/Misc/trap-walk"})

@@ -2,6 +2,7 @@ class Proficiencies:
     def __init__(self, character):
         self.character = character
         self.attack_melee_distance = AttackMeleeDistance(character)
+        self.attack_delay = AttackDelay(character)
         self.damage_base = DamageBase(character)
         self.health = Health(character)
         self.movement_speed_base = MovementSpeedBase(character)
@@ -42,6 +43,18 @@ class AttackMeleeDistance(CharacterProficiency):
         return self.level + 1
 
 
+class AttackDelay(CharacterProficiency):
+    def __init__(self, character):
+        super().__init__(character)
+        self.name = 'AttackDelay '
+        self.description = 'How long until you can attack again.'
+        self.hit_landing_delay = 0  # How long from start of swing to hitting an enemy
+
+    @property
+    def formula(self):
+        return self.level + 0.3
+
+
 class DamageBase(CharacterProficiency):
     def __init__(self, character):
         super().__init__(character)
@@ -73,6 +86,11 @@ class Health(CharacterProficiency):
     @property
     def current(self):
         return self._current
+
+    # @value.setter
+    # def value(self, new_value):
+    #     # If you lower max health, also lower current health
+    #     self._current = min(self._current, new_value)
 
     @current.setter
     def current(self, new_value):
