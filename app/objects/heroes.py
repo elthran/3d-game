@@ -18,8 +18,6 @@ class Hero(CharacterObject):
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
 
-        self.actor.loop("stand")
-
         # Get mouse position
         self.last_mouse_pos = Vec2(0, 0)
         # Construct a plane facing upwards, and centred at (0, 0, 0) to triangulate mouse position
