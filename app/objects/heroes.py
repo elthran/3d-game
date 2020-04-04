@@ -1,3 +1,5 @@
+import random
+
 from panda3d.core import Vec3, Vec2, Plane, Point3, TextNode
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
