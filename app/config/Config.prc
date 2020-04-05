@@ -29,6 +29,11 @@ win-size 500 500
 
 fullscreen #f
 
+# Set's the frame-rate that the game will run at
+
+clock-mode limited
+clock-frame-rate 60
+
 # The framebuffer-hardware flag forces it to use an accelerated driver.
 # The framebuffer-software flag forces it to use a software renderer.
 # If you set both to false, it will use whatever's available.
@@ -73,7 +78,7 @@ want-tk           #f
 # Enable/disable performance profiling tool and frame-rate meter
 
 want-pstats            #f
-show-frame-rate-meter  #f
+show-frame-rate-meter  t
 
 # Enable audio using the OpenAL audio library by default:
 
