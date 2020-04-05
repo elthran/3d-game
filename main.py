@@ -2,7 +2,7 @@ from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 
 from panda3d.core import AmbientLight, CollisionHandlerPusher, CollisionNode, CollisionSegment, CollisionTraverser, \
-    CollisionTube, DirectionalLight, Vec3, Vec4, WindowProperties
+    CollisionCapsule, CollisionPlane, DirectionalLight, Vec3, Vec4, WindowProperties
 
 from app import *
 
@@ -40,6 +40,7 @@ class Game(ShowBase):
 
         self.pusher = CollisionHandlerPusher()
         self.cTrav = CollisionTraverser()
+        self.cTrav.setRespectPrevTransform(True)
 
         self.pusher.setHorizontal(True)
 
@@ -51,25 +52,39 @@ class Game(ShowBase):
         self.accept("SlidingCrateMonster-into-TrainingDummyMonster", self.sliding_crate_monster_hits_unit)
         self.accept("SlidingCrateMonster-into-Hero", self.sliding_crate_monster_hits_unit)
 
-        wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
+        '''
+        CollisionEntry:
+          from render/character/WizardHero
+          into render/Wall []
+          at -5.39875 8.2 0
+          normal 0 1 0
+          interior -5.39875 8.2 0 (depth 0)
+          respect_prev_transform = 1
+  '''
+
+        self.accept("WizardHero-into-Wall", print)
+
+        wallSolid = CollisionCapsule(-8.0, 0, 0, 8.0, 0, 0, 0.2)
+        # wallSolid = CollisionPlane(Plane(Vec3(8.0, 0, 0), Point3(-8.0, 0, 0)))
         wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
+        wall.show()
         wall.setY(8.0)
 
-        wallSolid = CollisionTube(-8.0, 0, 0, 8.0, 0, 0, 0.2)
+        wallSolid = CollisionCapsule(-8.0, 0, 0, 8.0, 0, 0, 0.2)
         wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setY(-8.0)
 
-        wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
+        wallSolid = CollisionCapsule(0, -8.0, 0, 0, 8.0, 0, 0.2)
         wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)
         wall.setX(8.0)
 
-        wallSolid = CollisionTube(0, -8.0, 0, 0, 8.0, 0, 0.2)
+        wallSolid = CollisionCapsule(0, -8.0, 0, 0, 8.0, 0, 0.2)
         wallNode = CollisionNode("Wall")
         wallNode.addSolid(wallSolid)
         wall = render.attachNewNode(wallNode)

@@ -1,31 +1,40 @@
 from app.objects.abilities import Abilities
 from app.objects.attributes import Attributes
+from app.objects.game_objects import GameObject
 from app.objects.proficiencies import Proficiencies
 from app.objects.constants_physics import FRICTION
 from app.objects.physicals import PhysicalObject
 
 
 class CharacterObject(PhysicalObject):
+    """A character object. Generally capable of walking, attacking, interacting, responding, etc.
+
+    Attributes:
+        attributes (Attributes): All attributes accessible by the character.
+        proficiencies (Proficiencies): All proficiencies accessible by the character.
+        abilities (Abilities): All abilities accessible by the character.
+        walking (bool): If the character is currently walking (mainly used for display).
+    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        self.attributes = Attributes(self)
-        self.proficiencies = Proficiencies(self)
-        self.abilities = Abilities(self)
+        self.attributes = Attributes(character=self)
+        self.proficiencies = Proficiencies(character=self)
+        self.abilities = None
         self.walking = False
-        self.invulnerable = False
-
         self.actor.loop("stand")
 
     def refresh(self):
+        """Sets cooldowns to zero and fully restores proficiencies to their maximum values.
+        """
         self.attributes.refresh()
         self.proficiencies.refresh()
         self.abilities.refresh()
 
     def update(self, time_delta):
-        """
-        If we're going faster than our maximum speed, set the velocity-vector's length to that maximum.
-        If we're walking, don't worry about friction. Otherwise, use friction to slow us down.
+        """What gets done after every frame of the game.
+
+        Args:
+            time_delta (float): Time since the last frame?
         """
         speed = self.velocity.length()
         if speed > self.proficiencies.movement_speed_base.value:
@@ -43,22 +52,27 @@ class CharacterObject(PhysicalObject):
                 friction_vector *= friction_value
                 self.velocity += friction_vector
 
-        # Move the character, using our velocity and the time since the last update.
-        self.actor.setPos(self.actor.getPos() + self.velocity * time_delta)
+        GameObject.update(self, time_delta)
 
     def update_health(self, health_delta):
-        # if self.invulnerable:
-        #     pass
-        # else:
+        """This is called anytime something will alter this character's health.
+
+        Args:
+            health_delta (float): How much to alter the health by.
+        """
+        if self.invulnerable:
+            pass
+
         previous_health = self.proficiencies.health.current
 
         self.proficiencies.health.current += health_delta
         if self.proficiencies.health.current > self.proficiencies.health.value:
             self.proficiencies.health.current = self.proficiencies.health.value
-        if previous_health > 0 >= self.proficiencies.health.current:
-            print("You died.")
-        print(f"{self.__class__.__name__} health: "
-              f"{self.proficiencies.health.current}/{self.proficiencies.health.value}")
+        if self.proficiencies.health.current <= 0 < previous_health:
+            print(f"{self.__class__.__name__} died.")
+        print(f"{self.__class__.__name__} is now at {self.proficiencies.health.current} health.")
 
     def update_health_visual(self):
+        """If a visual is required when the character's health changes.
+        """
         pass

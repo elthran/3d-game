@@ -1,6 +1,7 @@
-from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4
+from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4, CollisionSegment
 
-from .constants_physics import MASK_MONSTER, MASK_NOTHING
+from app.objects.game_objects import GameObject
+from .constants_physics import MASK_MONSTER, MASK_NOTHING, MASK_HERO, MASK_HERO_AND_MONSTER
 from .physicals import PhysicalObject
 
 import math
@@ -8,25 +9,42 @@ import random
 
 
 class Abilities:
-    def __init__(self, character):
+    def __init__(self, character, enemies, allies):
         self.character = character
-        self.frost_ray = FrostRay(character)
+        self.frost_ray = FrostRay(character=character, enemies=enemies, allies=allies)
+        self.melee_attack = MeleeAttack(character=character, enemies=enemies, allies=allies)
 
     def refresh(self):
         pass
 
     def __iter__(self):
-        return iter([self.frost_ray])
+        return iter([self.frost_ray, self.melee_attack])
 
 
-class Ability:
-    def __init__(self, character):
-        self.character = character
+class Ability(GameObject):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.character = kwargs.pop('character')
+        self.enemies = kwargs.pop('enemies')
+        self.allies = kwargs.pop('allies')
         self.model = None  # The basic model of the animation
         self.model_collision = None  # The model when the animation collides with another object
+        self.damage = None
         self.damage_per_second = None
+        if self.enemies == 'Monsters':
+            self.from_collider_attack = MASK_MONSTER
+            self.from_collider_protect = MASK_HERO
+        elif self.enemies == 'Heroes':
+            self.from_collider_attack = MASK_HERO
+            self.from_collider_protect = MASK_MONSTER
+        self.from_collider_all = MASK_HERO_AND_MONSTER
+        self.into_collider = MASK_NOTHING
+        self.enabled = False
 
-    def update(self, time_delta, active, firingVector, origin):
+    def enable(self):
+        self.enabled = True
+
+    def update(self, time_delta, **kwargs):
         pass
 
     def remove_object_from_world(self):
@@ -34,8 +52,8 @@ class Ability:
 
 
 class FrostRay(Ability):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.name = "Frost Ray"
         self.description = "Shoot a ray of frost at an enemy."
         self.damage_per_second = 5.0
@@ -47,8 +65,8 @@ class FrostRay(Ability):
         self.ray = CollisionRay(0, 0, 0, 0, 1, 0)
         ray_node = CollisionNode(self.__class__.__name__)
         # After we've made our ray-node:
-        ray_node.setFromCollideMask(MASK_MONSTER)
-        ray_node.setIntoCollideMask(MASK_NOTHING)
+        ray_node.setFromCollideMask(self.from_collider_attack)
+        ray_node.setIntoCollideMask(self.into_collider)
         ray_node.addSolid(self.ray)
         self.ray_node_path = render.attachNewNode(ray_node)
         self.ray_queue = CollisionHandlerQueue()
@@ -108,8 +126,7 @@ class FrostRay(Ability):
                 self.ray_queue.sortEntries()
                 ray_hit = self.ray_queue.getEntry(0)
                 hit_pos = ray_hit.getSurfacePoint(render)
-                hit_node_path = ray_hit.getIntoNodePath()
-                print(hit_node_path)
+                hit_node_path = ray_hit.getIntoNodePath()  # Into node model name?
                 if hit_node_path.hasPythonTag("owner"):
                     hit_object = hit_node_path.getPythonTag("owner")
                     hit_object.update_health(-(self.damage_per_second * time_delta))
@@ -148,6 +165,7 @@ class FrostRay(Ability):
         if firing_vector.length() > 0.001:
             self.ray.setOrigin(origin)
             self.ray.setDirection(firing_vector)
+        GameObject.update(self, time_delta)
 
     def remove_object_from_world(self):
         self.model_collision.removeNode()
@@ -158,3 +176,70 @@ class FrostRay(Ability):
         self.beam_hit_light_node_path.removeNode()
 
         PhysicalObject.remove_object_from_world(self)
+
+
+class MeleeAttack(Ability):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = "Melee Attack"
+        self.description = "Swing your currently equipped weapon at an enemy.."
+
+        self.damage = 1
+
+        self.delay = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
+        self.delay_timer = 0  # Init the timer
+        self.wait_timer = 0.2  # How long to wait between attacks
+
+        self.physics_init()
+        # self.display_init()
+
+    def physics_init(self):
+        """A mask that matches the player's, so that the enemy's attack will hit the player-character,
+        but not the enemy-character (or other enemies)
+        """
+        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
+        segment_node = CollisionNode("enemyAttackSegment")
+        segment_node.addSolid(self.attack_segment)
+        segment_node.setFromCollideMask(self.from_collider_attack)
+        segment_node.setIntoCollideMask(self.into_collider)
+        self.attack_segment_node_path = render.attachNewNode(segment_node)
+        self.segment_queue = CollisionHandlerQueue()
+        base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
+
+    def update(self, time_delta, distance_to_player):
+        if distance_to_player > self.character.proficiencies.attack_melee_distance.value:
+            return
+        if self.delay_timer > 0:
+            self.delay_timer -= time_delta
+            if self.delay_timer <= 0:
+                # The animation has finished. See if the attack hit with a collision.
+                print("The animation has finished! See if it landed.")
+                if self.segment_queue.getNumEntries() > 0:
+                    self.segment_queue.sortEntries()
+                    segment_hit = self.segment_queue.getEntry(0)
+                    hit_node_path = segment_hit.getIntoNodePath()
+                    if hit_node_path.hasPythonTag("owner"):
+                        # Apply damage!
+                        hit_object = hit_node_path.getPythonTag("owner")
+                        print(f"The attack has hit a {hit_object.__class__.__name__}!")
+                        hit_object.update_health(-self.damage)
+                        self.wait_timer = 1.0
+        # If we're instead waiting to be allowed to attack...
+        elif self.wait_timer > 0:
+            self.wait_timer -= time_delta
+            # If the wait has ended...
+            if self.wait_timer <= 0:
+                # Start an attack. The next frame should do the actual attack.
+                # The attack lands when the delay_timer gets to 0.
+                print("Monster is starting an attack")
+                self.wait_timer = random.uniform(0.5, 0.7)
+                self.delay_timer = self.delay
+                self.character.actor.play("attack")
+
+    def remove_object_from_world(self):
+        base.cTrav.removeCollider(self.attack_segment_node_path)
+        self.attack_segment_node_path.removeNode()
+
+        GameObject.remove_object_from_world(self)
+
+

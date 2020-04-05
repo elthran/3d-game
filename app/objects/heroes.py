@@ -4,6 +4,8 @@ from panda3d.core import Vec3, Vec2, Plane, Point3, TextNode
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
+from app.objects.abilities import Abilities
+from app.objects.game_objects import GameObject
 from .physicals import PhysicalObject
 from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER
 from .characters import CharacterObject
@@ -17,6 +19,8 @@ class Hero(CharacterObject):
         # Set the collider for Hero's to be Hero.
         self.collider.node().setIntoCollideMask(MASK_HERO)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
+
+        self.abilities = Abilities(character=self, enemies='Monsters', allies='Heroes')
 
         # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
         base.pusher.addCollider(self.collider, self.actor)
@@ -102,7 +106,11 @@ class Hero(CharacterObject):
         self.actor.setH(heading)
 
         for ability in self.abilities:
-            ability.update(active=keys.shoot.on, firing_vector=firing_vector, origin=self.actor.getPos(), time_delta=time_delta)
+            if ability.enabled:
+                ability.update(active=keys.shoot.on,
+                               firing_vector=firing_vector,
+                               origin=self.actor.getPos(),
+                               time_delta=time_delta)
 
         self.last_mouse_pos = mouse_position
         # Check if damage_taken_model can be refreshed
@@ -140,11 +148,11 @@ class Hero(CharacterObject):
         for icon in self.health_icons:
             icon.removeNode()
 
-        PhysicalObject.remove_object_from_world(self)
+        GameObject.remove_object_from_world(self)
 
 
 class WizardHero(Hero):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
+    def __init__(self, *args, **kwargs):
         super().__init__(starting_position=Vec3(0, 0, 0), model_name="Models/PandaChan/act_p3d_chan",
                          model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
                                           "walk": "Models/PandaChan/a_p3d_chan_run"},
@@ -153,5 +161,6 @@ class WizardHero(Hero):
         self.attributes.strength.level = 3
         self.attributes.vitality.level = 3
         self.refresh()
+        self.abilities.frost_ray.enable()
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)

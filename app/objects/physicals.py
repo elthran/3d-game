@@ -1,21 +1,46 @@
-from panda3d.core import CollisionNode, CollisionSphere, Vec3
+from panda3d.core import CollisionNode, CollisionSphere
 
 from direct.actor.Actor import Actor
 
+from app.objects.game_objects import GameObject
 
-class PhysicalObject:
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
-        self.actor = self.create_actor(starting_position, model_name, model_animation)
+
+class PhysicalObject(GameObject):
+    """A physical object. Something that exists physically in the game world. Like a wall, monster, hero, etc.
+
+    Attributes:
+        actor (Actor): A 3d model.
+        collider (Collider): A Collision object.
+        damage_taken_model (dict): The path to the art asset.
+        damage_taken_model_timer (int): ???
+        damage_taken_model_duration (float): How long the damage_taken_model will play for.
+        invulnerable (bool): If the model can take damage.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.actor = self.create_actor(starting_position=kwargs.pop('starting_position', None),
+                                       model_name=kwargs.pop('model_name', None),
+                                       model_animation=kwargs.pop('model_animation', None))
         self.collider = self.create_collider()
-        self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
-        self.velocity = Vec3(0, 0, 0)  # Set starting velocity to 0
-        self.acceleration = 300.0  # How quickly the model can accelerate
-
+        self.damage_taken_model = self.create_damage_taken_model(kwargs.pop('damage_taken_model', None))
         self.damage_taken_model_timer = 0
         self.damage_taken_model_duration = 0.15
+        self.invulnerable = False
 
     @staticmethod
     def create_actor(starting_position, model_name, model_animation):
+        """Create the actor. An actor is simply an animated model.
+
+        Args:
+            starting_position (Vec3): A 3d vector of where to initially position the model
+            model_name (str): The path to the art asset
+            model_animation (dict): Animation names and the path to their animation
+        Returns:
+            The actor model.
+        """
+        if not model_name:
+            return None
         actor = Actor(model_name, model_animation)
         actor.reparentTo(render)
         actor.setPos(starting_position)
@@ -24,6 +49,11 @@ class PhysicalObject:
         return actor
 
     def create_collider(self):
+        """Creates the collider and attaches it to its actor's node.
+
+        Returns:
+            The collider.
+        """
         collider_name = self.__class__.__name__
         collider_node = CollisionNode(collider_name)
         collider_node.addSolid(CollisionSphere(0, 0, 0, 0.3))
@@ -33,6 +63,14 @@ class PhysicalObject:
         return collider
 
     def create_damage_taken_model(self, damage_taken_model):
+        """Creates the alternate model which is shown when this object takes damage.
+
+        Args:
+            damage_taken_model (str): The path to the art asset for when the model receives damage.
+
+        Returns:
+            The damage_taken_model.
+        """
         if not damage_taken_model:
             return None
         damage_taken_model = loader.loadModel(damage_taken_model)
@@ -41,15 +79,3 @@ class PhysicalObject:
         damage_taken_model.reparentTo(self.actor)
         damage_taken_model.hide()
         return damage_taken_model
-
-    def remove_object_from_world(self):
-        # Remove various nodes, and clear the Python-tag--see below!
-        if self.collider is not None and not self.collider.isEmpty():
-            self.collider.clearPythonTag("owner")
-            base.cTrav.removeCollider(self.collider)
-            base.pusher.removeCollider(self.collider)
-        if self.actor is not None:
-            self.actor.cleanup()
-            self.actor.removeNode()
-            self.actor = None
-        self.collider = None

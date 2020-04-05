@@ -3,8 +3,10 @@ from random import uniform
 
 from panda3d.core import Vec2, CollisionNode, CollisionSegment, CollisionHandlerQueue
 
+from app.objects.abilities import Abilities
 from app.objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
 from app.objects.characters import CharacterObject
+from app.objects.game_objects import GameObject
 
 
 class Monster(CharacterObject):
@@ -13,6 +15,8 @@ class Monster(CharacterObject):
         # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
         self.collider.node().setIntoCollideMask(MASK_HERO_AND_MONSTER)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
+
+        self.abilities = Abilities(character=self, enemies='Heroes', allies='Monsters')
 
         self.experience_rewarded = 1
 
@@ -56,8 +60,9 @@ class Monster(CharacterObject):
 
 
 class TrainingDummyMonster(Monster):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
-        super().__init__(starting_position, model_name="Models/Misc/simpleEnemy",
+    def __init__(self, *args, **kwargs):
+        super().__init__(starting_position=kwargs.pop('starting_position'),
+                         model_name="Models/Misc/simpleEnemy",
                          model_animation={"stand": "Models/Misc/simpleEnemy-stand",
                                           "walk": "Models/Misc/simpleEnemy-walk",
                                           "attack": "Models/Misc/simpleEnemy-attack",
@@ -69,38 +74,13 @@ class TrainingDummyMonster(Monster):
         self.proficiencies.attack_melee_distance.hardcoded_value = 0.75
         self.acceleration = 100.0
         self.refresh()
-
-        # Attack player code
-        '''A mask that matches the player's, so that the enemy's attack will hit the player-character,
-        but not the enemy-character (or other enemies)'''
-        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
-        segment_node = CollisionNode("enemyAttackSegment")
-        segment_node.addSolid(self.attack_segment)
-        segment_node.setFromCollideMask(MASK_HERO)
-        segment_node.setIntoCollideMask(MASK_NOTHING)
-        self.attack_segment_node_path = render.attachNewNode(segment_node)
-        self.segment_queue = CollisionHandlerQueue()
-
-        base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
-
-        '''How much damage the enemy's attack does.
-         That is, this results in the player-character's health being reduced by one.'''
-        # The delay between the start of an attack, and the attack (potentially) landing
-        self.attack_delay = 0.3
-        self.attack_delay_timer = 0
-        # How long to wait between attacks
-        self.attack_wait_timer = 0
-        # End of attack player code
-
-        self.collider.node().setIntoCollideMask(MASK_MONSTER)
-        '''end of bit masks?'''
+        self.abilities.melee_attack.enable()
 
         # A reference vector, used to determine
         # which way to face the Actor.
         # Since the character faces along
         # the y-direction, we use the y-axis.
         self.y_vector = Vec2(0, 1)
-
 
     def run_logic(self, player, time_delta):
         """
@@ -112,9 +92,6 @@ class TrainingDummyMonster(Monster):
         :param time_delta:
         :return:
         """
-        # spawnControl = self.actor.getAnimControl("spawn")
-        # if spawnControl is not None and spawnControl.isPlaying():
-        #     return
 
         vector_to_player = player.actor.getPos() - self.actor.getPos()
         vector_to_player_2D = vector_to_player.getXy()
@@ -135,32 +112,12 @@ class TrainingDummyMonster(Monster):
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...
-            if self.attack_delay_timer > 0:
-                self.attack_delay_timer -= time_delta
-                # If the time has come for the attack to land...
-                if self.attack_delay_timer <= 0:
-                    # Check for a hit..
-                    if self.segment_queue.getNumEntries() > 0:
-                        self.segment_queue.sortEntries()
-                        segment_hit = self.segment_queue.getEntry(0)
-
-                        hit_node_path = segment_hit.getIntoNodePath()
-                        if hit_node_path.hasPythonTag("owner"):
-                            # Apply damage!
-                            hit_object = hit_node_path.getPythonTag("owner")
-                            hit_object.update_health(-self.proficiencies.damage_base.value)
-                            self.attack_wait_timer = 1.0
-            # If we're instead waiting to be allowed to attack...
-            elif self.attack_wait_timer > 0:
-                self.attack_wait_timer -= time_delta
-                # If the wait has ended...
-                if self.attack_wait_timer <= 0:
-                    '''Start an attack! (And set the wait-timer to a random amount, to vary things a little bit.)'''
-                    self.attack_wait_timer = uniform(0.5, 0.7)
-                    self.attack_delay_timer = self.attack_delay
-                    self.actor.play("attack")
 
         self.actor.setH(heading)
+
+        for ability in self.abilities:
+            if ability.enabled:
+                ability.update(time_delta=time_delta, distance_to_player=distance_to_player)
 
         '''Set the segment's start- and end- points.
         "getQuat" returns a quaternion--a representation of orientation
@@ -182,14 +139,16 @@ class TrainingDummyMonster(Monster):
         self.actor.setColorScale(color_shade, color_shade, color_shade, 1)
 
     def remove_object_from_world(self):
-        base.cTrav.removeCollider(self.attack_segment_node_path)
-        self.attack_segment_node_path.removeNode()
-        self.remove_object_from_world()
+        for ability in self.abilities:
+            ability.remove_object_from_world()
+
+        GameObject.remove_object_from_world(self)
 
 
 class SlidingCrateMonster(Monster):
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None):
-        super().__init__(starting_position, model_name="Models/Misc/trap",
+    def __init__(self, *args, **kwargs):
+        super().__init__(starting_position=kwargs.pop('starting_position'),
+                         model_name="Models/Misc/trap",
                          model_animation={"stand": "Models/Misc/trap-stand",
                                           "walk": "Models/Misc/trap-walk"})
         self.attributes.agility = 5
