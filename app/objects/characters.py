@@ -38,7 +38,6 @@ class CharacterObject(PhysicalObject):
         """
         super().update(time_delta, *args, **kwargs)
 
-        time_delta = min(time_delta, 0.02)
         speed = self.velocity.length()
         if speed > self.proficiencies.movement_speed_base.value:
             self.velocity.normalize()

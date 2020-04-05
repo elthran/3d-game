@@ -144,9 +144,6 @@ class SlidingCrateMonster(Monster):
         self.attributes.vitality = 1
         self.invulnerable = True
 
-        base.pusher.addCollider(self.collider, self.actor)
-        base.cTrav.addCollider(self.collider, base.pusher)
-
         self.moveInX = False
 
         self.moveDirection = 0

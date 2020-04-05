@@ -27,12 +27,12 @@ win-size 500 500
 # Uncomment this line if you want to run Panda fullscreen instead of
 # in a window.
 
-fullscreen #f
+fullscreen  #f
 
 # Set's the frame-rate that the game will run at
 
-clock-mode limited
-clock-frame-rate 60
+# clock-mode limited
+# clock-frame-rate 60
 
 # The framebuffer-hardware flag forces it to use an accelerated driver.
 # The framebuffer-software flag forces it to use a software renderer.

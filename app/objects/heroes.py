@@ -23,8 +23,6 @@ class Hero(CharacterObject):
         self.abilities = Abilities(character=self, enemies=MASK_MONSTER, allies=MASK_HERO)
 
         # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
-        base.pusher.addCollider(self.collider, self.actor)
-        base.cTrav.addCollider(self.collider, base.pusher)
 
         # Get mouse position
         self.last_mouse_pos = Vec2(0, 0)

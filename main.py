@@ -2,14 +2,19 @@ from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenText import OnscreenText
 
 from panda3d.core import AmbientLight, CollisionHandlerPusher, CollisionNode, CollisionSegment, CollisionTraverser, \
-    CollisionCapsule, CollisionPlane, DirectionalLight, Vec3, Vec4, WindowProperties
+    CollisionCapsule, CollisionPlane, DirectionalLight, Vec3, Vec4, WindowProperties, ClockObject
 
 from app import *
+
+MAX_FRAME_RATE = 1 / 60
 
 
 class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
+
+        # globalClock.setMode(ClockObject.MLimited)
+        # globalClock.setFrameRate(60)
 
         '''
         Environment stuff
@@ -63,6 +68,7 @@ class Game(ShowBase):
   '''
 
         self.accept("WizardHero-into-Wall", print)
+        self.accept("TrainingDummyMonster-into-Wall", print)
 
         wallSolid = CollisionCapsule(-8.0, 0, 0, 8.0, 0, 0, 0.2)
         # wallSolid = CollisionPlane(Plane(Vec3(8.0, 0, 0), Point3(-8.0, 0, 0)))
@@ -150,7 +156,7 @@ class Game(ShowBase):
 
     def update(self, task):
         # Get the amount of time since the last update
-        time_delta = globalClock.getDt()
+        time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
 
         self.hero.update(time_delta, keys=self.key_mapper)
 

@@ -29,6 +29,10 @@ class PhysicalObject(GameObject):
 
         self.actor = self.create_actor(starting_position, model_name, model_animation)
         self.collider = self.create_collider()
+
+        base.pusher.addCollider(self.collider, self.actor)
+        base.cTrav.addCollider(self.collider, base.pusher)
+
         self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
         self.damage_taken_model_timer = 0
         self.damage_taken_model_duration = 0.15
