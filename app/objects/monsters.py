@@ -16,7 +16,7 @@ class Monster(CharacterObject):
         self.collider.node().setIntoCollideMask(MASK_HERO_AND_MONSTER)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
 
-        self.abilities = Abilities(character=self, enemies='Heroes', allies='Monsters')
+        self.abilities = Abilities(character=self, enemies=MASK_HERO, allies=MASK_MONSTER)
 
         self.experience_rewarded = 1
 
@@ -25,10 +25,6 @@ class Monster(CharacterObject):
         In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
         without re-writing the rest.
-
-        :param player:
-        :param time_delta:
-        :return:
         """
         CharacterObject.update(self, time_delta)
 
@@ -51,10 +47,6 @@ class Monster(CharacterObject):
     def run_logic(self, player, time_delta):
         """
         Needs to be implemented for each sub-class.
-
-        :param player:
-        :param time_delta:
-        :return:
         """
         pass
 
@@ -87,10 +79,6 @@ class TrainingDummyMonster(Monster):
         In short: find the vector between this enemy and the player.
         If the enemy is far from the player, use that vector to move towards the player.
         Otherwise, just stop for now. Finally, face the player.
-
-        :param player:
-        :param time_delta:
-        :return:
         """
 
         vector_to_player = player.actor.getPos() - self.actor.getPos()

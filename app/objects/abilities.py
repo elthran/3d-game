@@ -31,12 +31,8 @@ class Ability(GameObject):
         self.model_collision = None  # The model when the animation collides with another object
         self.damage = None
         self.damage_per_second = None
-        if self.enemies == 'Monsters':
-            self.from_collider_attack = MASK_MONSTER
-            self.from_collider_protect = MASK_HERO
-        elif self.enemies == 'Heroes':
-            self.from_collider_attack = MASK_HERO
-            self.from_collider_protect = MASK_MONSTER
+        self.from_collider_attack = self.enemies
+        self.from_collider_protect = self.allies
         self.from_collider_all = MASK_HERO_AND_MONSTER
         self.into_collider = MASK_NOTHING
         self.enabled = False

@@ -7,7 +7,7 @@ from direct.gui.OnscreenText import OnscreenText
 from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
 from .physicals import PhysicalObject
-from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER
+from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER, MASK_MONSTER
 from .characters import CharacterObject
 
 import random
@@ -20,7 +20,7 @@ class Hero(CharacterObject):
         self.collider.node().setIntoCollideMask(MASK_HERO)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
 
-        self.abilities = Abilities(character=self, enemies='Monsters', allies='Heroes')
+        self.abilities = Abilities(character=self, enemies=MASK_MONSTER, allies=MASK_HERO)
 
         # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
         base.pusher.addCollider(self.collider, self.actor)

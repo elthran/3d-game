@@ -79,3 +79,7 @@ class PhysicalObject(GameObject):
         damage_taken_model.reparentTo(self.actor)
         damage_taken_model.hide()
         return damage_taken_model
+
+    def update(self, time_delta):
+        self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
+        GameObject.update(self, time_delta)

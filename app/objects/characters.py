@@ -52,7 +52,7 @@ class CharacterObject(PhysicalObject):
                 friction_vector *= friction_value
                 self.velocity += friction_vector
 
-        GameObject.update(self, time_delta)
+        PhysicalObject.update(self, time_delta)
 
     def update_health(self, health_delta):
         """This is called anytime something will alter this character's health.

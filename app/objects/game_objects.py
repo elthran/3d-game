@@ -29,10 +29,7 @@ class GameObject:
         Args:
             time_delta (float): Time since the last frame?
         """
-        try:
-            self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
-        except:
-            pass # FrostRay doesn't have an actor...
+        pass
 
     def remove_object_from_world(self):
         """
