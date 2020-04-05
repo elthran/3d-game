@@ -17,6 +17,9 @@ class Abilities:
     def refresh(self):
         pass
 
+    def get_enabled(self):
+        return [ability for ability in self if ability.enabled]
+
     def __iter__(self):
         return iter([self.frost_ray, self.melee_attack])
 
@@ -165,7 +168,6 @@ class FrostRay(Ability):
 
     def remove_object_from_world(self):
         self.model_collision.removeNode()
-
         base.cTrav.removeCollider(self.ray_node_path)
 
         render.clearLight(self.beam_hit_light_node_path)
@@ -182,8 +184,8 @@ class MeleeAttack(Ability):
 
         self.damage = 1
 
-        self.delay = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
-        self.delay_timer = 0  # Init the timer
+        self.progress_time = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
+        self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
 
         self.physics_init()
@@ -202,12 +204,10 @@ class MeleeAttack(Ability):
         self.segment_queue = CollisionHandlerQueue()
         base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
 
-    def update(self, time_delta, distance_to_player):
-        if distance_to_player > self.character.proficiencies.attack_melee_distance.value:
-            return
-        if self.delay_timer > 0:
-            self.delay_timer -= time_delta
-            if self.delay_timer <= 0:
+    def update(self, time_delta):
+        if self.progress_timer > 0:
+            self.progress_timer -= time_delta
+            if self.progress_timer <= 0:
                 # The animation has finished. See if the attack hit with a collision.
                 print("The animation has finished! See if it landed.")
                 if self.segment_queue.getNumEntries() > 0:
@@ -219,7 +219,7 @@ class MeleeAttack(Ability):
                         hit_object = hit_node_path.getPythonTag("owner")
                         print(f"The attack has hit a {hit_object.__class__.__name__}!")
                         hit_object.update_health(-self.damage)
-                        self.wait_timer = 1.0
+                self.wait_timer = 1.0
         # If we're instead waiting to be allowed to attack...
         elif self.wait_timer > 0:
             self.wait_timer -= time_delta
@@ -229,7 +229,7 @@ class MeleeAttack(Ability):
                 # The attack lands when the delay_timer gets to 0.
                 print("Monster is starting an attack")
                 self.wait_timer = random.uniform(0.5, 0.7)
-                self.delay_timer = self.delay
+                self.progress_timer = self.progress_time
                 self.character.actor.play("attack")
 
     def remove_object_from_world(self):

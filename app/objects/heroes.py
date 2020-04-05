@@ -105,12 +105,11 @@ class Hero(CharacterObject):
         heading = self.y_vector.signedAngleDeg(firing_vector_2d)
         self.actor.setH(heading)
 
-        for ability in self.abilities:
-            if ability.enabled:
-                ability.update(active=keys.shoot.on,
-                               firing_vector=firing_vector,
-                               origin=self.actor.getPos(),
-                               time_delta=time_delta)
+        for ability in self.abilities.get_enabled():
+            ability.update(active=keys.shoot.on,
+                           firing_vector=firing_vector,
+                           origin=self.actor.getPos(),
+                           time_delta=time_delta)
 
         self.last_mouse_pos = mouse_position
         # Check if damage_taken_model can be refreshed

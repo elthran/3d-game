@@ -97,15 +97,13 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
+            self.abilities.melee_attack.update(time_delta=time_delta)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...
 
         self.actor.setH(heading)
 
-        for ability in self.abilities:
-            if ability.enabled:
-                ability.update(time_delta=time_delta, distance_to_player=distance_to_player)
 
         '''Set the segment's start- and end- points.
         "getQuat" returns a quaternion--a representation of orientation
