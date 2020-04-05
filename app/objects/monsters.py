@@ -82,7 +82,6 @@ class TrainingDummyMonster(Monster):
         If the enemy is far from the player, use that vector to move towards the player.
         Otherwise, just stop for now. Finally, face the player.
         """
-
         vector_to_player = player.actor.getPos() - self.actor.getPos()
         vector_to_player_2D = vector_to_player.getXy()
         distance_to_player = vector_to_player_2D.length()

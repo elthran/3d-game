@@ -38,6 +38,7 @@ class CharacterObject(PhysicalObject):
         """
         super().update(time_delta, *args, **kwargs)
 
+        time_delta = min(time_delta, 0.02)
         speed = self.velocity.length()
         if speed > self.proficiencies.movement_speed_base.value:
             self.velocity.normalize()
@@ -53,6 +54,8 @@ class CharacterObject(PhysicalObject):
                 friction_vector.normalize()
                 friction_vector *= friction_value
                 self.velocity += friction_vector
+
+        self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
 
 
     def update_health(self, health_delta):

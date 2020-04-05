@@ -88,5 +88,3 @@ class PhysicalObject(GameObject):
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
-
-        self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
