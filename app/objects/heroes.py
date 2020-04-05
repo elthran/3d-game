@@ -49,8 +49,9 @@ class Hero(CharacterObject):
             icon.setTransparency(True)
             self.health_icons.append(icon)
 
-    def update(self, keys, time_delta):
-        CharacterObject.update(self, time_delta)
+    def update(self, time_delta, *args, keys=None, **kwargs):
+        super().update(time_delta, *args, **kwargs)
+        assert keys, 'Requires keys keyword.'
 
         self.walking = False
         if keys.up.on:
@@ -106,10 +107,10 @@ class Hero(CharacterObject):
         self.actor.setH(heading)
 
         for ability in self.abilities.get_enabled():
-            ability.update(active=keys.shoot.on,
+            ability.update(time_delta,
+                           active=keys.shoot.on,
                            firing_vector=firing_vector,
-                           origin=self.actor.getPos(),
-                           time_delta=time_delta)
+                           origin=self.actor.getPos())
 
         self.last_mouse_pos = mouse_position
         # Check if damage_taken_model can be refreshed
@@ -152,10 +153,12 @@ class Hero(CharacterObject):
 
 class WizardHero(Hero):
     def __init__(self, *args, **kwargs):
-        super().__init__(starting_position=Vec3(0, 0, 0), model_name="Models/PandaChan/act_p3d_chan",
+        super().__init__(*args,
+                         model_name="Models/PandaChan/act_p3d_chan",
                          model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
                                           "walk": "Models/PandaChan/a_p3d_chan_run"},
-                         damage_taken_model="Models/Misc/playerHit")
+                         damage_taken_model="Models/Misc/playerHit",
+                         **kwargs)
         self.attributes.agility.level = 3
         self.attributes.strength.level = 3
         self.attributes.vitality.level = 3

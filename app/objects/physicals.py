@@ -17,13 +17,19 @@ class PhysicalObject(GameObject):
         invulnerable (bool): If the model can take damage.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self,
+                 *args,
+                 starting_position=None,
+                 model_name=None,
+                 model_animation=None,
+                 damage_taken_model=None,
+                 **kwargs):
         super().__init__(*args, **kwargs)
-        self.actor = self.create_actor(starting_position=kwargs.pop('starting_position', None),
-                                       model_name=kwargs.pop('model_name', None),
-                                       model_animation=kwargs.pop('model_animation', None))
+        assert starting_position, 'Requires starting_position keyword.'
+
+        self.actor = self.create_actor(starting_position, model_name, model_animation)
         self.collider = self.create_collider()
-        self.damage_taken_model = self.create_damage_taken_model(kwargs.pop('damage_taken_model', None))
+        self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
         self.damage_taken_model_timer = 0
         self.damage_taken_model_duration = 0.15
         self.invulnerable = False
@@ -80,6 +86,7 @@ class PhysicalObject(GameObject):
         damage_taken_model.hide()
         return damage_taken_model
 
-    def update(self, time_delta):
+    def update(self, time_delta, *args, **kwargs):
+        super().update(time_delta, *args, **kwargs)
+
         self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
-        GameObject.update(self, time_delta)

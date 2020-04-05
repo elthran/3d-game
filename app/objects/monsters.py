@@ -20,15 +20,16 @@ class Monster(CharacterObject):
 
         self.experience_rewarded = 1
 
-    def update(self, player, time_delta):
+    def update(self, time_delta, *args, hero=None, **kwargs):
         """
         In short, update as a PhysicalObject, then run whatever enemy-specific logic is to be done.
         The use of a separate "run_logic" method allows us to customise that specific logic to the enemy,
         without re-writing the rest.
         """
-        CharacterObject.update(self, time_delta)
+        super().update(time_delta, *args, **kwargs)
+        assert hero, 'Requires hero keyword.'
 
-        self.run_logic(player, time_delta)
+        self.run_logic(hero, time_delta)
 
         # Play the appropriate animation. Can be improved? State-machine?
         if self.walking:
@@ -53,13 +54,14 @@ class Monster(CharacterObject):
 
 class TrainingDummyMonster(Monster):
     def __init__(self, *args, **kwargs):
-        super().__init__(starting_position=kwargs.pop('starting_position'),
+        super().__init__(*args,
                          model_name="Models/Misc/simpleEnemy",
                          model_animation={"stand": "Models/Misc/simpleEnemy-stand",
                                           "walk": "Models/Misc/simpleEnemy-walk",
                                           "attack": "Models/Misc/simpleEnemy-attack",
                                           "die": "Models/Misc/simpleEnemy-die",
-                                          "spawn": "Models/Misc/simpleEnemy-spawn"})
+                                          "spawn": "Models/Misc/simpleEnemy-spawn"},
+                         **kwargs)
         self.attributes.agility.level = 1
         self.attributes.strength.level = 1
         self.attributes.vitality.level = 1
@@ -97,7 +99,7 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
-            self.abilities.melee_attack.update(time_delta=time_delta)
+            self.abilities.melee_attack.update(time_delta)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...
@@ -133,10 +135,11 @@ class TrainingDummyMonster(Monster):
 
 class SlidingCrateMonster(Monster):
     def __init__(self, *args, **kwargs):
-        super().__init__(starting_position=kwargs.pop('starting_position'),
+        super().__init__(*args,
                          model_name="Models/Misc/trap",
                          model_animation={"stand": "Models/Misc/trap-stand",
-                                          "walk": "Models/Misc/trap-walk"})
+                                          "walk": "Models/Misc/trap-walk"},
+                         **kwargs)
         self.attributes.agility = 5
         self.attributes.strength = 1
         self.attributes.vitality = 1

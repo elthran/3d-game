@@ -30,12 +30,14 @@ class CharacterObject(PhysicalObject):
         self.proficiencies.refresh()
         self.abilities.refresh()
 
-    def update(self, time_delta):
+    def update(self, time_delta, *args, **kwargs):
         """What gets done after every frame of the game.
 
         Args:
             time_delta (float): Time since the last frame?
         """
+        super().update(time_delta, *args, **kwargs)
+
         speed = self.velocity.length()
         if speed > self.proficiencies.movement_speed_base.value:
             self.velocity.normalize()
@@ -52,7 +54,6 @@ class CharacterObject(PhysicalObject):
                 friction_vector *= friction_value
                 self.velocity += friction_vector
 
-        PhysicalObject.update(self, time_delta)
 
     def update_health(self, health_delta):
         """This is called anytime something will alter this character's health.

@@ -139,7 +139,7 @@ class Game(ShowBase):
         # starting a new one.
         # self.cleanup()
 
-        self.hero = WizardHero()
+        self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
         self.maxEnemies = 2
         self.spawnInterval = self.initialSpawnInterval
         self.display_damage = OnscreenText(text=f'Damage taken: {5 - self.hero.proficiencies.health.value}',
@@ -152,10 +152,10 @@ class Game(ShowBase):
         # Get the amount of time since the last update
         time_delta = globalClock.getDt()
 
-        self.hero.update(self.key_mapper, time_delta)
+        self.hero.update(time_delta, keys=self.key_mapper)
 
-        self.training_dummy_monster.update(self.hero, time_delta)
-        self.sliding_crate_monster.update(self.hero, time_delta)
+        self.training_dummy_monster.update(time_delta, hero=self.hero)
+        self.sliding_crate_monster.update(time_delta, hero=self.hero)
 
         return task.cont
 

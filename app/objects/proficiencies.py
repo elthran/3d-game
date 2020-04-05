@@ -1,5 +1,7 @@
 class Proficiencies:
-    def __init__(self, character):
+    def __init__(self, character=None):
+        assert character, 'Requires character keyword.'
+
         self.character = character
         self.attack_melee_distance = AttackMeleeDistance(character)
         self.attack_delay = AttackDelay(character)
@@ -12,7 +14,7 @@ class Proficiencies:
 
 
 class CharacterProficiency:
-    def __init__(self, character):
+    def __init__(self, character, *args):
         self.character = character
         self.name = None  # Displayed to user
         self.description = None  # Displayed to user
@@ -36,8 +38,8 @@ class CharacterProficiency:
 
 
 class AttackMeleeDistance(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args):
+        super().__init__(*args)
         self.name = 'AttackMeleeDistance '
         self.description = 'How far away you can reach enemies with an attack.'
 
@@ -47,8 +49,8 @@ class AttackMeleeDistance(CharacterProficiency):
 
 
 class AttackDelay(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args):
+        super().__init__(*args)
         self.name = 'AttackDelay '
         self.description = 'How long until you can attack again.'
         self.hit_landing_delay = 0  # How long from start of swing to hitting an enemy
@@ -59,11 +61,11 @@ class AttackDelay(CharacterProficiency):
 
 
 class DamageBase(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args):
+        super().__init__(*args)
         self.name = 'BaseDamage '
         self.description = 'Determines physical damage.'
-        self.character_attribute = character.attributes.strength
+        self.character_attribute = self.character.attributes.strength
 
     @property
     def formula(self):
@@ -75,11 +77,11 @@ class DamageBase(CharacterProficiency):
 
 
 class Health(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args):
+        super().__init__(*args)
         self.name = 'Health'
         self.description = 'Determines maximum health.'
-        self.character_attribute = character.attributes.vitality
+        self.character_attribute = self.character.attributes.vitality
         self._current = self.value
 
     @property
@@ -105,11 +107,11 @@ class Health(CharacterProficiency):
 
 
 class MovementSpeedBase(CharacterProficiency):
-    def __init__(self, character):
-        super().__init__(character)
+    def __init__(self, *args):
+        super().__init__(*args)
         self.name = 'Speed'
         self.description = 'Determines movement speed.'
-        self.character_attribute = character.attributes.agility
+        self.character_attribute = self.character.attributes.agility
 
     @property
     def formula(self):

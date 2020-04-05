@@ -9,8 +9,7 @@ class GameObject:
         acceleration (Float): How fast this object can accelerate.
     """
 
-    def __init__(self, starting_position=None, model_name=None, model_animation=None, damage_taken_model=None,
-                 character=None, enemies=None, allies=None):
+    def __init__(self, *args, **kwargs):
         """
         Args:
             starting_position (Vec3): A 3d vector of where to initially position the model.
@@ -22,7 +21,7 @@ class GameObject:
         self.velocity = Vec3(0, 0, 0)
         self.acceleration = 300.0
 
-    def update(self, time_delta):
+    def update(self, time_delta, *args, **kwargs):
         """
         If we're going faster than our maximum speed, set the velocity-vector's length to that maximum.
         If we're walking, don't worry about friction. Otherwise, use friction to slow us down.

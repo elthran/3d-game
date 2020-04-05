@@ -9,10 +9,14 @@ import random
 
 
 class Abilities:
-    def __init__(self, character, enemies, allies):
+    def __init__(self, character=None, enemies=None, allies=None):
+        assert character, 'Requires character keyword.'
+        assert enemies, 'Requires enemies keyword.'
+        assert allies, 'Requires allies keyword.'
+
         self.character = character
-        self.frost_ray = FrostRay(character=character, enemies=enemies, allies=allies)
-        self.melee_attack = MeleeAttack(character=character, enemies=enemies, allies=allies)
+        self.frost_ray = FrostRay(character, enemies, allies)
+        self.melee_attack = MeleeAttack(character, enemies, allies)
 
     def refresh(self):
         pass
@@ -25,11 +29,12 @@ class Abilities:
 
 
 class Ability(GameObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, character, enemies, allies, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.character = kwargs.pop('character')
-        self.enemies = kwargs.pop('enemies')
-        self.allies = kwargs.pop('allies')
+
+        self.character = character
+        self.enemies = enemies
+        self.allies = allies
         self.model = None  # The basic model of the animation
         self.model_collision = None  # The model when the animation collides with another object
         self.damage = None
@@ -43,8 +48,8 @@ class Ability(GameObject):
     def enable(self):
         self.enabled = True
 
-    def update(self, time_delta, **kwargs):
-        pass
+    def update(self, time_delta, *args, **kwargs):
+        super().update(time_delta, *args, **kwargs)
 
     def remove_object_from_world(self):
         pass
@@ -108,7 +113,11 @@ class FrostRay(Ability):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, active=None, firing_vector=None, origin=None, time_delta=None):
+    def update(self, time_delta, *args, active=None, firing_vector=None, origin=None, **kwargs):
+        super().update(time_delta, *args, **kwargs)
+        assert active is not None, 'Requires active keyword.'
+        assert firing_vector is not None, 'Requires firing_vector keyword.'
+        assert origin, 'Requires origin keyword.'
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
         # runs down (and the scale is at its lowest), reset the timer
@@ -164,7 +173,6 @@ class FrostRay(Ability):
         if firing_vector.length() > 0.001:
             self.ray.setOrigin(origin)
             self.ray.setDirection(firing_vector)
-        GameObject.update(self, time_delta)
 
     def remove_object_from_world(self):
         self.model_collision.removeNode()
@@ -204,7 +212,8 @@ class MeleeAttack(Ability):
         self.segment_queue = CollisionHandlerQueue()
         base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
 
-    def update(self, time_delta):
+    def update(self, time_delta, *args, **kwargs):
+        super().update(time_delta, *args, **kwargs)
         if self.progress_timer > 0:
             self.progress_timer -= time_delta
             if self.progress_timer <= 0:
