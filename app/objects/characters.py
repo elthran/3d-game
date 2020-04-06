@@ -55,7 +55,6 @@ class CharacterObject(PhysicalObject):
 
         self.actor.setFluidPos(self.velocity * time_delta + self.actor.getPos())
 
-
     def update_health(self, health_delta):
         """This is called anytime something will alter this character's health.
 

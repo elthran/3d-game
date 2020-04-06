@@ -14,8 +14,8 @@ class Hero(CharacterObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set the collider for Hero's to be Hero.
-        self.collider.node().setIntoCollideMask(MASK_HERO)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
+        self.collider.node().setIntoCollideMask(MASK_HERO)
 
         self.abilities = Abilities(character=self, enemies=MASK_MONSTER, allies=MASK_HERO)
 

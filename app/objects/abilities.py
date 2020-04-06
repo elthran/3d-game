@@ -64,10 +64,11 @@ class Ability(GameObject):
         if self.collision_node is None:
             raise ValueError("Can't initiate physics model with no declared collision_node.")
         collision_node = CollisionNode(self.__class__.__name__)
+        collision_node.addSolid(self.collision_node)
         collision_node.setFromCollideMask(self.from_collider_attack)
         collision_node.setIntoCollideMask(self.into_collider)
-        collision_node.addSolid(self.collision_node)
         self.collision_node_path = render.attachNewNode(collision_node)
+        self.collision_node_path.show()
         self.collision_node_queue = CollisionHandlerQueue()
         # We want this node to collide with things, so tell our traverser about it.
         # However, we don't have to tell our "CollisionHandlerQueue" about it.
@@ -206,12 +207,17 @@ class MeleeAttack(Ability):
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
+
+        self.collision_node.setPointA(self.character.actor.getPos())
+        self.collision_node.setPointB(self.character.actor.getPos()
+                                      + self.character.actor.getQuat().getForward()
+                                      * self.character.proficiencies.melee_attack.distance)
+
         if self.progress_timer > 0:
             self.progress_timer -= time_delta
             if self.progress_timer <= 0:
                 # The animation has finished. See if the attack hit with a collision.
                 damage = self.character.proficiencies.melee_attack.damage
-                print("The animation has finished! See if it landed.")
                 if self.collision_node_queue.getNumEntries() > 0:
                     self.collision_node_queue.sortEntries()
                     segment_hit = self.collision_node_queue.getEntry(0)
@@ -219,7 +225,6 @@ class MeleeAttack(Ability):
                     if hit_node_path.hasPythonTag("owner"):
                         # Apply damage!
                         hit_object = hit_node_path.getPythonTag("owner")
-                        print(f"The attack has hit a {hit_object.__class__.__name__} for {damage} damage!")
                         hit_object.update_health(-damage)
                 self.wait_timer = 1.0
         # If we're instead waiting to be allowed to attack...
@@ -229,7 +234,6 @@ class MeleeAttack(Ability):
             if self.wait_timer <= 0:
                 # Start an attack. The next frame should do the actual attack.
                 # The attack lands when the delay_timer gets to 0.
-                print("Monster is starting an attack")
                 self.wait_timer = random.uniform(0.5, 0.7)
                 self.progress_timer = self.progress_time
                 self.character.actor.play("attack")

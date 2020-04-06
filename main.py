@@ -6,6 +6,41 @@ from app import *
 
 MAX_FRAME_RATE = 1 / 60
 
+from direct.gui.DirectGui import DirectWaitBar, DGG
+from panda3d.core import TextNode
+
+
+class Hud:
+    def __init__(self, maximum_health):
+        self.player_health_bar = DirectWaitBar(
+            text="Hero Health",
+            text_fg=(1, 1, 1, 1),
+            text_pos=(-1.2, -0.18, 0),
+            text_align=TextNode.ALeft,
+            value=maximum_health,
+            range=maximum_health,
+            barColor=(0, 1, 0.25, 1),
+            barRelief=DGG.RAISED,
+            barBorderWidth=(0.03, 0.03),
+            borderWidth=(0.01, 0.01),
+            relief=DGG.RIDGE,
+            frameColor=(0.8, 0.05, 0.10, 1),
+            frameSize=(-1.2, 0, 0, -0.1),
+            pos=(-0.2, 0, base.a2dTop - 0.15))
+        self.player_health_bar.setTransparency(1)
+
+        self.hide()
+
+    def show(self):
+        self.player_health_bar["value"] = 8
+        self.player_health_bar.show()
+
+    def hide(self):
+        self.player_health_bar.hide()
+
+    def setLifeBarValue(self, newValue):
+        self.player_health_bar["value"] = newValue
+
 
 class Game(ShowBase):
     def __init__(self):
@@ -54,19 +89,6 @@ class Game(ShowBase):
         self.accept("SlidingCrateMonster-into-Wall", self.stop_sliding_crate_monster)
         self.accept("SlidingCrateMonster-into-TrainingDummyMonster", self.sliding_crate_monster_hits_unit)
         self.accept("SlidingCrateMonster-into-Hero", self.sliding_crate_monster_hits_unit)
-
-        '''
-        CollisionEntry:
-          from render/character/WizardHero
-          into render/Wall []
-          at -5.39875 8.2 0
-          normal 0 1 0
-          interior -5.39875 8.2 0 (depth 0)
-          respect_prev_transform = 1
-  '''
-
-        self.accept("WizardHero-into-Wall", print)
-        self.accept("TrainingDummyMonster-into-Wall", print)
 
         wallSolid = CollisionCapsule(-8.0, 0, 0, 8.0, 0, 0, 0.2)
         # wallSolid = CollisionPlane(Plane(Vec3(8.0, 0, 0), Point3(-8.0, 0, 0)))
@@ -152,11 +174,15 @@ class Game(ShowBase):
         # self.crate_interactive = CrateInteractive(starting_position=Vec3(-2, 3, 0))
         self.sliding_crate_monster = SlidingCrateMonster(starting_position=Vec3(2, 7, 0))
 
+        # self.hud = Hud(maximum_health=self.hero.proficiencies.health.maximum)
+        # self.hud.show()
+
     def update(self, task):
         # Get the amount of time since the last update
         time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
 
         self.hero.update(time_delta, keys=self.key_mapper)
+        # self.hud.setLifeBarValue(self.hero.proficiencies.health.current)
 
         self.training_dummy_monster.update(time_delta, hero=self.hero)
         self.sliding_crate_monster.update(time_delta, hero=self.hero)

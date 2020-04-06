@@ -12,8 +12,8 @@ class Monster(CharacterObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
-        self.collider.node().setIntoCollideMask(MASK_HERO_AND_MONSTER)
         self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
+        self.collider.node().setIntoCollideMask(MASK_MONSTER)
 
         self.abilities = Abilities(character=self, enemies=MASK_HERO, allies=MASK_MONSTER)
 
@@ -102,15 +102,6 @@ class TrainingDummyMonster(Monster):
             # If we're waiting for an attack to land...
 
         self.actor.setH(heading)
-
-
-        '''Set the segment's start- and end- points.
-        "getQuat" returns a quaternion--a representation of orientation
-        or rotation--that represents the NodePath's orientation. This is useful here,
-        because Panda's quaternion class has methods to get forward, right, and up vectors for that orientation.
-        Thus, what we're doing is making the segment point "forwards".'''
-        # self.attack_segment.setPointA(self.actor.getPos())
-        # self.attack_segment.setPointB(self.actor.getPos() + self.actor.getQuat().getForward() * self.proficiencies.attack_melee_distance.value)
 
     def update_health(self, health_delta):
         CharacterObject.update_health(self, health_delta)
