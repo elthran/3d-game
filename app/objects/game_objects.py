@@ -1,12 +1,5 @@
-from panda3d.core import Vec3
-
-
 class GameObject:
     """A basic game object. May have a model, an update, a clean-up, etc.
-
-    Attributes:
-        velocity (Vec3): The starting velocity of the object. Default is 0.
-        acceleration (Float): How fast this object can accelerate.
     """
 
     def __init__(self, *args, **kwargs):
@@ -18,8 +11,8 @@ class GameObject:
             damage_taken_model (str): The path to the art asset for when the model receives damage.
             character (CharacterObject): The character that possesses this.
         """
-        self.velocity = Vec3(0, 0, 0)
-        self.acceleration = 300.0
+        self.collider = None
+        self.actor = None
 
     def update(self, time_delta, *args, **kwargs):
         """

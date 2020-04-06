@@ -1,5 +1,4 @@
 from panda3d.core import Vec3, Vec2, Plane, Point3, TextNode
-from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
 from app.objects.abilities import Abilities
@@ -19,30 +18,20 @@ class Hero(CharacterObject):
 
         self.abilities = Abilities(character=self, enemies=MASK_MONSTER, allies=MASK_HERO)
 
-        # Since our "Game" object is the "ShowBase" object, we can access it via the global "base" variable.
+        self.firing_vector = None
+        self.firing_vector_2d = None
 
-        # Get mouse position
+        self.mouse_position = None
+        self.mouse_position_3d = None
         self.last_mouse_pos = Vec2(0, 0)
-        # Construct a plane facing upwards, and centred at (0, 0, 0) to triangulate mouse position
         self.ground_plane = Plane(Vec3(0, 0, 1), Vec3(0, 0, 0))
-
-        # Get's the Hero's current orientation for shooting projectiles (defines north????)
         self.y_vector = Vec2(0, 1)
 
         # Move to User class
-        self.score = 0
         self.scoreUI = OnscreenText(text="0",
                                     pos=(-1.3, 0.825),
                                     mayChange=True,
                                     align=TextNode.ALeft)
-        self.health_icons = []
-        for i in range(self.proficiencies.health.maximum):
-            icon = OnscreenImage(image="UI/health.png",
-                                 pos=(-1.275 + i * 0.075, 0, 0.95),
-                                 scale=0.04)
-            # Since our icons have transparent regions, we'll activate transparency.
-            icon.setTransparency(True)
-            self.health_icons.append(icon)
 
     def update(self, time_delta, *args, keys=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
@@ -64,6 +53,7 @@ class Hero(CharacterObject):
 
         # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
         # Else set them to loop stand.
+        # Should just be.... self.update_current_animation()
         if self.walking:
             stand_control = self.actor.getAnimControl("stand")
             if stand_control.isPlaying():
@@ -77,37 +67,15 @@ class Hero(CharacterObject):
                 self.actor.stop("walk")
                 self.actor.loop("stand")
 
-        # Update the hero's knowledge of where the mouse is
-        mouse_watcher = base.mouseWatcherNode
-        if mouse_watcher.hasMouse():
-            mouse_position = mouse_watcher.getMouse()
-        else:
-            mouse_position = self.last_mouse_pos
-        mouse_position_3d = Point3()
-        near_point = Point3()
-        far_point = Point3()
-        # Get the 3D line corresponding with the 2D mouse-position.
-        # The "extrude" method will store its result in the "nearPoint" and "farPoint" objects.
-        base.camLens.extrude(mouse_position, near_point, far_point)
-        # Get the 3D point at which the 3D line intersects our ground-plane.
-        # Similarly to the above, the "intersectsLine" method will store its result in the "mousePos3D" object.
-        self.ground_plane.intersectsLine(mouse_position_3d,
-                                         render.getRelativePoint(base.camera, near_point),
-                                         render.getRelativePoint(base.camera, far_point))
-        firing_vector = Vec3(mouse_position_3d - self.actor.getPos())
-        firing_vector_2d = firing_vector.getXy()
-        firing_vector_2d.normalize()
-        firing_vector.normalize()
-        heading = self.y_vector.signedAngleDeg(firing_vector_2d)
-        self.actor.setH(heading)
+        self.update_ground_plane_and_mouse_position()
+
+        self.update_firing_vector_and_heading()
 
         for ability in self.abilities.get_enabled():
             ability.update(time_delta,
                            active=keys.shoot.on,
-                           firing_vector=firing_vector,
                            origin=self.actor.getPos())
 
-        self.last_mouse_pos = mouse_position
         # Check if damage_taken_model can be refreshed
         if self.damage_taken_model and self.damage_taken_model_timer > 0:
             self.damage_taken_model_timer -= time_delta
@@ -115,8 +83,39 @@ class Hero(CharacterObject):
             if self.damage_taken_model_timer <= 0:
                 self.damage_taken_model.hide()
 
-    def update_health(self, health_delta):
-        CharacterObject.update_health(self, health_delta)
+    def update_ground_plane_and_mouse_position(self):
+        """Updates the hero's knowledge of where the ground-plane intersects with the mouse.
+        """
+        mouse_watcher = base.mouseWatcherNode
+        if mouse_watcher.hasMouse():
+            self.mouse_position = mouse_watcher.getMouse()
+        else:
+            self.mouse_position = self.last_mouse_pos
+        self.mouse_position_3d = Point3()
+        near_point = Point3()
+        far_point = Point3()
+        # The "extrude" method will store its result in the "nearPoint" and "farPoint" objects.
+        base.camLens.extrude(self.mouse_position, near_point, far_point)
+        # Similarly to the above, the "intersectsLine" method will store its result in the "mousePos3D" object.
+        self.ground_plane.intersectsLine(self.mouse_position_3d,
+                                         render.getRelativePoint(base.camera, near_point),
+                                         render.getRelativePoint(base.camera, far_point))
+        # We create a fall back, in case the next position is unobtainable
+        self.last_mouse_pos = self.mouse_position
+
+    def update_firing_vector_and_heading(self):
+        """Creates a firing_vector which is the vector from the Hero to the mouse,
+        and updates the Hero's heading to face it.
+        """
+        self.firing_vector = Vec3(self.mouse_position_3d - self.actor.getPos())
+        self.firing_vector_2d = self.firing_vector.getXy()
+        self.firing_vector_2d.normalize()
+        self.firing_vector.normalize()
+        new_heading = self.y_vector.signedAngleDeg(self.firing_vector_2d)
+        self.actor.setH(new_heading)
+
+    def update_health(self, health_delta, damage_dealer=None):
+        CharacterObject.update_health(self, health_delta, damage_dealer=damage_dealer)
 
         self.update_health_visual()
 
@@ -125,11 +124,7 @@ class Hero(CharacterObject):
         self.damage_taken_model_timer = self.damage_taken_model_duration
 
     def update_health_visual(self):
-        for index, icon in enumerate(self.health_icons):
-            if index < self.proficiencies.health.current:
-                icon.show()
-            else:
-                icon.hide()
+        pass
 
     def update_score(self):
         self.scoreUI.setText(str(self.score))
@@ -137,10 +132,6 @@ class Hero(CharacterObject):
     def remove_object_from_world(self):
         for ability in self.abilities:
             ability.remove_object_from_world()
-
-        self.scoreUI.removeNode()
-        for icon in self.health_icons:
-            icon.removeNode()
 
         GameObject.remove_object_from_world(self)
 

@@ -81,7 +81,7 @@ class Ability(GameObject):
         super().update(time_delta, *args, **kwargs)
 
     def remove_object_from_world(self):
-        if self.collision_node is not None:
+        if self.collision_node is not None and self.model_collision is not None:
             self.model_collision.removeNode()
             base.cTrav.removeCollider(self.collision_node_path)
         if self.beam_hit_light_node_path is not None:
@@ -133,10 +133,9 @@ class FrostRay(Ability):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, time_delta, *args, active=None, firing_vector=None, origin=None, **kwargs):
+    def update(self, time_delta, *args, active=None, origin=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
         assert active is not None, 'Requires active keyword.'
-        assert firing_vector is not None, 'Requires firing_vector keyword.'
         assert origin, 'Requires origin keyword.'
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
@@ -157,7 +156,7 @@ class FrostRay(Ability):
                 hit_node_path = ray_hit.getIntoNodePath()  # Into node model name?
                 if hit_node_path.hasPythonTag("owner"):
                     hit_object = hit_node_path.getPythonTag("owner")
-                    hit_object.update_health(-(self.damage_per_second * time_delta))
+                    hit_object.update_health(-(self.damage_per_second * time_delta), self.character)
                     scored_hit = True
                 # Find out how long the beam is, and scale the beam-model accordingly.
                 beam_length = (hit_pos - self.character.actor.getPos()).length()
@@ -190,9 +189,9 @@ class FrostRay(Ability):
             self.model.hide()
             self.model_collision.hide()
 
-        if firing_vector.length() > 0.001:
+        if self.character.firing_vector.length() > 0.001:
             self.collision_node.setOrigin(origin)
-            self.collision_node.setDirection(firing_vector)
+            self.collision_node.setDirection(self.character.firing_vector)
 
 
 class MeleeAttack(Ability):
@@ -225,7 +224,7 @@ class MeleeAttack(Ability):
                     if hit_node_path.hasPythonTag("owner"):
                         # Apply damage!
                         hit_object = hit_node_path.getPythonTag("owner")
-                        hit_object.update_health(-damage)
+                        hit_object.update_health(-damage, self.character)
                 self.wait_timer = 1.0
         # If we're instead waiting to be allowed to attack...
         elif self.wait_timer > 0:

@@ -1,4 +1,4 @@
-from panda3d.core import CollisionNode, CollisionSphere
+from panda3d.core import CollisionNode, CollisionSphere, Vec3
 
 from direct.actor.Actor import Actor
 
@@ -15,6 +15,8 @@ class PhysicalObject(GameObject):
         damage_taken_model_timer (int): ???
         damage_taken_model_duration (float): How long the damage_taken_model will play for.
         invulnerable (bool): If the model can take damage.
+        velocity (Vec3): The starting velocity of the object. Default is 0.
+        acceleration (Float): How fast this object can accelerate.
     """
 
     def __init__(self,
@@ -32,6 +34,9 @@ class PhysicalObject(GameObject):
 
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
+
+        self.velocity = Vec3(0, 0, 0)
+        self.acceleration = 300.0
 
         self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
         self.damage_taken_model_timer = 0
