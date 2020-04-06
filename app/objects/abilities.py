@@ -1,7 +1,7 @@
 from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4, CollisionSegment
 
 from app.objects.game_objects import GameObject
-from .constants_physics import MASK_NOTHING, MASK_HERO_AND_MONSTER
+from .constants import Masks
 from .physicals import PhysicalObject
 
 import math
@@ -41,8 +41,8 @@ class Ability(GameObject):
         self.damage_per_second = None
         self.from_collider_attack = self.enemies
         self.from_collider_protect = self.allies
-        self.from_collider_all = MASK_HERO_AND_MONSTER
-        self.into_collider = MASK_NOTHING
+        self.from_collider_all = Masks.MASK_HERO_AND_MONSTER
+        self.into_collider = Masks.NONE
 
         self.enabled = False
         # Physics
@@ -206,7 +206,6 @@ class MeleeAttack(Ability):
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
-
         self.collision_node.setPointA(self.character.actor.getPos())
         self.collision_node.setPointB(self.character.actor.getPos()
                                       + self.character.actor.getQuat().getForward()

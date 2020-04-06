@@ -12,6 +12,14 @@ class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
+        music = loader.loadMusic("Music/background_theme.mp3")
+        music.setLoop(True)
+        # I find this piece to be pretty loud,
+        # so I've turned the volume down a lot.
+        # Adjust to your settings and preferences!
+        music.setVolume(0.5)
+        music.play()
+
         self.disableMouse()
 
         main_light = DirectionalLight("main light")
@@ -86,7 +94,7 @@ class Game(ShowBase):
 
         # Set up some monster spawn points
         self.spawn_time = 5
-        self.spawn_timer = 1
+        self.spawn_timer = 5
         self.maximum_walking_enemies = 2
         self.spawn_points = []
         number_points_per_wall = 5
@@ -97,11 +105,18 @@ class Game(ShowBase):
             self.spawn_points.append(Vec3(coord, -7.0, 0))
             self.spawn_points.append(Vec3(coord, 7.0, 0))
 
+        self.font = loader.loadFont("Fonts/Wbxkomik.ttf")
+        self.kill_count = OnscreenText(text="Experience Points: 0",
+                                       pos=(0.3, 0.8),
+                                       mayChange=True,
+                                       align=TextNode.ALeft,
+                                       font=self.font)
+
         # Start the game!
         self.start_game()
 
     def start_game(self):
-        # self.cleanup()
+        self.cleanup()
 
         self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
 
@@ -114,19 +129,20 @@ class Game(ShowBase):
         time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
 
         if self.hero is not None:
-            if self.hero.proficiencies.health.current > 0:
-                self.hero.update(time_delta, keys=self.key_mapper)
-                self.hud.update_bar_value(self.hero.proficiencies.health.current)
+            self.hero.update(time_delta, keys=self.key_mapper)
+            self.hud.update_bar_value(self.hero.proficiencies.health.current)
 
-                self.spawn_timer -= time_delta
-                if self.spawn_timer <= 0 or len(self.walking_enemies) == 0:
-                    self.spawn_timer = self.spawn_time
-                    self.spawn_enemy()
+            self.spawn_timer -= time_delta
+            if self.spawn_timer <= 0 or len(self.walking_enemies) == 0:
+                self.spawn_timer = self.spawn_time
+                self.spawn_enemy()
 
-                [walking_enemy.update(time_delta, hero=self.hero) for walking_enemy in self.walking_enemies]
-                [sliding_enemy.update(time_delta, hero=self.hero) for sliding_enemy in self.sliding_enemies]
+            [walking_enemy.update(time_delta, hero=self.hero) for walking_enemy in self.walking_enemies]
+            [sliding_enemy.update(time_delta, hero=self.hero) for sliding_enemy in self.sliding_enemies]
 
-                self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
+            self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
+
+            self.kill_count.setText(f"Experience Points: {self.hero.experience}")
 
         return task.cont
 

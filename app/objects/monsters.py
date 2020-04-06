@@ -3,7 +3,7 @@ from math import copysign
 from panda3d.core import Vec2
 
 from app.objects.abilities import Abilities
-from app.objects.constants_physics import MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
+from app.objects.constants import CharacterTypes, Masks
 from app.objects.characters import CharacterObject
 from app.objects.game_objects import GameObject
 
@@ -11,11 +11,15 @@ from app.objects.game_objects import GameObject
 class Monster(CharacterObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.character_type = CharacterTypes.MONSTER
         # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
-        self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
-        self.collider.node().setIntoCollideMask(MASK_MONSTER)
+        self.collider.node().setFromCollideMask(Masks.MASK_HERO_AND_MONSTER)
+        self.collider.node().setIntoCollideMask(Masks.MONSTER)
 
-        self.abilities = Abilities(character=self, enemies=MASK_HERO, allies=MASK_MONSTER)
+        self.abilities = Abilities(character=self, enemies=Masks.HERO, allies=Masks.MONSTER)
+
+        self.spawn_sound = loader.loadSfx("Sounds/enemySpawn.ogg")
+        self.spawn_sound.play()
 
     def update(self, time_delta, *args, hero=None, **kwargs):
         """

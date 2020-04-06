@@ -3,7 +3,7 @@ from direct.gui.OnscreenText import OnscreenText
 
 from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
-from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER, MASK_MONSTER
+from .constants import CharacterTypes, Masks
 from .characters import CharacterObject
 
 import random
@@ -12,11 +12,12 @@ import random
 class Hero(CharacterObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.character_type = CharacterTypes.HERO
         # Set the collider for Hero's to be Hero.
-        self.collider.node().setFromCollideMask(MASK_HERO_AND_MONSTER)
-        self.collider.node().setIntoCollideMask(MASK_HERO)
+        self.collider.node().setFromCollideMask(Masks.MASK_HERO_AND_MONSTER)
+        self.collider.node().setIntoCollideMask(Masks.HERO)
 
-        self.abilities = Abilities(character=self, enemies=MASK_MONSTER, allies=MASK_HERO)
+        self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
 
         self.firing_vector = None
         self.firing_vector_2d = None
@@ -125,9 +126,6 @@ class Hero(CharacterObject):
 
     def update_health_visual(self):
         pass
-
-    def update_score(self):
-        self.scoreUI.setText(str(self.score))
 
     def remove_object_from_world(self):
         for ability in self.abilities:

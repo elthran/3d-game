@@ -1,7 +1,9 @@
+from panda3d.core import Vec3
+
 from app.objects.abilities import Abilities
 from app.objects.attributes import Attributes
 from app.objects.proficiencies import Proficiencies
-from app.objects.constants_physics import FRICTION
+from app.objects.constants import WorldPhysics, CharacterTypes
 from app.objects.physicals import PhysicalObject
 
 
@@ -16,6 +18,7 @@ class CharacterObject(PhysicalObject):
     """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.character_type = None
         self.experience = 0
         self.experience_awarded_on_death = 1
         self.attributes = Attributes(character=self)
@@ -48,7 +51,7 @@ class CharacterObject(PhysicalObject):
             speed = self.proficiencies.movement.speed
 
         if not self.walking:
-            friction_value = FRICTION * time_delta
+            friction_value = WorldPhysics.FRICTION * time_delta
             if friction_value > speed:
                 self.velocity.set(0, 0, 0)
             else:
@@ -97,7 +100,6 @@ class CharacterObject(PhysicalObject):
         """
         if self.invulnerable:
             pass
-        print(damage_dealer.__class__.__name__)
 
         previous_health = self.proficiencies.health.current
 
@@ -106,7 +108,6 @@ class CharacterObject(PhysicalObject):
             self.proficiencies.health.current = self.proficiencies.health.maximum
         if self.proficiencies.health.current <= 0 < previous_health:
             self.die(damage_dealer)
-        print(f"{self.__class__.__name__} is now at {self.proficiencies.health.current} health.")
 
     def update_health_visual(self):
         """If a visual is required when the character's health changes.
@@ -114,11 +115,10 @@ class CharacterObject(PhysicalObject):
         pass
 
     def die(self, damage_dealer):
-        print(f"{self.__class__.__name__} died.")
-        self.dying = True
-        self.collider.removeNode()
-        self.actor.play("die")
-        if damage_dealer.__class__.__name__ == 'WizardHero':
+        if self.character_type == CharacterTypes.MONSTER:
             damage_dealer.experience += self.experience_awarded_on_death
-            print(f"{damage_dealer.__class__.__name__} now has {damage_dealer.experience} total experience!")
-
+            self.dying = True
+            self.velocity = Vec3(0, 0, 0)
+            self.actor.play("die")
+        elif self.character_type == CharacterTypes.HERO:
+            pass
