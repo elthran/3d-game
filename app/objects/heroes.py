@@ -1,12 +1,9 @@
-import random
-
 from panda3d.core import Vec3, Vec2, Plane, Point3, TextNode
 from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 
 from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
-from .physicals import PhysicalObject
 from .constants_physics import MASK_HERO, MASK_HERO_AND_MONSTER, MASK_MONSTER
 from .characters import CharacterObject
 
@@ -39,7 +36,7 @@ class Hero(CharacterObject):
                                     mayChange=True,
                                     align=TextNode.ALeft)
         self.health_icons = []
-        for i in range(self.proficiencies.health.value):
+        for i in range(self.proficiencies.health.maximum):
             icon = OnscreenImage(image="UI/health.png",
                                  pos=(-1.275 + i * 0.075, 0, 0.95),
                                  scale=0.04)
@@ -126,7 +123,6 @@ class Hero(CharacterObject):
         self.damage_taken_model.show()
         self.damage_taken_model.setH(random.uniform(0.0, 360.0))
         self.damage_taken_model_timer = self.damage_taken_model_duration
-
 
     def update_health_visual(self):
         for index, icon in enumerate(self.health_icons):

@@ -1,7 +1,7 @@
 from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4, CollisionSegment
 
 from app.objects.game_objects import GameObject
-from .constants_physics import MASK_MONSTER, MASK_NOTHING, MASK_HERO, MASK_HERO_AND_MONSTER
+from .constants_physics import MASK_NOTHING, MASK_HERO_AND_MONSTER
 from .physicals import PhysicalObject
 
 import math
@@ -43,16 +43,50 @@ class Ability(GameObject):
         self.from_collider_protect = self.allies
         self.from_collider_all = MASK_HERO_AND_MONSTER
         self.into_collider = MASK_NOTHING
+
         self.enabled = False
+        # Physics
+        self.collision_node = None
+        self.collision_node_path = None
+        self.collision_node_queue = None
+        # Display
+        self.beam_hit_light_node_path = None
 
     def enable(self):
         self.enabled = True
+        self.physics_init()
+        self.display_init()
+
+    def disable(self):
+        self.remove_object_from_world()
+
+    def physics_init(self):
+        if self.collision_node is None:
+            raise ValueError("Can't initiate physics model with no declared collision_node.")
+        collision_node = CollisionNode(self.__class__.__name__)
+        collision_node.setFromCollideMask(self.from_collider_attack)
+        collision_node.setIntoCollideMask(self.into_collider)
+        collision_node.addSolid(self.collision_node)
+        self.collision_node_path = render.attachNewNode(collision_node)
+        self.collision_node_queue = CollisionHandlerQueue()
+        # We want this node to collide with things, so tell our traverser about it.
+        # However, we don't have to tell our "CollisionHandlerQueue" about it.
+        base.cTrav.addCollider(self.collision_node_path, self.collision_node_queue)
+
+    def display_init(self):
+        pass
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
 
     def remove_object_from_world(self):
-        pass
+        if self.collision_node is not None:
+            self.model_collision.removeNode()
+            base.cTrav.removeCollider(self.collision_node_path)
+        if self.beam_hit_light_node_path is not None:
+            render.clearLight(self.beam_hit_light_node_path)
+            self.beam_hit_light_node_path.removeNode()
+        PhysicalObject.remove_object_from_world(self)
 
 
 class FrostRay(Ability):
@@ -60,23 +94,8 @@ class FrostRay(Ability):
         super().__init__(*args, **kwargs)
         self.name = "Frost Ray"
         self.description = "Shoot a ray of frost at an enemy."
+        self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
         self.damage_per_second = 5.0
-
-        self.physics_init()
-        self.display_init()
-
-    def physics_init(self):
-        self.ray = CollisionRay(0, 0, 0, 0, 1, 0)
-        ray_node = CollisionNode(self.__class__.__name__)
-        # After we've made our ray-node:
-        ray_node.setFromCollideMask(self.from_collider_attack)
-        ray_node.setIntoCollideMask(self.into_collider)
-        ray_node.addSolid(self.ray)
-        self.ray_node_path = render.attachNewNode(ray_node)
-        self.ray_queue = CollisionHandlerQueue()
-        '''We want this ray to collide with things, so tell our traverser about it. However, note that,
-        unlike with "CollisionHandlerPusher", we don't have to tell our "CollisionHandlerQueue" about it.'''
-        base.cTrav.addCollider(self.ray_node_path, self.ray_queue)
 
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
@@ -129,10 +148,10 @@ class FrostRay(Ability):
         self.model_collision.setScale(math.sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
 
         if active:
-            if self.ray_queue.getNumEntries() > 0:
+            if self.collision_node_queue.getNumEntries() > 0:
                 scored_hit = False
-                self.ray_queue.sortEntries()
-                ray_hit = self.ray_queue.getEntry(0)
+                self.collision_node_queue.sortEntries()
+                ray_hit = self.collision_node_queue.getEntry(0)
                 hit_pos = ray_hit.getSurfacePoint(render)
                 hit_node_path = ray_hit.getIntoNodePath()  # Into node model name?
                 if hit_node_path.hasPythonTag("owner"):
@@ -171,46 +190,19 @@ class FrostRay(Ability):
             self.model_collision.hide()
 
         if firing_vector.length() > 0.001:
-            self.ray.setOrigin(origin)
-            self.ray.setDirection(firing_vector)
-
-    def remove_object_from_world(self):
-        self.model_collision.removeNode()
-        base.cTrav.removeCollider(self.ray_node_path)
-
-        render.clearLight(self.beam_hit_light_node_path)
-        self.beam_hit_light_node_path.removeNode()
-
-        PhysicalObject.remove_object_from_world(self)
+            self.collision_node.setOrigin(origin)
+            self.collision_node.setDirection(firing_vector)
 
 
 class MeleeAttack(Ability):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "Melee Attack"
+        self.collision_node = CollisionSegment(0, 0, 0, 1, 0, 0)
         self.description = "Swing your currently equipped weapon at an enemy.."
-
-        self.damage = 1
-
         self.progress_time = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
         self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
-
-        self.physics_init()
-        # self.display_init()
-
-    def physics_init(self):
-        """A mask that matches the player's, so that the enemy's attack will hit the player-character,
-        but not the enemy-character (or other enemies)
-        """
-        self.attack_segment = CollisionSegment(0, 0, 0, 1, 0, 0)
-        segment_node = CollisionNode("enemyAttackSegment")
-        segment_node.addSolid(self.attack_segment)
-        segment_node.setFromCollideMask(self.from_collider_attack)
-        segment_node.setIntoCollideMask(self.into_collider)
-        self.attack_segment_node_path = render.attachNewNode(segment_node)
-        self.segment_queue = CollisionHandlerQueue()
-        base.cTrav.addCollider(self.attack_segment_node_path, self.segment_queue)
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
@@ -218,16 +210,17 @@ class MeleeAttack(Ability):
             self.progress_timer -= time_delta
             if self.progress_timer <= 0:
                 # The animation has finished. See if the attack hit with a collision.
+                damage = self.character.proficiencies.melee_attack.damage
                 print("The animation has finished! See if it landed.")
-                if self.segment_queue.getNumEntries() > 0:
-                    self.segment_queue.sortEntries()
-                    segment_hit = self.segment_queue.getEntry(0)
+                if self.collision_node_queue.getNumEntries() > 0:
+                    self.collision_node_queue.sortEntries()
+                    segment_hit = self.collision_node_queue.getEntry(0)
                     hit_node_path = segment_hit.getIntoNodePath()
                     if hit_node_path.hasPythonTag("owner"):
                         # Apply damage!
                         hit_object = hit_node_path.getPythonTag("owner")
-                        print(f"The attack has hit a {hit_object.__class__.__name__}!")
-                        hit_object.update_health(-self.damage)
+                        print(f"The attack has hit a {hit_object.__class__.__name__} for {damage} damage!")
+                        hit_object.update_health(-damage)
                 self.wait_timer = 1.0
         # If we're instead waiting to be allowed to attack...
         elif self.wait_timer > 0:
@@ -240,11 +233,5 @@ class MeleeAttack(Ability):
                 self.wait_timer = random.uniform(0.5, 0.7)
                 self.progress_timer = self.progress_time
                 self.character.actor.play("attack")
-
-    def remove_object_from_world(self):
-        base.cTrav.removeCollider(self.attack_segment_node_path)
-        self.attack_segment_node_path.removeNode()
-
-        GameObject.remove_object_from_world(self)
 
 

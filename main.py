@@ -1,8 +1,6 @@
 from direct.showbase.ShowBase import ShowBase
-from direct.gui.OnscreenText import OnscreenText
 
-from panda3d.core import AmbientLight, CollisionHandlerPusher, CollisionNode, CollisionSegment, CollisionTraverser, \
-    CollisionCapsule, CollisionPlane, DirectionalLight, Vec3, Vec4, WindowProperties, ClockObject
+from panda3d.core import CollisionCapsule
 
 from app import *
 
@@ -148,7 +146,7 @@ class Game(ShowBase):
         self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
         self.maxEnemies = 2
         self.spawnInterval = self.initialSpawnInterval
-        self.display_damage = OnscreenText(text=f'Damage taken: {5 - self.hero.proficiencies.health.value}',
+        self.display_damage = OnscreenText(text=f'Damage taken: {5 - self.hero.proficiencies.health.maximum}',
                                            pos=(1, -0.9), scale=0.07)
         self.training_dummy_monster = TrainingDummyMonster(starting_position=Vec3(5, 0, 0))
         # self.crate_interactive = CrateInteractive(starting_position=Vec3(-2, 3, 0))
@@ -165,7 +163,8 @@ class Game(ShowBase):
 
         return task.cont
 
-    def stop_sliding_crate_monster(self, entry):
+    @staticmethod
+    def stop_sliding_crate_monster(entry):
         collider = entry.getFromNodePath()
         if collider.hasPythonTag("owner"):
             trap = collider.getPythonTag("owner")

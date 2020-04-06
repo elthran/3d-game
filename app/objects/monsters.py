@@ -1,10 +1,9 @@
 from math import copysign
-from random import uniform
 
-from panda3d.core import Vec2, CollisionNode, CollisionSegment, CollisionHandlerQueue
+from panda3d.core import Vec2
 
 from app.objects.abilities import Abilities
-from app.objects.constants_physics import MASK_NOTHING, MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
+from app.objects.constants_physics import MASK_HERO, MASK_MONSTER, MASK_HERO_AND_MONSTER
 from app.objects.characters import CharacterObject
 from app.objects.game_objects import GameObject
 
@@ -62,10 +61,9 @@ class TrainingDummyMonster(Monster):
                                           "die": "Models/Misc/simpleEnemy-die",
                                           "spawn": "Models/Misc/simpleEnemy-spawn"},
                          **kwargs)
-        self.attributes.agility.level = 1
-        self.attributes.strength.level = 1
-        self.attributes.vitality.level = 1
-        self.proficiencies.attack_melee_distance.hardcoded_value = 0.75
+        self.proficiencies.melee_attack.base_attack_range = 0.75
+        self.proficiencies.melee_attack.base_damage = 0
+        self.proficiencies.movement.base_speed = 7
         self.acceleration = 100.0
         self.refresh()
         self.abilities.melee_attack.enable()
@@ -88,7 +86,7 @@ class TrainingDummyMonster(Monster):
         vector_to_player_2D.normalize()
         heading = self.y_vector.signedAngleDeg(vector_to_player_2D)
 
-        if distance_to_player > self.proficiencies.attack_melee_distance.value * 0.9:  # It is not close enough to attack
+        if distance_to_player > self.proficiencies.melee_attack.distance * 0.9:  # It is not close enough to attack
             attack_control = self.actor.getAnimControl("attack")
             if not attack_control.isPlaying():
                 self.walking = True
@@ -119,7 +117,7 @@ class TrainingDummyMonster(Monster):
         self.update_health_visual()
 
     def update_health_visual(self):
-        color_shade = self.proficiencies.health.current /self.proficiencies.health.value
+        color_shade = self.proficiencies.health.current /self.proficiencies.health.maximum
         if color_shade < 0:
             color_shade = 0
         # The parameters here are red, green, blue, and alpha
@@ -139,9 +137,7 @@ class SlidingCrateMonster(Monster):
                          model_animation={"stand": "Models/Misc/trap-stand",
                                           "walk": "Models/Misc/trap-walk"},
                          **kwargs)
-        self.attributes.agility = 5
-        self.attributes.strength = 1
-        self.attributes.vitality = 1
+        self.proficiencies.movement.base_speed = 10
         self.invulnerable = True
 
         self.moveInX = False

@@ -1,6 +1,5 @@
 from app.objects.abilities import Abilities
 from app.objects.attributes import Attributes
-from app.objects.game_objects import GameObject
 from app.objects.proficiencies import Proficiencies
 from app.objects.constants_physics import FRICTION
 from app.objects.physicals import PhysicalObject
@@ -39,10 +38,10 @@ class CharacterObject(PhysicalObject):
         super().update(time_delta, *args, **kwargs)
 
         speed = self.velocity.length()
-        if speed > self.proficiencies.movement_speed_base.value:
+        if speed > self.proficiencies.movement.speed:
             self.velocity.normalize()
-            self.velocity *= self.proficiencies.movement_speed_base.value
-            speed = self.proficiencies.movement_speed_base.value
+            self.velocity *= self.proficiencies.movement.speed
+            speed = self.proficiencies.movement.speed
 
         if not self.walking:
             friction_value = FRICTION * time_delta
@@ -69,8 +68,8 @@ class CharacterObject(PhysicalObject):
         previous_health = self.proficiencies.health.current
 
         self.proficiencies.health.current += health_delta
-        if self.proficiencies.health.current > self.proficiencies.health.value:
-            self.proficiencies.health.current = self.proficiencies.health.value
+        if self.proficiencies.health.current > self.proficiencies.health.maximum:
+            self.proficiencies.health.current = self.proficiencies.health.maximum
         if self.proficiencies.health.current <= 0 < previous_health:
             print(f"{self.__class__.__name__} died.")
         print(f"{self.__class__.__name__} is now at {self.proficiencies.health.current} health.")
