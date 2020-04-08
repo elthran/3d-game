@@ -16,6 +16,7 @@ class CharacterObject(PhysicalObject):
         abilities (Abilities): All abilities accessible by the character.
         walking (bool): If the character is currently walking (mainly used for display).
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.character_type = None

@@ -274,5 +274,3 @@ class MeleeAttack(Ability):
                 self.wait_timer = random.uniform(0.5, 0.7)
                 self.progress_timer = self.progress_time
                 self.character.actor.play("attack")
-
-

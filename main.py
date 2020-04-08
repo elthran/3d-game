@@ -132,9 +132,9 @@ class Game(ShowBase):
         # "relief" is the style of its backing geometry, whether with a border that's raised, sunken, flat, or ridged--
         # or with no backing at all.
         gameOverScreen = DirectDialog(frameSize=(-0.7, 0.7, -0.7, 0.7),
-                                           fadeScreen=0.4,
-                                           relief=DGG.FLAT,
-                                           frameTexture = "UI/stoneFrame.png") # The image of the box
+                                      fadeScreen=0.4,
+                                      relief=DGG.FLAT,
+                                      frameTexture="UI/stoneFrame.png")  # The image of the box
         gameOverScreen.hide()
         # Create a "label"--a GUI item that shows
         # text, an image, or both:
@@ -153,16 +153,16 @@ class Game(ShowBase):
                             parent=gameOverScreen,
                             scale=0.1,
                             pos=(0, 0, 0.2),
-                            text_font = self.font,
-                    relief = None)
+                            text_font=self.font,
+                            relief=None)
 
         # Similarly, but with no text--for now!
         finalScoreLabel = DirectLabel(text="",
-                                           parent=gameOverScreen,
-                                           scale=0.07,
-                                           pos=(0, 0, 0),
-                                           text_font=self.font,
-                                   relief = None)
+                                      parent=gameOverScreen,
+                                      scale=0.07,
+                                      pos=(0, 0, 0),
+                                      text_font=self.font,
+                                      relief=None)
 
         btn = DirectButton(text="Restart",
                            command=self.start_game,
@@ -192,14 +192,14 @@ class Game(ShowBase):
                            text_pos=(0, -0.2))
         btn.setTransparency(True)
 
-        return gameOverScreen,finalScoreLabel
+        return gameOverScreen, finalScoreLabel
 
     def create_game_welcome_menu(self):
         # Make a black backdrop that covers the whole window
         # Note the parent
         titleMenuBackdrop = DirectFrame(frameColor=(0, 0, 0, 1),
-                                             frameSize=(-1, 1, -1, 1),
-                                             parent=render2d)
+                                        frameSize=(-1, 1, -1, 1),
+                                        parent=render2d)
 
         # The menu itself
         titleMenu = DirectFrame(frameColor=(1, 1, 1, 0))
