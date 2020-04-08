@@ -13,13 +13,14 @@ class Monster(CharacterObject):
         super().__init__(*args, **kwargs)
         self.character_type = CharacterTypes.MONSTER
         # Set the collider for basic collisions. Monsters can collide into Heroes and Monsters
-        self.collider.node().setFromCollideMask(Masks.MASK_HERO_AND_MONSTER)
+        self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)
         self.collider.node().setIntoCollideMask(Masks.MONSTER)
 
         self.abilities = Abilities(character=self, enemies=Masks.HERO, allies=Masks.MONSTER)
 
         self.spawn_sound = loader.loadSfx("Sounds/enemySpawn.ogg")
         self.spawn_sound.play()
+        self.death_sound = loader.loadSfx("Sounds/enemyDie.ogg")
 
     def update(self, time_delta, *args, hero=None, **kwargs):
         """

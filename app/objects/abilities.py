@@ -1,4 +1,5 @@
-from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4, CollisionSegment
+from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec3, PointLight, Vec4, CollisionSegment, \
+    AudioSound
 
 from app.objects.game_objects import GameObject
 from .constants import Masks
@@ -33,28 +34,33 @@ class Ability(GameObject):
         super().__init__(*args, **kwargs)
 
         self.character = character
-        self.enemies = enemies
-        self.allies = allies
-        self.model = None  # The basic model of the animation
-        self.model_collision = None  # The model when the animation collides with another object
         self.damage = None
         self.damage_per_second = None
-        self.from_collider_attack = self.enemies
-        self.from_collider_protect = self.allies
-        self.from_collider_all = Masks.MASK_HERO_AND_MONSTER
-        self.into_collider = Masks.NONE
-
         self.enabled = False
         # Physics
         self.collision_node = None
         self.collision_node_path = None
         self.collision_node_queue = None
+        self.from_collider_attack = enemies
+        self.from_collider_protect = allies
+        self.from_collider_all = Masks.HERO_AND_MONSTER
+        self.into_collider = Masks.NONE
         # Display
         self.beam_hit_light_node_path = None
+        self.model = None  # The basic model of the animation
+        self.model_collision = None  # The model when the animation collides with another object
+        # Sound
+        self.sound_miss_file_path = None
+        self.sound_hit_file_path = None
+        self.sound_damage_file_path = None
+        self.sound_miss = None
+        self.sound_hit = None
+        self.sound_damage = None
 
     def enable(self):
         self.enabled = True
         self.physics_init()
+        self.sound_init()
         self.display_init()
 
     def disable(self):
@@ -62,7 +68,7 @@ class Ability(GameObject):
 
     def physics_init(self):
         if self.collision_node is None:
-            raise ValueError("Can't initiate physics model with no declared collision_node.")
+            raise ValueError("Can't initiate physics model without a declared collision_node.")
         collision_node = CollisionNode(self.__class__.__name__)
         collision_node.addSolid(self.collision_node)
         collision_node.setFromCollideMask(self.from_collider_attack)
@@ -77,10 +83,26 @@ class Ability(GameObject):
     def display_init(self):
         pass
 
+    def sound_init(self):
+        if self.sound_miss_file_path:
+            self.sound_miss = loader.loadSfx(self.sound_miss_file_path)
+            self.sound_miss.setLoop(True)
+        if self.sound_hit_file_path:
+            self.sound_hit = loader.loadSfx(self.sound_hit_file_path)
+            self.sound_hit.setLoop(True)
+        if self.sound_damage_file_path:
+            self.sound_damage = loader.loadSfx(self.sound_damage_file_path)
+
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
 
     def remove_object_from_world(self):
+        if self.sound_hit and self.sound_hit.status() == AudioSound.PLAYING:
+            self.sound_hit.stop()
+        if self.sound_miss and self.sound_miss.status() == AudioSound.PLAYING:
+            self.sound_miss.stop()
+        if self.sound_damage and self.sound_damage.status() == AudioSound.PLAYING:
+            self.sound_damage.stop()
         if self.collision_node is not None and self.model_collision is not None:
             self.model_collision.removeNode()
             base.cTrav.removeCollider(self.collision_node_path)
@@ -97,6 +119,10 @@ class FrostRay(Ability):
         self.description = "Shoot a ray of frost at an enemy."
         self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
         self.damage_per_second = 5.0
+        # Sound files
+        self.sound_miss_file_path = "Sounds/laser_miss.wav"
+        self.sound_hit_file_path = "Sounds/laserHit.ogg"
+        self.sound_damage_file_path = "Sounds/FemaleDmgNoise.ogg"
 
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
@@ -163,6 +189,11 @@ class FrostRay(Ability):
                 self.model.setSy(beam_length)
                 self.model.show()
                 if scored_hit:
+                    if self.sound_miss.status() == AudioSound.PLAYING:
+                        self.sound_miss.stop()
+                    if self.sound_hit.status() != AudioSound.PLAYING:
+                        self.sound_hit.play()
+
                     self.model_collision.show()
                     self.model_collision.setPos(hit_pos)
                     self.beam_hit_light_node_path.setPos(hit_pos + Vec3(0, 0, 0.5))
@@ -172,6 +203,10 @@ class FrostRay(Ability):
                         # illuminates things
                         render.setLight(self.beam_hit_light_node_path)
                 else:
+                    if self.sound_hit.status() == AudioSound.PLAYING:
+                        self.sound_hit.stop()
+                    if self.sound_miss.status() != AudioSound.PLAYING:
+                        self.sound_miss.play()
                     # If the light has been set here, remove it
                     # See explanation in the tutorial-text below...
                     if render.hasLight(self.beam_hit_light_node_path):
@@ -181,6 +216,10 @@ class FrostRay(Ability):
                     self.model_collision.hide()
 
         else:
+            if self.sound_hit.status() == AudioSound.PLAYING:
+                self.sound_hit.stop()
+            if self.sound_miss.status() == AudioSound.PLAYING:
+                self.sound_miss.stop()
             if render.hasLight(self.beam_hit_light_node_path):
                 # Clear the light from the scene, so that it
                 # no longer illuminates anything

@@ -14,7 +14,7 @@ class Hero(CharacterObject):
         super().__init__(*args, **kwargs)
         self.character_type = CharacterTypes.HERO
         # Set the collider for Hero's to be Hero.
-        self.collider.node().setFromCollideMask(Masks.MASK_HERO_AND_MONSTER)
+        self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)
         self.collider.node().setIntoCollideMask(Masks.HERO)
 
         self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
