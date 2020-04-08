@@ -32,9 +32,6 @@ class CharacterObject(PhysicalObject):
         # If the model is in the process of dying
         self.dying = False
         self.dead = False
-        # Possible sounds to play
-        self.spawn_sound = None
-        self.death_sound = None
 
     def refresh(self):
         """Sets cooldowns to zero and fully restores proficiencies to their maximum values.
@@ -127,7 +124,8 @@ class CharacterObject(PhysicalObject):
             self.dying = True
             self.velocity = Vec3(0, 0, 0)
             self.actor.play("die")
-            if self.death_sound is not None:
-                self.death_sound.play()
+            if self.sound_dying is not None:
+                self.sound_dying.play()
         elif self.character_type == CharacterTypes.HERO:
-            pass
+            # If the game-over screen isn't showing...
+            self.dead = True

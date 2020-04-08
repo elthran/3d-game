@@ -1,4 +1,4 @@
-from panda3d.core import CollisionNode, CollisionSphere, Vec3
+from panda3d.core import CollisionNode, CollisionSphere, Vec2, Vec3
 
 from direct.actor.Actor import Actor
 
@@ -25,13 +25,18 @@ class PhysicalObject(GameObject):
                  model_name=None,
                  model_animation=None,
                  damage_taken_model=None,
+                 sound_spawning=None,
+                 sound_dying=None,
+                 sound_take_damage=None,
+                 sound_walking=None,
+                 sound_walking_collision=None,
                  **kwargs):
         super().__init__(*args, **kwargs)
         assert starting_position, 'Requires starting_position keyword.'
 
+        # Physics and models
         self.actor = self.create_actor(starting_position, model_name, model_animation)
         self.collider = self.create_collider()
-
         base.pusher.addCollider(self.collider, self.actor)
         base.cTrav.addCollider(self.collider, base.pusher)
 
@@ -41,7 +46,23 @@ class PhysicalObject(GameObject):
         self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
         self.damage_taken_model_timer = 0
         self.damage_taken_model_duration = 0.15
+
+        # A reference vector, used to determine which way to face the Actor.
+        # Since the character faces along the y-direction, we use the y-axis.
+        self.y_vector = Vec2(0, 1)
+
         self.invulnerable = False
+
+        # Sound
+        self.sound_spawning = loader.loadSfx(sound_spawning) if sound_spawning else None
+        if self.sound_spawning is not None:
+            self.sound_spawning.play()
+        self.sound_dying = loader.loadSfx(sound_dying) if sound_dying else None
+        self.sound_take_damage = loader.loadSfx(sound_take_damage) if sound_take_damage else None
+        self.sound_walking = loader.loadSfx(sound_walking) if sound_walking else None
+        if self.sound_walking:
+            self.sound_walking.setLoop(True)
+        self.sound_walking_collision = loader.loadSfx(sound_walking_collision) if sound_walking_collision else None
 
     @staticmethod
     def create_actor(starting_position, model_name, model_animation):

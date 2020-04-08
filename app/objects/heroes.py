@@ -1,4 +1,4 @@
-from panda3d.core import Vec3, Vec2, Plane, Point3, TextNode
+from panda3d.core import Vec2, Vec3, Plane, Point3, TextNode
 from direct.gui.OnscreenText import OnscreenText
 
 from app.objects.abilities import Abilities
@@ -26,7 +26,6 @@ class Hero(CharacterObject):
         self.mouse_position_3d = None
         self.last_mouse_pos = Vec2(0, 0)
         self.ground_plane = Plane(Vec3(0, 0, 1), Vec3(0, 0, 0))
-        self.y_vector = Vec2(0, 1)
 
         # Move to User class
         self.scoreUI = OnscreenText(text="0",

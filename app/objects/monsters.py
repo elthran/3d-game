@@ -1,7 +1,5 @@
 from math import copysign
 
-from panda3d.core import Vec2
-
 from app.objects.abilities import Abilities
 from app.objects.constants import CharacterTypes, Masks
 from app.objects.characters import CharacterObject
@@ -17,10 +15,6 @@ class Monster(CharacterObject):
         self.collider.node().setIntoCollideMask(Masks.MONSTER)
 
         self.abilities = Abilities(character=self, enemies=Masks.HERO, allies=Masks.MONSTER)
-
-        self.spawn_sound = loader.loadSfx("Sounds/enemySpawn.ogg")
-        self.spawn_sound.play()
-        self.death_sound = loader.loadSfx("Sounds/enemyDie.ogg")
 
     def update(self, time_delta, *args, hero=None, **kwargs):
         """
@@ -76,19 +70,16 @@ class TrainingDummyMonster(Monster):
                                           "attack": "Models/Misc/simpleEnemy-attack",
                                           "die": "Models/Misc/simpleEnemy-die",
                                           "spawn": "Models/Misc/simpleEnemy-spawn"},
+                         sound_spawning="Sounds/enemySpawn.ogg",
+                         sound_dying="Sounds/enemyDie.ogg",
                          **kwargs)
+
         self.proficiencies.melee_attack.base_attack_range = 0.75
         self.proficiencies.melee_attack.base_damage = 0
         self.proficiencies.movement.base_speed = 7
         self.acceleration = 100.0
         self.refresh()
         self.abilities.melee_attack.enable()
-
-        # A reference vector, used to determine
-        # which way to face the Actor.
-        # Since the character faces along
-        # the y-direction, we use the y-axis.
-        self.y_vector = Vec2(0, 1)
 
     def run_logic(self, player, time_delta):
         """
