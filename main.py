@@ -115,6 +115,9 @@ class Game(ShowBase):
         self.menus = Menus(self)
         self.game_started = False
 
+    def choose_hero(self):
+        self.menus.select_character.show_menu()
+
     def start_game(self):
         self.cleanup()
         [menu.hide_menu() for menu in self.menus]
