@@ -13,13 +13,13 @@ class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
-        music = loader.loadMusic("Music/background_theme.mp3")
-        music.setLoop(True)
-        # I find this piece to be pretty loud,
-        # so I've turned the volume down a lot.
-        # Adjust to your settings and preferences!
-        music.setVolume(0.5)
-        music.play()
+        self.default_font = loader.loadFont("Fonts/Wbxkomik.ttf")
+
+        background_music = loader.loadMusic("Music/background_theme.mp3")
+        background_music.setLoop(True)
+        # I find this piece to be pretty loud, so I've turned the volume down a lot.
+        background_music.setVolume(0.5)
+        background_music.play()
 
         self.disableMouse()
 
@@ -106,160 +106,18 @@ class Game(ShowBase):
             self.spawn_points.append(Vec3(coord, -7.0, 0))
             self.spawn_points.append(Vec3(coord, 7.0, 0))
 
-        self.font = loader.loadFont("Fonts/Wbxkomik.ttf")
-        # Make a button. Parameters used (that are new): "command" is the method to run when the button is pressed
-        self.buttonImages = (
-            loader.loadTexture("UI/UIButton.png"),  # Normal
-            loader.loadTexture("UI/UIButtonPressed.png"),  # Pressed
-            loader.loadTexture("UI/UIButtonHighlighted.png"),  # Rollover
-            loader.loadTexture("UI/UIButtonDisabled.png")  # Disabled
-        )
         self.kill_count = OnscreenText(text="Experience Points: 0",
                                        pos=(0.3, 0.8),
                                        mayChange=True,
                                        align=TextNode.ALeft,
-                                       font=self.font)
+                                       font=self.default_font)
 
-        self.gameOverScreen, self.finalScoreLabel = self.create_game_over_menu()
-        self.titleMenu, self.titleMenuBackdrop = self.create_game_welcome_menu()
+        self.menus = Menus(self)
         self.game_started = False
-
-    def create_game_over_menu(self):
-        # Make a "DirectDialog" object. Parameters used:
-        # "frameSize" is how big the GUI element is
-        # "fadeScreen" is a semi-transparent cover that DirectDialog can put "behind" itself,
-        # to obscure the backdrop and prevent mouse-clicks and key-presses from getting through.
-        # "relief" is the style of its backing geometry, whether with a border that's raised, sunken, flat, or ridged--
-        # or with no backing at all.
-        gameOverScreen = DirectDialog(frameSize=(-0.7, 0.7, -0.7, 0.7),
-                                      fadeScreen=0.4,
-                                      relief=DGG.FLAT,
-                                      frameTexture="UI/stoneFrame.png")  # The image of the box
-        gameOverScreen.hide()
-        # Create a "label"--a GUI item that shows
-        # text, an image, or both:
-        #
-        # Parameters used:
-        # "text" is, well, the text to display
-        #
-        # "parent" is the node of which this GUI item
-        #   should be a child. We're attaching it to our
-        #   "gameOverScreen" in this case.
-        #
-        # "pos" is the location at which we
-        #   want it to appear. As with all nodes,
-        #   this is relative to its parent!
-        label = DirectLabel(text="Game Over!",
-                            parent=gameOverScreen,
-                            scale=0.1,
-                            pos=(0, 0, 0.2),
-                            text_font=self.font,
-                            relief=None)
-
-        # Similarly, but with no text--for now!
-        finalScoreLabel = DirectLabel(text="",
-                                      parent=gameOverScreen,
-                                      scale=0.07,
-                                      pos=(0, 0, 0),
-                                      text_font=self.font,
-                                      relief=None)
-
-        btn = DirectButton(text="Restart",
-                           command=self.start_game,
-                           pos=(-0.3, 0, -0.2),
-                           parent=gameOverScreen,
-                           scale=0.07,
-                           text_font=self.font,
-                           clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
-                           frameTexture=self.buttonImages,
-                           frameSize=(-4, 4, -1, 1),
-                           text_scale=0.75,
-                           relief=DGG.FLAT,
-                           text_pos=(0, -0.2))
-        btn.setTransparency(True)
-
-        btn = DirectButton(text="Quit",
-                           command=self.quit,
-                           pos=(0.3, 0, -0.2),
-                           parent=gameOverScreen,
-                           scale=0.07,
-                           text_font=self.font,
-                           clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
-                           frameTexture=self.buttonImages,
-                           frameSize=(-4, 4, -1, 1),
-                           text_scale=0.75,
-                           relief=DGG.FLAT,
-                           text_pos=(0, -0.2))
-        btn.setTransparency(True)
-
-        return gameOverScreen, finalScoreLabel
-
-    def create_game_welcome_menu(self):
-        # Make a black backdrop that covers the whole window
-        # Note the parent
-        titleMenuBackdrop = DirectFrame(frameColor=(0, 0, 0, 1),
-                                        frameSize=(-1, 1, -1, 1),
-                                        parent=render2d)
-
-        # The menu itself
-        titleMenu = DirectFrame(frameColor=(1, 1, 1, 0))
-
-        title = DirectLabel(text="Elthran's World",
-                            scale=0.1,
-                            pos=(0, 0, 0.9),
-                            parent=titleMenu,
-                            relief=None,
-                            text_font=self.font,
-                            text_fg=(1, 1, 1, 1))
-        title2 = DirectLabel(text="featuring",
-                             scale=0.07,
-                             pos=(0, 0, 0.79),
-                             parent=titleMenu,
-                             text_font=self.font,
-                             frameColor=(0.5, 0.5, 0.5, 1))
-        title3 = DirectLabel(text="Klondikemarlen",
-                             scale=0.08,
-                             pos=(0, 0, 0.65),
-                             parent=titleMenu,
-                             relief=None,
-                             text_font=self.font,
-                             text_fg=(1, 1, 1, 1))
-
-        btn = DirectButton(text="Start Game",
-                           command=self.start_game,
-                           pos=(0, 0, 0.2),
-                           parent=titleMenu,
-                           scale=0.1,
-                           text_font=self.font,
-                           clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
-                           frameTexture=self.buttonImages,
-                           frameSize=(-4, 4, -1, 1),
-                           text_scale=0.75,
-                           relief=DGG.FLAT,
-                           text_pos=(0, -0.2))
-        btn.setTransparency(True)
-
-        btn = DirectButton(text="Quit",
-                           command=self.quit,
-                           pos=(0, 0, -0.2),
-                           parent=titleMenu,
-                           scale=0.1,
-                           text_font=self.font,
-                           clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
-                           frameTexture=self.buttonImages,
-                           frameSize=(-4, 4, -1, 1),
-                           text_scale=0.75,
-                           relief=DGG.FLAT,
-                           text_pos=(0, -0.2))
-        btn.setTransparency(True)
-
-        return titleMenu, titleMenuBackdrop
 
     def start_game(self):
         self.cleanup()
-        self.gameOverScreen.hide()
-        self.titleMenu.hide()
-        self.titleMenuBackdrop.hide()
+        [menu.hide_menu() for menu in self.menus]
         self.game_started = True
 
         self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
@@ -299,13 +157,10 @@ class Game(ShowBase):
 
         elif self.hero.dead:
             # If the game-over screen isn't showing...
-            if self.gameOverScreen.isHidden():
-                # Show the game-over screen, and set the
-                # text of the "finalScoreLabel" object to
-                # reflect the player's score.
-                self.gameOverScreen.show()
-                self.finalScoreLabel["text"] = "Final score: " + str(self.hero.experience)
-                self.finalScoreLabel.setText()
+            if self.menus.game_over.screen.isHidden():
+                self.menus.game_over.screen.show()
+                self.menus.game_over.modifiable_score_label["text"] = "Final score: " + str(self.hero.experience)
+                self.menus.game_over.modifiable_score_label.setText()
 
         return task.cont
 
