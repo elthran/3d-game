@@ -133,6 +133,23 @@ class Hero(CharacterObject):
         GameObject.remove_object_from_world(self)
 
 
+class WarriorHero(Hero):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,
+                         model_name="Models/PandaChan/act_p3d_chan",
+                         model_animation={"stand": "Models/PandaChan/a_p3d_chan_idle",
+                                          "walk": "Models/PandaChan/a_p3d_chan_run"},
+                         damage_taken_model="Models/Misc/playerHit",
+                         **kwargs)
+        self.attributes.agility.level = 2
+        self.attributes.intellect.level = 0
+        self.attributes.strength.level = 3
+        self.attributes.vitality.level = 3
+        self.refresh()
+        # Turn the model to face the other way.
+        self.actor.getChild(0).setH(180)
+
+
 class WizardHero(Hero):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
@@ -141,9 +158,10 @@ class WizardHero(Hero):
                                           "walk": "Models/PandaChan/a_p3d_chan_run"},
                          damage_taken_model="Models/Misc/playerHit",
                          **kwargs)
-        self.attributes.agility.level = 3
-        self.attributes.strength.level = 3
-        self.attributes.vitality.level = 3
+        self.attributes.agility.level = 2
+        self.attributes.intellect.level = 3
+        self.attributes.strength.level = 1
+        self.attributes.vitality.level = 2
         self.refresh()
         self.abilities.frost_ray.enable()
         # Turn the model to face the other way.

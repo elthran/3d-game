@@ -118,7 +118,8 @@ class Game(ShowBase):
     def choose_hero(self):
         self.menus.select_character.show_menu()
 
-    def start_game(self):
+    def start_game(self, button_name):
+        print(f"Hero chosen is {button_name}")
         self.cleanup()
         [menu.hide_menu() for menu in self.menus]
         self.game_started = True

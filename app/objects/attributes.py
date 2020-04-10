@@ -4,6 +4,7 @@ class Attributes:
 
         self.character = character
         self.agility = Agility(character)
+        self.intellect = Intellect(character)
         self.strength = Strength(character)
         self.vitality = Vitality(character)
 
@@ -24,6 +25,13 @@ class Agility(Attribute):
         super().__init__(*args)
         self.name = 'Agility '
         self.description = 'How fast your character can walk.'
+
+
+class Intellect(Attribute):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.name = 'Intellect '
+        self.description = 'How much mana you have.'
 
 
 class Strength(Attribute):
