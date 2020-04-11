@@ -4,6 +4,7 @@ from panda3d.core import CollisionHandlerQueue, CollisionNode, CollisionRay, Vec
 from app.objects.game_objects import GameObject
 from .constants import Masks
 from .physicals import PhysicalObject
+from app.objects.interfaces import Command
 
 import math
 import random
@@ -112,7 +113,7 @@ class Ability(GameObject):
         PhysicalObject.remove_object_from_world(self)
 
 
-class FrostRay(Ability):
+class FrostRay(Ability, Command):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "Frost Ray"
@@ -159,10 +160,12 @@ class FrostRay(Ability):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, time_delta, *args, active=None, origin=None, **kwargs):
-        super().update(time_delta, *args, **kwargs)
-        assert active is not None, 'Requires active keyword.'
-        assert origin, 'Requires origin keyword.'
+    def update(self, operation, key, hero, time_delta):
+        super().update(time_delta)
+
+        origin = hero.actor.getPos()
+        active = key.on
+
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
         # runs down (and the scale is at its lowest), reset the timer

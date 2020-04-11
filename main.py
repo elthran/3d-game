@@ -126,6 +126,16 @@ class Game(ShowBase):
 
         self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
 
+        walk = Walk(4)
+        frost_ray = self.hero.abilities.frost_ray
+        self.hero.tool_belt.add_action(Keys.W, walk, walk.up)
+        self.hero.tool_belt.add_action(Keys.S, walk, walk.down)
+        self.hero.tool_belt.add_action(Keys.A, walk, walk.left)
+        self.hero.tool_belt.add_action(Keys.D, walk, walk.right)
+        self.hero.tool_belt.add_action(Keys.MOUSE_ONE, frost_ray, None)
+
+        # self.hero.tool_belt.switch_action(KEY.UP, KEY.E)
+
         self.hud = Hud(display_text="Hero Health",
                        maximum_value=self.hero.proficiencies.health.maximum)
         self.hud.show()

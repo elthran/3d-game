@@ -1,3 +1,14 @@
+class Keys:
+    W = "w"
+    S = "s"
+    A = "a"
+    D = "d"
+    UP = "up"
+    DOWN = "down"
+    LEFT = "left"
+    RIGHT = "right"
+    MOUSE_ONE = "mouse_one"
+
 class KeyMapper:
     class Key:
         OFF = 0
@@ -33,19 +44,23 @@ class KeyMapper:
         return cls(app)
 
     def __init__(self, app):
-        self.up = self.Key("up")
-        self.down = self.Key("down")
-        self.left = self.Key("left")
-        self.right = self.Key("right")
-        self.shoot = self.Key("shoot")
+        self.w = self.Key(Keys.W)
+        self.s = self.Key(Keys.S)
+        self.a = self.Key(Keys.A)
+        self.d = self.Key(Keys.D)
+        self.mouse_one = self.Key(Keys.MOUSE_ONE)
 
-        app.accept("w", self.up.set_on)
-        app.accept("w-up", self.up.set_off)
-        app.accept("s", self.down.set_on)
-        app.accept("s-up", self.down.set_off)
-        app.accept("a", self.left.set_on)
-        app.accept("a-up", self.left.set_off)
-        app.accept("d", self.right.set_on)
-        app.accept("d-up", self.right.set_off)
-        app.accept("mouse1", self.shoot.set_on)
-        app.accept("mouse1-up", self.shoot.set_off)
+        app.accept("w", self.w.set_on)
+        app.accept("w-up", self.w.set_off)
+        app.accept("s", self.s.set_on)
+        app.accept("s-up", self.s.set_off)
+        app.accept("a", self.a.set_on)
+        app.accept("a-up", self.a.set_off)
+        app.accept("d", self.d.set_on)
+        app.accept("d-up", self.d.set_off)
+        app.accept("mouse1", self.mouse_one.set_on)
+        app.accept("mouse1-up", self.mouse_one.set_off)
+
+
+    def __iter__(self):
+        return iter(vars(self).values())

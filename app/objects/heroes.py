@@ -3,6 +3,7 @@ from direct.gui.OnscreenText import OnscreenText
 
 from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
+from app.objects.tool_belt import ToolBelt
 from .constants import CharacterTypes, Masks
 from .characters import CharacterObject
 
@@ -18,6 +19,7 @@ class Hero(CharacterObject):
         self.collider.node().setIntoCollideMask(Masks.HERO)
 
         self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
+        self.tool_belt = ToolBelt()
 
         self.firing_vector = None
         self.firing_vector_2d = None
@@ -37,19 +39,6 @@ class Hero(CharacterObject):
         super().update(time_delta, *args, **kwargs)
         assert keys, 'Requires keys keyword.'
 
-        self.walking = False
-        if keys.up.on:
-            self.walking = True
-            self.velocity.addY(self.acceleration * time_delta)
-        if keys.down.on:
-            self.walking = True
-            self.velocity.addY(-self.acceleration * time_delta)
-        if keys.left.on:
-            self.walking = True
-            self.velocity.addX(-self.acceleration * time_delta)
-        if keys.right.on:
-            self.walking = True
-            self.velocity.addX(self.acceleration * time_delta)
 
         # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
         # Else set them to loop stand.
@@ -71,10 +60,7 @@ class Hero(CharacterObject):
 
         self.update_firing_vector_and_heading()
 
-        for ability in self.abilities.get_enabled():
-            ability.update(time_delta,
-                           active=keys.shoot.on,
-                           origin=self.actor.getPos())
+        self.tool_belt.execute(keys, self, time_delta)
 
         # Check if damage_taken_model can be refreshed
         if self.damage_taken_model and self.damage_taken_model_timer > 0:
