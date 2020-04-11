@@ -137,7 +137,8 @@ class CharacterSelectMenu(Menu):
                               text_fg=(1, 1, 1, 1))
 
         button = DirectButton(text="Wizard",
-                              command=self.hero_chosen("Wizard"),
+                              command=self.game.start_game,
+                              extraArgs=["Wizard"],
                               pos=(-0.8, 0, -0.5),
                               parent=self.menu,
                               scale=0.1,
@@ -151,7 +152,8 @@ class CharacterSelectMenu(Menu):
         button.setTransparency(True)
 
         button = DirectButton(text="Warrior",
-                              command=self.hero_chosen("Warrior"),
+                              command=self.game.start_game,
+                              extraArgs=["Warrior"],
                               pos=(0.8, 0, -0.5),
                               parent=self.menu,
                               scale=0.1,
@@ -169,9 +171,6 @@ class CharacterSelectMenu(Menu):
     def create_images(self):
         self.images = [OnscreenImage(image='resources/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
                        OnscreenImage(image='resources/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
-
-    def hero_chosen(self, button_name):
-        return lambda: self.game.start_game(button_name)
 
 
 class GameOverMenu(Menu):

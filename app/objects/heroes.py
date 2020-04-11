@@ -38,6 +38,7 @@ class Hero(CharacterObject):
         assert keys, 'Requires keys keyword.'
 
         self.walking = False
+
         if keys.up.on:
             self.walking = True
             self.velocity.addY(self.acceleration * time_delta)
@@ -50,6 +51,7 @@ class Hero(CharacterObject):
         if keys.right.on:
             self.walking = True
             self.velocity.addX(self.acceleration * time_delta)
+
 
         # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
         # Else set them to loop stand.
@@ -146,6 +148,7 @@ class WarriorHero(Hero):
         self.attributes.strength.level = 3
         self.attributes.vitality.level = 3
         self.refresh()
+        self.abilities.melee_attack.enable()
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
 

@@ -245,6 +245,7 @@ class MeleeAttack(Ability):
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)
+
         self.collision_node.setPointA(self.character.actor.getPos())
         self.collision_node.setPointB(self.character.actor.getPos()
                                       + self.character.actor.getQuat().getForward()

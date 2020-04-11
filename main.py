@@ -118,15 +118,16 @@ class Game(ShowBase):
     def choose_hero(self):
         self.menus.select_character.show_menu()
 
-    def start_game(self, button_name):
-        print(f"Hero chosen is {button_name}")
+    def start_game(self, hero_type):
         self.cleanup()
         [menu.hide_menu() for menu in self.menus]
         self.game_started = True
+        if hero_type == "Wizard":
+            self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
+        elif hero_type == "Warrior":
+            self.hero = WarriorHero(starting_position=Vec3(0, 0, 0))
 
-        self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
-
-        self.hud = Hud(display_text="Hero Health",
+        self.hud = Hud(display_text=f"{self.hero.__class__.__name__}'s Health",
                        maximum_value=self.hero.proficiencies.health.maximum)
         self.hud.show()
 

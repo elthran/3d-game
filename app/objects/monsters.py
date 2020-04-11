@@ -103,7 +103,7 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
-            self.abilities.melee_attack.update(time_delta)
+            self.abilities.melee_attack.update(time_delta, active=True)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...
