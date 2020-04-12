@@ -68,6 +68,7 @@ default-directnotify-level warning
 model-path    $MAIN_DIR
 model-path    $THIS_PRC_DIR/..
 model-path    $THIS_PRC_DIR/../models
+model-path    $THIS_PRC_DIR/../models
 
 # This enable the automatic creation of a TK window when running
 # Direct.

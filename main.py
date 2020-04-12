@@ -15,7 +15,7 @@ class Game(ShowBase):
 
         self.default_font = loader.loadFont("Fonts/Wbxkomik.ttf")
 
-        background_music = loader.loadMusic("Music/background_theme.mp3")
+        background_music = loader.loadMusic("Music/background_theme.ogg")
         background_music.setLoop(True)
         # I find this piece to be pretty loud, so I've turned the volume down a lot.
         background_music.setVolume(0.5)

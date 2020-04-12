@@ -1,9 +1,11 @@
 from panda3d.core import Vec2, Vec3, Plane, Point3, TextNode
 from direct.gui.OnscreenText import OnscreenText
 
+from app.objects.movement import Walk
 from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
-from .constants import CharacterTypes, Masks
+from app.objects.tool_belt import ToolBelt, NullCommand
+from .constants import CharacterTypes, Masks, Keys
 from .characters import CharacterObject
 
 import random
@@ -18,6 +20,15 @@ class Hero(CharacterObject):
         self.collider.node().setIntoCollideMask(Masks.HERO)
 
         self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
+        self.tool_belt = ToolBelt()
+
+        walk = Walk(4)
+        self.tool_belt.add_action(Keys.W, walk, walk.up)
+        self.tool_belt.add_action(Keys.S, walk, walk.down)
+        self.tool_belt.add_action(Keys.A, walk, walk.left)
+        self.tool_belt.add_action(Keys.D, walk, walk.right)
+        self.tool_belt.add_action(Keys.MOUSE_LEFT, NullCommand(), None)
+        self.tool_belt.add_action(Keys.MOUSE_RIGHT, NullCommand(), None)
 
         self.firing_vector = None
         self.firing_vector_2d = None
@@ -36,22 +47,6 @@ class Hero(CharacterObject):
     def update(self, time_delta, *args, keys=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
         assert keys, 'Requires keys keyword.'
-
-        self.walking = False
-
-        if keys.up.on:
-            self.walking = True
-            self.velocity.addY(self.acceleration * time_delta)
-        if keys.down.on:
-            self.walking = True
-            self.velocity.addY(-self.acceleration * time_delta)
-        if keys.left.on:
-            self.walking = True
-            self.velocity.addX(-self.acceleration * time_delta)
-        if keys.right.on:
-            self.walking = True
-            self.velocity.addX(self.acceleration * time_delta)
-
 
         # This can be improved. If the character is walking go through the two possibilites (was standing/ was walking)
         # Else set them to loop stand.
@@ -73,10 +68,7 @@ class Hero(CharacterObject):
 
         self.update_firing_vector_and_heading()
 
-        for ability in self.abilities.get_enabled():
-            ability.update(time_delta,
-                           active=keys.shoot.on,
-                           origin=self.actor.getPos())
+        self.tool_belt.execute(keys, self, time_delta)
 
         # Check if damage_taken_model can be refreshed
         if self.damage_taken_model and self.damage_taken_model_timer > 0:
@@ -167,5 +159,6 @@ class WizardHero(Hero):
         self.attributes.vitality.level = 2
         self.refresh()
         self.abilities.frost_ray.enable()
+        self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.frost_ray, None)
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)

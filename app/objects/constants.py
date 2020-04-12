@@ -5,6 +5,19 @@ class WorldPhysics:
     FRICTION = 150.0
 
 
+class Keys:
+    W = "w"
+    S = "s"
+    A = "a"
+    D = "d"
+    UP = "up"
+    DOWN = "down"
+    LEFT = "left"
+    RIGHT = "right"
+    MOUSE_LEFT = "mouse_left"
+    MOUSE_RIGHT = "mouse_right"
+
+
 class CharacterTypes:
     HERO = "Hero"
     MONSTER = "Monster"

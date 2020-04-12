@@ -169,8 +169,8 @@ class CharacterSelectMenu(Menu):
         self.hide_menu()
 
     def create_images(self):
-        self.images = [OnscreenImage(image='resources/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
-                       OnscreenImage(image='resources/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
+        self.images = [OnscreenImage(image='Models/resources/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
+                       OnscreenImage(image='Models/resources/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
 
 
 class GameOverMenu(Menu):
