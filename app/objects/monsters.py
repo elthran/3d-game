@@ -64,14 +64,14 @@ class Monster(CharacterObject):
 class TrainingDummyMonster(Monster):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="Models/Misc/simpleEnemy",
-                         model_animation={"stand": "Models/Misc/simpleEnemy-stand",
-                                          "walk": "Models/Misc/simpleEnemy-walk",
-                                          "attack": "Models/Misc/simpleEnemy-attack",
-                                          "die": "Models/Misc/simpleEnemy-die",
-                                          "spawn": "Models/Misc/simpleEnemy-spawn"},
-                         sound_spawning="Sounds/enemySpawn.ogg",
-                         sound_dying="Sounds/enemyDie.ogg",
+                         model_name="resources/models/Misc/simpleEnemy",
+                         model_animation={"stand": "resources/models/Misc/simpleEnemy-stand",
+                                          "walk": "resources/models/Misc/simpleEnemy-walk",
+                                          "attack": "resources/models/Misc/simpleEnemy-attack",
+                                          "die": "resources/models/Misc/simpleEnemy-die",
+                                          "spawn": "resources/models/Misc/simpleEnemy-spawn"},
+                         sound_spawning="resources/sounds/enemySpawn.ogg",
+                         sound_dying="resources/sounds/enemyDie.ogg",
                          **kwargs)
 
         self.proficiencies.melee_attack.base_attack_range = 0.75
@@ -131,9 +131,9 @@ class TrainingDummyMonster(Monster):
 class SlidingCrateMonster(Monster):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="Models/Misc/trap",
-                         model_animation={"stand": "Models/Misc/trap-stand",
-                                          "walk": "Models/Misc/trap-walk"},
+                         model_name="resources/models/Misc/trap",
+                         model_animation={"stand": "resources/models/Misc/trap-stand",
+                                          "walk": "resources/models/Misc/trap-walk"},
                          **kwargs)
         self.proficiencies.movement.base_speed = 10
         self.invulnerable = True

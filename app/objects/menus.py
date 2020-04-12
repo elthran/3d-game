@@ -19,10 +19,10 @@ class Menu:
 
         self.font = self.game.default_font
 
-        self.buttonImages = (loader.loadTexture("UI/UIButton.png"),  # Normal
-                             loader.loadTexture("UI/UIButtonPressed.png"),  # Pressed
-                             loader.loadTexture("UI/UIButtonHighlighted.png"),  # Rollover
-                             loader.loadTexture("UI/UIButtonDisabled.png"))  # Disabled
+        self.buttonImages = (loader.loadTexture("resources/images/UIButton.png"),  # Normal
+                             loader.loadTexture("resources/images/UIButtonPressed.png"),  # Pressed
+                             loader.loadTexture("resources/images/UIButtonHighlighted.png"),  # Rollover
+                             loader.loadTexture("resources/images/UIButtonDisabled.png"))  # Disabled
 
         self.backdrop = None
 
@@ -95,7 +95,7 @@ class TitleMenu(Menu):
                               parent=self.menu,
                               scale=0.1,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,
@@ -109,7 +109,7 @@ class TitleMenu(Menu):
                               parent=self.menu,
                               scale=0.1,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,
@@ -143,7 +143,7 @@ class CharacterSelectMenu(Menu):
                               parent=self.menu,
                               scale=0.1,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,
@@ -158,7 +158,7 @@ class CharacterSelectMenu(Menu):
                               parent=self.menu,
                               scale=0.1,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,
@@ -169,8 +169,8 @@ class CharacterSelectMenu(Menu):
         self.hide_menu()
 
     def create_images(self):
-        self.images = [OnscreenImage(image='Models/resources/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
-                       OnscreenImage(image='Models/resources/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
+        self.images = [OnscreenImage(image='resources/images/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
+                       OnscreenImage(image='resources/images/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
 
 
 class GameOverMenu(Menu):
@@ -179,7 +179,7 @@ class GameOverMenu(Menu):
         self.screen = DirectDialog(frameSize=(-0.7, 0.7, -0.7, 0.7),
                                    fadeScreen=0.4,
                                    relief=DGG.FLAT,
-                                   frameTexture="UI/stoneFrame.png")
+                                   frameTexture="resources/images/stoneFrame.png")
 
         label = DirectLabel(text="Game Over!",
                             parent=self.screen,
@@ -201,7 +201,7 @@ class GameOverMenu(Menu):
                               parent=self.screen,
                               scale=0.07,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,
@@ -215,7 +215,7 @@ class GameOverMenu(Menu):
                               parent=self.screen,
                               scale=0.07,
                               text_font=self.font,
-                              clickSound=loader.loadSfx("Sounds/UIClick.ogg"),
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=self.buttonImages,
                               frameSize=(-4, 4, -1, 1),
                               text_scale=0.75,

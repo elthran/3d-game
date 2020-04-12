@@ -121,13 +121,13 @@ class FrostRay(Ability, Command):
         self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
         self.damage_per_second = 5.0
         # Sound files
-        self.sound_miss_file_path = "Sounds/laser_miss.wav"
-        self.sound_hit_file_path = "Sounds/laserHit.ogg"
-        self.sound_damage_file_path = "Sounds/FemaleDmgNoise.ogg"
+        self.sound_miss_file_path = "resources/sounds/laser_miss.wav"
+        self.sound_hit_file_path = "resources/sounds/laserHit.ogg"
+        self.sound_damage_file_path = "resources/sounds/FemaleDmgNoise.ogg"
 
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
-        self.model = loader.loadModel("Models/Misc/bambooLaser")
+        self.model = loader.loadModel("resources/models/Misc/bambooLaser")
         self.model.reparentTo(self.character.actor)
         self.model.setZ(1.5)
         # This prevents lights from affecting this particular node
@@ -136,7 +136,7 @@ class FrostRay(Ability, Command):
         self.model.hide()
 
         '''The laser's hit animation'''
-        self.model_collision = loader.loadModel("Models/Misc/bambooLaserHit")
+        self.model_collision = loader.loadModel("resources/models/Misc/bambooLaserHit")
         self.model_collision.reparentTo(render)
         self.model_collision.setZ(1.5)
         self.model_collision.setLightOff()

@@ -19,7 +19,7 @@ class User:
 
     def set_hero(self, Hero):
         for i in range(Hero.max_health):
-            icon = OnscreenImage(image="UI/health.png",
+            icon = OnscreenImage(image="resources/images/health.png",
                                  pos=(-1.275 + i * 0.075, 0, 0.95),
                                  scale=0.04)
             # Since our icons have transparent regions, we'll activate transparency.

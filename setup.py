@@ -23,11 +23,7 @@ setup(
             ],
             'plugins': ['pandagl', 'p3openal_audio'],
             'include_patterns': [
-                'Models/**/*',
-                'Fonts/*',
-                'Sounds/*',
-                'UI/*',
-                'Music/*',
+                'resources/**/*',
                 '**/*.py',
                 'Config.prc'
             ],

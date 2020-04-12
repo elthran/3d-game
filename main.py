@@ -13,9 +13,9 @@ class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
-        self.default_font = loader.loadFont("Fonts/Wbxkomik.ttf")
+        self.default_font = loader.loadFont("resources/fonts/Wbxkomik.ttf")
 
-        background_music = loader.loadMusic("Music/background_theme.ogg")
+        background_music = loader.loadMusic("resources/music/background_theme.ogg")
         background_music.setLoop(True)
         # I find this piece to be pretty loud, so I've turned the volume down a lot.
         background_music.setVolume(0.5)
@@ -35,7 +35,7 @@ class Game(ShowBase):
 
         render.setShaderAuto()
 
-        # self.environment = loader.loadModel("Models/Misc/environment")
+        # self.environment = loader.loadModel("resources/models/Misc/environment")
         # self.environment.reparentTo(render)
 
         self.camera.setPos(0, -20, 32)

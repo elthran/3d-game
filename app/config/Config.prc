@@ -65,10 +65,7 @@ default-directnotify-level warning
 # a special variable that indicates the same directory as this
 # particular Config.prc file.
 
-model-path    $MAIN_DIR
-model-path    $THIS_PRC_DIR/..
-model-path    $THIS_PRC_DIR/../models
-model-path    $THIS_PRC_DIR/../models
+model-path    $MAIN_DIR/resources/models
 
 # This enable the automatic creation of a TK window when running
 # Direct.
