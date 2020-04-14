@@ -127,9 +127,15 @@ class Game(ShowBase):
         elif hero_type == "Warrior":
             self.hero = WarriorHero(starting_position=Vec3(0, 0, 0))
 
-        self.hud = Hud(display_text=f"{self.hero.__class__.__name__}'s Health",
-                       maximum_value=self.hero.proficiencies.health.maximum)
-        self.hud.show()
+        self.hud_health = Hud(maximum_value=self.hero.proficiencies.health.maximum,
+                              pos=(-0.2, 0, base.a2dTop - 0.15),
+                              barColor=(0, 1, 0.25, 1))
+        self.hud_health.show()
+
+        self.hud_mana = Hud(maximum_value=self.hero.proficiencies.mana.maximum,
+                            pos=(-0.2, 0, base.a2dTop - 0.3),
+                            barColor=(0, 0, 2.55, 1))
+        self.hud_mana.show()
 
         self.walking_enemies = []
         self.sliding_enemies = []
@@ -158,7 +164,12 @@ class Game(ShowBase):
             self.kill_count.setText(f"Experience Points: {self.hero.experience}")
 
             # Make sure to update visuals after all effects, or the frame might look weird
-            self.hud.update_bar_value(self.hero.proficiencies.health.current)
+            self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
+            self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
+            if self.hero.proficiencies.mana.regeneration_cooldown_timer <= 0:
+                self.hero.proficiencies.mana.current += 0.01
+            else:
+                self.hero.proficiencies.mana.regeneration_cooldown_timer -= 1
 
         elif self.hero.dead:
             # If the game-over screen isn't showing...

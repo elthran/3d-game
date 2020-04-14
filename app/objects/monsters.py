@@ -1,4 +1,7 @@
+import random
 from math import copysign
+
+from panda3d.core import Vec3
 
 from app.objects.abilities import Abilities
 from app.objects.constants import CharacterTypes, Masks
@@ -80,6 +83,8 @@ class TrainingDummyMonster(Monster):
         self.acceleration = 100.0
         self.refresh()
         self.abilities.melee_attack.enable()
+        self.abilities.frost_ray.enable()
+        self.random_int = random.randint(1,10)
 
     def run_logic(self, player, time_delta):
         """
@@ -92,6 +97,12 @@ class TrainingDummyMonster(Monster):
         distance_to_player = vector_to_player_2D.length()
         vector_to_player_2D.normalize()
         heading = self.y_vector.signedAngleDeg(vector_to_player_2D)
+        self.firing_vector = Vec3(0,0,0) - self.actor.getPos()
+
+        # if self.random_int > 5:
+        #     self.abilities.frost_ray.update(None, True, self, time_delta)
+        # else:
+        #     self.abilities.frost_ray.update(None, False, self, time_delta)
 
         if distance_to_player > self.proficiencies.melee_attack.distance * 0.9:  # It is not close enough to attack
             attack_control = self.actor.getAnimControl("attack")
@@ -103,7 +114,7 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
-            self.abilities.melee_attack.update(time_delta, active=True)
+            self.abilities.melee_attack.update(None, None, self, time_delta)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...

@@ -5,6 +5,7 @@ class Proficiencies:
         self.character = character
         self.melee_attack = MeleeAttack(character)
         self.health = Health(character)
+        self.mana = Mana(character)
         self.movement = Movement(character)
 
     def refresh(self):
@@ -63,6 +64,32 @@ class Health(CharacterProficiency):
     @property
     def maximum(self):
         return self.base_maximum + self.bonus_maximum + self.character.attributes.vitality.level * 1
+
+
+class Mana(CharacterProficiency):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.name = 'Mana'
+        self.description = 'Determines maximum mana.'
+        self.base_maximum = 5
+        self.bonus_maximum = 0
+        self._current = self.base_maximum
+        self.base_regeneration = 0.1
+        self.bonus_regeneration = 0
+        self.regeneration_cooldown_time = 10
+        self.regeneration_cooldown_timer = 0
+
+    @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, new_value):
+        self._current = max(min(self.maximum, new_value), 0)
+
+    @property
+    def maximum(self):
+        return self.base_maximum + self.bonus_maximum + self.character.attributes.intellect.level * 3
 
 
 class Movement(CharacterProficiency):

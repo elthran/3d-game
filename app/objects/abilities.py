@@ -121,7 +121,7 @@ class FrostRay(Ability, Command):
         self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
         self.damage_per_second = 5.0
         # Sound files
-        self.sound_miss_file_path = "resources/sounds/laser_miss.wav"
+        self.sound_miss_file_path = "resources/sounds/laserNoHit.ogg"
         self.sound_hit_file_path = "resources/sounds/laserHit.ogg"
         self.sound_damage_file_path = "resources/sounds/FemaleDmgNoise.ogg"
 
@@ -164,7 +164,17 @@ class FrostRay(Ability, Command):
         super().update(time_delta)
 
         origin = hero.actor.getPos()
-        active = key.on
+        try:
+            active = key.on
+        except:
+            active = key
+        if active:
+            if self.character.proficiencies.mana.current <= 0:
+                active = False
+            else:
+                self.character.proficiencies.mana.current -= 0.05
+                self.character.proficiencies.mana.regeneration_cooldown_timer = \
+                    self.character.proficiencies.mana.regeneration_cooldown_time
 
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
@@ -246,8 +256,10 @@ class MeleeAttack(Ability):
         self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
 
-    def update(self, time_delta, *args, **kwargs):
-        super().update(time_delta, *args, **kwargs)
+    def update(self, operation, key, hero, time_delta):
+        super().update(time_delta)
+        if key and not key.on:
+            return
 
         self.collision_node.setPointA(self.character.actor.getPos())
         self.collision_node.setPointB(self.character.actor.getPos()
@@ -259,6 +271,8 @@ class MeleeAttack(Ability):
             if self.progress_timer <= 0:
                 # The animation has finished. See if the attack hit with a collision.
                 damage = self.character.proficiencies.melee_attack.damage
+                if self.character.__class__.__name__ == "WizardHero":
+                    print(f"{self.character.__class__.__name__} is attacking for {damage} damage")
                 if self.collision_node_queue.getNumEntries() > 0:
                     self.collision_node_queue.sortEntries()
                     segment_hit = self.collision_node_queue.getEntry(0)

@@ -130,10 +130,9 @@ class Hero(CharacterObject):
 class WarriorHero(Hero):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="resources/models/PandaChan/act_p3d_chan",
-                         model_animation={"stand": "resources/models/PandaChan/a_p3d_chan_idle",
-                                          "walk": "resources/models/PandaChan/a_p3d_chan_run"},
-                         damage_taken_model="resources/models/Misc/playerHit",
+                         model_name="resources/models/TestHero/eggy",
+                         model_animation={"stand": "resources/models/TestHero/eggy_animation",
+                                          "walk": "resources/models/TestHero/eggy_animation"},
                          **kwargs)
         self.attributes.agility.level = 2
         self.attributes.intellect.level = 0
@@ -141,6 +140,7 @@ class WarriorHero(Hero):
         self.attributes.vitality.level = 3
         self.refresh()
         self.abilities.melee_attack.enable()
+        self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
 
@@ -159,6 +159,8 @@ class WizardHero(Hero):
         self.attributes.vitality.level = 2
         self.refresh()
         self.abilities.frost_ray.enable()
-        self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.frost_ray, None)
+        self.abilities.melee_attack.enable()
+        self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
+        self.tool_belt.add_action(Keys.MOUSE_RIGHT, self.abilities.frost_ray, None)
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
