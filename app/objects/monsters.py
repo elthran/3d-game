@@ -17,6 +17,8 @@ class Monster(CharacterObject):
         self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)
         self.collider.node().setIntoCollideMask(Masks.MONSTER)
 
+        self.experience_awarded_on_death = 1
+
         self.abilities = Abilities(character=self, enemies=Masks.HERO, allies=Masks.MONSTER)
 
     def update(self, time_delta, *args, hero=None, **kwargs):
@@ -80,6 +82,7 @@ class TrainingDummyMonster(Monster):
         self.proficiencies.melee_attack.base_attack_range = 0.75
         self.proficiencies.melee_attack.base_damage = 0
         self.proficiencies.movement.base_speed = 7
+        self.proficiencies.health.regeneration_base_amount = 0
         self.acceleration = 100.0
         self.refresh()
         self.abilities.melee_attack.enable()
@@ -114,7 +117,7 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
-            self.abilities.melee_attack.update(None, None, self, time_delta)
+            self.abilities.melee_attack.update(None, True, self, time_delta)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...

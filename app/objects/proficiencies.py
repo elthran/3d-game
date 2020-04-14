@@ -10,6 +10,7 @@ class Proficiencies:
 
     def refresh(self):
         self.health.current = self.health.maximum
+        self.mana.current = self.mana.maximum
 
 
 class CharacterProficiency:
@@ -21,6 +22,46 @@ class CharacterProficiency:
     @property
     def __str__(self):
         raise ValueError('Must be set in child class.')
+
+
+class GenericSpendableResource(CharacterProficiency):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.name = 'GenericSpendableResource'
+        self.description = 'GenericSpendableResource Description'
+        self.base_maximum = 5
+        self.bonus_maximum = 0
+        self._current = self.base_maximum
+        self.regeneration_base_amount = 0.01
+        self.regeneration_bonus_amount = 0
+        self.regeneration_cooldown_maximum = 100
+        self._regeneration_cooldown_current = 0
+
+    @property
+    def current(self):
+        return self._current
+
+    @current.setter
+    def current(self, new_value):
+        if new_value < self.current:
+            self.regeneration_cooldown_current = self.regeneration_cooldown_maximum
+        self._current = max(min(self.maximum, new_value), 0)
+
+    @property
+    def regeneration_cooldown_current(self):
+        return self._regeneration_cooldown_current
+
+    @regeneration_cooldown_current.setter
+    def regeneration_cooldown_current(self, new_value):
+        self._regeneration_cooldown_current = max(min(self.regeneration_cooldown_maximum, new_value), 0)
+
+    @property
+    def maximum(self):
+        return self.base_maximum + self.bonus_maximum
+
+    @property
+    def regeneration_amount(self):
+        return self.regeneration_base_amount + self.regeneration_bonus_amount
 
 
 class MeleeAttack(CharacterProficiency):
@@ -42,50 +83,24 @@ class MeleeAttack(CharacterProficiency):
         return self.base_range + self.bonus_range
 
 
-class Health(CharacterProficiency):
+class Health(GenericSpendableResource):
     def __init__(self, *args):
         super().__init__(*args)
         self.name = 'Health'
         self.description = 'Determines maximum health.'
         self.base_maximum = 5
-        self.bonus_maximum = 0
-        self._current = self.base_maximum
-        self.base_regeneration = 0.1
-        self.bonus_regeneration = 0
-
-    @property
-    def current(self):
-        return self._current
-
-    @current.setter
-    def current(self, new_value):
-        self._current = max(min(self.maximum, new_value), 0)
 
     @property
     def maximum(self):
         return self.base_maximum + self.bonus_maximum + self.character.attributes.vitality.level * 1
 
 
-class Mana(CharacterProficiency):
+class Mana(GenericSpendableResource):
     def __init__(self, *args):
         super().__init__(*args)
         self.name = 'Mana'
         self.description = 'Determines maximum mana.'
         self.base_maximum = 5
-        self.bonus_maximum = 0
-        self._current = self.base_maximum
-        self.base_regeneration = 0.1
-        self.bonus_regeneration = 0
-        self.regeneration_cooldown_time = 10
-        self.regeneration_cooldown_timer = 0
-
-    @property
-    def current(self):
-        return self._current
-
-    @current.setter
-    def current(self, new_value):
-        self._current = max(min(self.maximum, new_value), 0)
 
     @property
     def maximum(self):

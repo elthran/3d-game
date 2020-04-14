@@ -25,9 +25,9 @@ class Walk(Command):
         hero.velocity.addX(hero.acceleration * time_delta)
         hero.walking = True
 
-    def update(self, operation, key, hero, time_delta):
+    def update(self, operation, key_state, hero, time_delta):
         self.states_seen += 1
-        if key.on:
+        if key_state:
             self.operations.append(operation)
 
         if self.states_seen == self.max_states:

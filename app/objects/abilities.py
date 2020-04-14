@@ -160,21 +160,11 @@ class FrostRay(Ability, Command):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, operation, key, hero, time_delta):
+    def update(self, operation, key_state, hero, time_delta):
         super().update(time_delta)
 
         origin = hero.actor.getPos()
-        try:
-            active = key.on
-        except:
-            active = key
-        if active:
-            if self.character.proficiencies.mana.current <= 0:
-                active = False
-            else:
-                self.character.proficiencies.mana.current -= 0.05
-                self.character.proficiencies.mana.regeneration_cooldown_timer = \
-                    self.character.proficiencies.mana.regeneration_cooldown_time
+        active = key_state if (self.character.proficiencies.mana.current > 0) else 0
 
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
@@ -187,6 +177,7 @@ class FrostRay(Ability, Command):
         self.model_collision.setScale(math.sin(self.beam_hit_timer * 3.142 / self.beam_hit_pulse_rate) * 0.4 + 0.9)
 
         if active:
+            self.character.proficiencies.mana.current -= 0.05
             if self.collision_node_queue.getNumEntries() > 0:
                 scored_hit = False
                 self.collision_node_queue.sortEntries()
@@ -256,9 +247,9 @@ class MeleeAttack(Ability):
         self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
 
-    def update(self, operation, key, hero, time_delta):
+    def update(self, operation, key_state, hero, time_delta):
         super().update(time_delta)
-        if key and not key.on:
+        if not key_state:
             return
 
         self.collision_node.setPointA(self.character.actor.getPos())

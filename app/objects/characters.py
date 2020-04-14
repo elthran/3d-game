@@ -20,8 +20,6 @@ class CharacterObject(PhysicalObject):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.character_type = None
-        self.experience = 0
-        self.experience_awarded_on_death = 1
         self.attributes = Attributes(character=self)
         self.proficiencies = Proficiencies(character=self)
         self.abilities = None
@@ -48,6 +46,16 @@ class CharacterObject(PhysicalObject):
             time_delta (float): Time since the last frame?
         """
         super().update(time_delta, *args, **kwargs)
+
+        # Regenerate pools
+        if self.proficiencies.mana.regeneration_cooldown_current == 0:
+            self.proficiencies.mana.current += self.proficiencies.mana.regeneration_amount
+        else:
+            self.proficiencies.mana.regeneration_cooldown_current -= 1
+        if self.proficiencies.health.regeneration_cooldown_current == 0:
+            self.proficiencies.health.current += self.proficiencies.health.regeneration_amount
+        else:
+            self.proficiencies.health.regeneration_cooldown_current -= 1
 
         speed = self.velocity.length()
         if speed > self.proficiencies.movement.speed:
@@ -122,6 +130,7 @@ class CharacterObject(PhysicalObject):
     def die(self, damage_dealer):
         if self.character_type == CharacterTypes.MONSTER:
             damage_dealer.experience += self.experience_awarded_on_death
+            damage_dealer.kills += 1
             self.dying = True
             self.velocity = Vec3(0, 0, 0)
             self.actor.play("die")

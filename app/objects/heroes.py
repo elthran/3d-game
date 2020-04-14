@@ -22,6 +22,10 @@ class Hero(CharacterObject):
         self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
         self.tool_belt = ToolBelt()
 
+        self.kills = 0
+        self._level = 1
+        self._experience = 0
+
         walk = Walk(4)
         self.tool_belt.add_action(Keys.W, walk, walk.up)
         self.tool_belt.add_action(Keys.S, walk, walk.down)
@@ -43,6 +47,27 @@ class Hero(CharacterObject):
                                     pos=(-1.3, 0.825),
                                     mayChange=True,
                                     align=TextNode.ALeft)
+
+    @property
+    def experience(self):
+        return self._experience
+
+    @experience.setter
+    def experience(self, new_value):
+        while new_value >= 2:
+            self.level += 1
+            new_value -= 2
+        self._experience = new_value
+
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, new_value):
+        self.attributes.vitality.level += (new_value - self.level)
+        self.attributes.intellect.level += (new_value - self.level)
+        self._level = new_value
 
     def update(self, time_delta, *args, keys=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
@@ -154,7 +179,7 @@ class WizardHero(Hero):
                          damage_taken_model="resources/models/Misc/playerHit",
                          **kwargs)
         self.attributes.agility.level = 2
-        self.attributes.intellect.level = 3
+        self.attributes.intellect.level = 6
         self.attributes.strength.level = 1
         self.attributes.vitality.level = 2
         self.refresh()

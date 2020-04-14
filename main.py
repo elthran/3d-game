@@ -152,8 +152,8 @@ class Game(ShowBase):
             self.hero.update(time_delta, keys=self.key_mapper)
 
             self.spawn_timer -= time_delta
-            if self.spawn_timer <= 0 or len(self.walking_enemies) == 0:
-                self.spawn_timer = self.spawn_time
+            if self.spawn_timer <= 0 and len(self.walking_enemies) < self.hero.level:
+                self.spawn_timer = self.spawn_time / self.hero.level
                 self.spawn_enemy()
 
             [walking_enemy.update(time_delta, hero=self.hero) for walking_enemy in self.walking_enemies]
@@ -161,30 +161,27 @@ class Game(ShowBase):
 
             self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
 
-            self.kill_count.setText(f"Experience Points: {self.hero.experience}")
+            self.kill_count.setText(f"Level: {self.hero.level}. "
+                                    f"Experience Points: {self.hero.experience}. "
+                                    f"\nMax Health: {self.hero.proficiencies.health.maximum}")
 
             # Make sure to update visuals after all effects, or the frame might look weird
             self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
             self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
-            if self.hero.proficiencies.mana.regeneration_cooldown_timer <= 0:
-                self.hero.proficiencies.mana.current += 0.01
-            else:
-                self.hero.proficiencies.mana.regeneration_cooldown_timer -= 1
 
         elif self.hero.dead:
             # If the game-over screen isn't showing...
             if self.menus.game_over.screen.isHidden():
                 self.menus.game_over.screen.show()
-                self.menus.game_over.modifiable_score_label["text"] = "Final score: " + str(self.hero.experience)
+                self.menus.game_over.modifiable_score_label["text"] = "Total Kills: " + str(self.hero.kills)
                 self.menus.game_over.modifiable_score_label.setText()
 
         return task.cont
 
     def spawn_enemy(self):
-        if len(self.walking_enemies) < self.maximum_walking_enemies:
-            spawn_point = random.choice(self.spawn_points)
-            new_enemy = TrainingDummyMonster(starting_position=spawn_point)
-            self.walking_enemies.append(new_enemy)
+        spawn_point = random.choice(self.spawn_points)
+        new_enemy = TrainingDummyMonster(starting_position=spawn_point)
+        self.walking_enemies.append(new_enemy)
 
     def cleanup(self):
         for walking_enemy in self.walking_enemies:
