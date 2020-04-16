@@ -1,6 +1,7 @@
 from panda3d.core import CollisionNode, CollisionHandlerQueue, AudioSound
 
 from app.objects.constants import Masks
+from app.objects.damage import Damage
 from app.objects.game_objects import GameObject
 from app.objects.physicals import PhysicalObject
 
@@ -11,7 +12,6 @@ class Ability(GameObject):
 
         self.character = character
         self.damage = None
-        self.damage_per_second = None
         self.enabled = False
         # Physics
         self.collision_node = None
@@ -68,6 +68,9 @@ class Ability(GameObject):
             self.sound_hit.setLoop(True)
         if self.sound_damage_file_path:
             self.sound_damage = loader.loadSfx(self.sound_damage_file_path)
+
+    def get_damage(self, time_delta=None):
+        return Damage()
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)

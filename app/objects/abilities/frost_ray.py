@@ -3,6 +3,7 @@ from panda3d.core import CollisionRay, Vec3, PointLight, Vec4, AudioSound
 from math import sin
 from random import uniform
 from app.objects.abilities import Ability
+from app.objects.damage import Damage
 from app.objects.interfaces import Command
 
 
@@ -12,7 +13,6 @@ class FrostRay(Ability, Command):
         self.name = "Frost Ray"
         self.description = "Shoot a ray of frost at an enemy."
         self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
-        self.damage_per_second = 5.0
         # Sound files
         self.sound_miss_file_path = "resources/sounds/laserNoHit.ogg"
         self.sound_hit_file_path = "resources/sounds/laserHit.ogg"
@@ -53,6 +53,12 @@ class FrostRay(Ability, Command):
         # anything.
         # --------------------------------------------------------------
 
+    def get_damage(self, time_delta=None):
+        base_damage = 5
+        bonus_damage = self.character.attributes.intellect.level
+        total_damage = (base_damage + bonus_damage) * time_delta
+        return Damage(source=self.character, frost=total_damage)
+
     def update(self, operation, key, hero, time_delta):
         active = key.on if (self.character.proficiencies.mana.current > 0) else 0
         self.update_direct(active, hero, time_delta)
@@ -81,7 +87,7 @@ class FrostRay(Ability, Command):
                 hit_node_path = ray_hit.getIntoNodePath()  # Into node model name?
                 if hit_node_path.hasPythonTag("owner"):
                     hit_object = hit_node_path.getPythonTag("owner")
-                    hit_object.update_health(-(self.damage_per_second * time_delta), self.character)
+                    hit_object.take_damage(damage=self.get_damage(time_delta))
                     scored_hit = True
                 # Find out how long the beam is, and scale the beam-model accordingly.
                 beam_length = (hit_pos - self.character.actor.getPos()).length()

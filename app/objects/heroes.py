@@ -133,8 +133,8 @@ class Hero(CharacterObject):
         new_heading = self.y_vector.signedAngleDeg(self.firing_vector_2d)
         self.actor.setH(new_heading)
 
-    def update_health(self, health_delta, damage_dealer=None):
-        CharacterObject.update_health(self, health_delta, damage_dealer=damage_dealer)
+    def update_health(self, health_delta, source=None):
+        CharacterObject.update_health(self, health_delta, source=source)
 
         self.update_health_visual()
 
@@ -155,13 +155,14 @@ class Hero(CharacterObject):
 class WarriorHero(Hero):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="resources/models/TestHero/eggy",
-                         model_animation={"stand": "resources/models/TestHero/eggy_animation",
-                                          "walk": "resources/models/TestHero/eggy_animation"},
+                         model_name="resources/models/PandaChan/act_p3d_chan",
+                         model_animation={"stand": "resources/models/PandaChan/a_p3d_chan_idle",
+                                          "walk": "resources/models/PandaChan/a_p3d_chan_run"},
+                         damage_taken_model="resources/models/Misc/playerHit",
                          **kwargs)
         self.attributes.agility.level = 2
         self.attributes.intellect.level = 0
-        self.attributes.strength.level = 3
+        self.attributes.strength.level = 5
         self.attributes.vitality.level = 3
         self.refresh()
         self.abilities.melee_attack.enable()

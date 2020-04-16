@@ -17,7 +17,7 @@ class Monster(CharacterObject):
         self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)
         self.collider.node().setIntoCollideMask(Masks.MONSTER)
 
-        self.experience_awarded_on_death = 1
+        self.experience_rewarded = 1
 
         self.abilities = Abilities(character=self, enemies=Masks.HERO, allies=Masks.MONSTER)
 
@@ -124,8 +124,8 @@ class TrainingDummyMonster(Monster):
 
         self.actor.setH(heading)
 
-    def update_health(self, health_delta, damage_dealer=None):
-        CharacterObject.update_health(self, health_delta, damage_dealer=damage_dealer)
+    def update_health(self, health_delta, source=None):
+        CharacterObject.update_health(self, health_delta, source=source)
         self.update_health_visual()
 
     def update_health_visual(self):

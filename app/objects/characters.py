@@ -23,6 +23,7 @@ class CharacterObject(PhysicalObject):
         self.attributes = Attributes(character=self)
         self.proficiencies = Proficiencies(character=self)
         self.abilities = None
+        self.experience_rewarded = 0  # Experience earned for killing this unit
 
         # Possible animations to play
         self.walking = False
@@ -105,11 +106,21 @@ class CharacterObject(PhysicalObject):
         #             if not stand_control.isPlaying():
         #                 self.actor.loop("stand")
 
-    def update_health(self, health_delta, damage_dealer=None):
+    def take_damage(self, damage):
+        physical = damage.physical * (1 - self.proficiencies.resistances.physical.reduction)
+        magical = damage.magical * (1 - self.proficiencies.resistances.magical.reduction)
+        frost = damage.frost * (1 - self.proficiencies.resistances.frost.reduction)
+        total = physical + magical + frost
+        print(f'{damage.source.__class__.__name__} is hurting {self.__class__.__name__} for '
+              f'{physical} physical, {magical} magical, and {frost} frost damage.')
+        self.update_health(-total, source=damage.source)
+
+    def update_health(self, health_delta, source=None):
         """This is called anytime something will alter this character's health.
 
         Args:
             health_delta (float): How much to alter the health by.
+            source (Character):
         """
         if self.invulnerable:
             pass
@@ -120,17 +131,17 @@ class CharacterObject(PhysicalObject):
         if self.proficiencies.health.current > self.proficiencies.health.maximum:
             self.proficiencies.health.current = self.proficiencies.health.maximum
         if self.proficiencies.health.current <= 0 < previous_health:
-            self.die(damage_dealer)
+            self.die(source)
 
     def update_health_visual(self):
         """If a visual is required when the character's health changes.
         """
         pass
 
-    def die(self, damage_dealer):
+    def die(self, source):
         if self.character_type == CharacterTypes.MONSTER:
-            damage_dealer.experience += self.experience_awarded_on_death
-            damage_dealer.kills += 1
+            source.experience += self.experience_rewarded
+            source.kills += 1
             self.dying = True
             self.velocity = Vec3(0, 0, 0)
             self.actor.play("die")

@@ -3,20 +3,22 @@ from panda3d.core import CollisionSegment
 from random import uniform
 
 from app.objects.abilities import Ability
+from app.objects.damage import Damage
 
 
 class MeleeAttack(Ability):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = "Melee Attack"
-        # self.damage = Damage(physical=1)
-        # self.damage = Damage(physical_percent=50, damage=10)
-
         self.collision_node = CollisionSegment(0, 0, 0, 1, 0, 0)
         self.description = "Swing your currently equipped weapon at an enemy.."
         self.progress_time = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
         self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
+
+    def get_damage(self, time_delta=None):
+        return Damage(source=self.character,
+                      physical=self.character.proficiencies.melee_attack.damage)
 
     def update(self, operation, key, hero, time_delta):
         active = key.on
@@ -38,9 +40,6 @@ class MeleeAttack(Ability):
             self.progress_timer -= time_delta
             if self.progress_timer <= 0:
                 # The animation has finished. See if the attack hit with a collision.
-                damage = self.character.proficiencies.melee_attack.damage
-                if self.character.__class__.__name__ == "WizardHero":
-                    print(f"{self.character.__class__.__name__} is attacking for {damage} damage")
                 if self.collision_node_queue.getNumEntries() > 0:
                     self.collision_node_queue.sortEntries()
                     segment_hit = self.collision_node_queue.getEntry(0)
@@ -48,7 +47,7 @@ class MeleeAttack(Ability):
                     if hit_node_path.hasPythonTag("owner"):
                         # Apply damage!
                         hit_object = hit_node_path.getPythonTag("owner")
-                        hit_object.update_health(-damage, self.character)
+                        hit_object.take_damage(self.get_damage())
                 self.wait_timer = 1.0
         # If we're instead waiting to be allowed to attack...
         elif self.wait_timer > 0:

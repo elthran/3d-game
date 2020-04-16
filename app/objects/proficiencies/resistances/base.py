@@ -1,11 +1,9 @@
 from app.objects.proficiencies import Proficiency
 
 
-class Resistances(Proficiency):
+class Resistance(Proficiency):
     def __init__(self, *args):
         super().__init__(*args)
         self.name = 'Resistances'
         self.description = 'Determines resistances to different damage types.'
-        self.physical = 0
-        self.magical = 0
-        self.frost = 0
+        self.reduction = 0
