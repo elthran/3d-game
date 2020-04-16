@@ -103,9 +103,9 @@ class TrainingDummyMonster(Monster):
         self.firing_vector = Vec3(0,0,0) - self.actor.getPos()
 
         # if self.random_int > 5:
-        #     self.abilities.frost_ray.update(None, True, self, time_delta)
+        #     self.abilities.frost_ray.update_direct(True, self, time_delta)
         # else:
-        #     self.abilities.frost_ray.update(None, False, self, time_delta)
+        #     self.abilities.frost_ray.update_direct(False, self, time_delta)
 
         if distance_to_player > self.proficiencies.melee_attack.distance * 0.9:  # It is not close enough to attack
             attack_control = self.actor.getAnimControl("attack")
@@ -117,7 +117,7 @@ class TrainingDummyMonster(Monster):
                 self.attack_wait_timer = 0.2
                 self.attack_delay_timer = 0
         else:  # It is close enough to attack
-            self.abilities.melee_attack.update(None, True, self, time_delta)
+            self.abilities.melee_attack.update_direct(True, self, time_delta)
             self.walking = False
             self.velocity.set(0, 0, 0)
             # If we're waiting for an attack to land...

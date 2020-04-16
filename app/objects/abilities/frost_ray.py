@@ -53,12 +53,14 @@ class FrostRay(Ability, Command):
         # anything.
         # --------------------------------------------------------------
 
-    def update(self, operation, key_state, hero, time_delta):
+    def update(self, operation, key, hero, time_delta):
+        active = key.on if (self.character.proficiencies.mana.current > 0) else 0
+        self.update_direct(active, hero, time_delta)
+
+    def update_direct(self, active, hero, time_delta):
         super().update(time_delta)
 
         origin = hero.actor.getPos()
-        active = key_state if (self.character.proficiencies.mana.current > 0) else 0
-
         # In short, run a timer, and use the timer in a sine-function
         # to pulse the scale of the beam-hit model. When the timer
         # runs down (and the scale is at its lowest), reset the timer

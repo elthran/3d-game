@@ -11,7 +11,7 @@ class ToolBelt:
     def execute(self, keys, hero, time_delta):
         for key in keys:
             command_instance, operation = self.tools[key.name]
-            command_instance.update(operation, key.on, hero, time_delta)
+            command_instance.update(operation, key, hero, time_delta)
 
 
 class NullCommand(Command):

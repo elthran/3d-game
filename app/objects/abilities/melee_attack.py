@@ -18,9 +18,15 @@ class MeleeAttack(Ability):
         self.progress_timer = 0  # Init the timer
         self.wait_timer = 0.2  # How long to wait between attacks
 
-    def update(self, operation, key_state, hero, time_delta):
+    def update(self, operation, key, hero, time_delta):
+        active = key.on
+
+        self.update_direct(active, hero, time_delta)
+
+    def update_direct(self, active, hero, time_delta):
         super().update(time_delta)
-        if not key_state:
+
+        if not active:
             return
 
         self.collision_node.setPointA(self.character.actor.getPos())

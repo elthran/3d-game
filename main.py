@@ -95,7 +95,7 @@ class Game(ShowBase):
 
         # Set up some monster spawn points
         self.spawn_time = 5
-        self.spawn_timer = 5
+        self.spawn_timer = 1
         self.maximum_walking_enemies = 2
         self.spawn_points = []
         number_points_per_wall = 5

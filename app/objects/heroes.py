@@ -6,7 +6,7 @@ from app.objects.abilities import Abilities
 from app.objects.game_objects import GameObject
 from app.objects.tool_belt import ToolBelt, NullCommand
 from .constants import CharacterTypes, Masks, Keys
-from .characters import CharacterObject
+from app.objects.characters import CharacterObject
 
 import random
 
