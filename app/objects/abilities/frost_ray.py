@@ -4,6 +4,7 @@ from math import sin
 from random import uniform
 from app.objects.abilities import Ability
 from app.objects.damage import Damage
+from app.objects.effects.freeze import Freeze
 from app.objects.interfaces import Command
 
 
@@ -57,7 +58,9 @@ class FrostRay(Ability, Command):
         base_damage = 5
         bonus_damage = self.character.attributes.intellect.level
         total_damage = (base_damage + bonus_damage) * time_delta
-        return Damage(source=self.character, frost=total_damage)
+        return Damage(source=self.character,
+                      frost=total_damage,
+                      effects=[Freeze(source=self.character)])
 
     def update(self, operation, key, hero, time_delta):
         active = key.on if (self.character.proficiencies.mana.current > 0) else 0

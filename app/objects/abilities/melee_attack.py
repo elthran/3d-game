@@ -1,9 +1,10 @@
 from panda3d.core import CollisionSegment
 
-from random import uniform
+from random import uniform, randint
 
 from app.objects.abilities import Ability
 from app.objects.damage import Damage
+from app.objects.effects.stun import Stun
 
 
 class MeleeAttack(Ability):
@@ -17,8 +18,13 @@ class MeleeAttack(Ability):
         self.wait_timer = 0.2  # How long to wait between attacks
 
     def get_damage(self, time_delta=None):
+        if randint(1,5) == 3:
+            effects = [Stun(source=self)]
+        else:
+            effects = []
         return Damage(source=self.character,
-                      physical=self.character.proficiencies.melee_attack.damage)
+                      physical=self.character.proficiencies.melee_attack.damage,
+                      effects=effects)
 
     def update(self, operation, key, hero, time_delta):
         active = key.on

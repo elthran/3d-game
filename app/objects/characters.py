@@ -25,6 +25,8 @@ class CharacterObject(PhysicalObject):
         self.abilities = None
         self.experience_rewarded = 0  # Experience earned for killing this unit
 
+        self.active_effects = []
+
         # Possible animations to play
         self.walking = False
         # The starting animation (stand plays if no action is set)
@@ -47,6 +49,9 @@ class CharacterObject(PhysicalObject):
             time_delta (float): Time since the last frame?
         """
         super().update(time_delta, *args, **kwargs)
+
+        for effect in self.active_effects:
+            effect.update(time_delta)
 
         # Regenerate pools
         if self.proficiencies.mana.regeneration_cooldown_current == 0:
@@ -111,6 +116,8 @@ class CharacterObject(PhysicalObject):
         magical = damage.magical * (1 - self.proficiencies.resistances.magical.reduction)
         frost = damage.frost * (1 - self.proficiencies.resistances.frost.reduction)
         total = physical + magical + frost
+        for effect in damage.effects:
+            effect.apply(defender=self)
         print(f'{damage.source.__class__.__name__} is hurting {self.__class__.__name__} for '
               f'{physical} physical, {magical} magical, and {frost} frost damage.')
         self.update_health(-total, source=damage.source)
@@ -150,3 +157,6 @@ class CharacterObject(PhysicalObject):
         elif self.character_type == CharacterTypes.HERO:
             # If the game-over screen isn't showing...
             self.dead = True
+
+    def __str__(self):
+        return self.__class__.__name__
