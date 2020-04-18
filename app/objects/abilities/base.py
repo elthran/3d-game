@@ -89,3 +89,6 @@ class Ability(GameObject):
             render.clearLight(self.beam_hit_light_node_path)
             self.beam_hit_light_node_path.removeNode()
         PhysicalObject.remove_object_from_world(self)
+
+    def __str__(self):
+        return self.__class__.__name__

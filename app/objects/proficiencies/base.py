@@ -3,6 +3,7 @@ class Proficiency:
         self.character = character
         self.name = None  # Displayed to user
         self.description = None  # Displayed to user
+        self.override = None
 
     @property
     def __str__(self):

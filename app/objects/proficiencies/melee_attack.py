@@ -13,6 +13,10 @@ class MeleeAttack(Proficiency):
 
     @property
     def damage(self):
+        if self.override is not None:
+            print("Overridden!", self.override)
+            return self.override
+        print("not overriddden")
         return self.base_damage + self.bonus_damage + self.character.attributes.strength.level * 1
 
     @property

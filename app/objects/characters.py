@@ -117,7 +117,7 @@ class CharacterObject(PhysicalObject):
         frost = damage.frost * (1 - self.proficiencies.resistances.frost.reduction)
         total = physical + magical + frost
         for effect in damage.effects:
-            effect.apply(defender=self)
+            effect.apply(target=self)
         print(f'{damage.source.__class__.__name__} is hurting {self.__class__.__name__} for '
               f'{physical} physical, {magical} magical, and {frost} frost damage.')
         self.update_health(-total, source=damage.source)

@@ -10,6 +10,7 @@ class Keys:
     S = "s"
     A = "a"
     D = "d"
+    F = "f"
     UP = "up"
     DOWN = "down"
     LEFT = "left"

@@ -40,6 +40,7 @@ class KeyMapper:
         self.s = self.Key(Keys.S)
         self.a = self.Key(Keys.A)
         self.d = self.Key(Keys.D)
+        self.f = self.Key(Keys.F)
         self.mouse_left = self.Key(Keys.MOUSE_LEFT)
         self.mouse_right = self.Key(Keys.MOUSE_RIGHT)
 
@@ -51,6 +52,8 @@ class KeyMapper:
         app.accept("a-up", self.a.set_off)
         app.accept("d", self.d.set_on)
         app.accept("d-up", self.d.set_off)
+        app.accept("f", self.f.set_on)
+        app.accept("f-up", self.f.set_off)
         app.accept("mouse1", self.mouse_left.set_on)
         app.accept("mouse1-up", self.mouse_left.set_off)
         app.accept("mouse3", self.mouse_right.set_on)

@@ -188,5 +188,6 @@ class WizardHero(Hero):
         self.abilities.melee_attack.enable()
         self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         self.tool_belt.add_action(Keys.MOUSE_RIGHT, self.abilities.frost_ray, None)
+        self.tool_belt.add_action(Keys.F, self.abilities.mana_armour, None)
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
