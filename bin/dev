@@ -14,6 +14,10 @@ build () {
   python setup.py build_apps
 }
 
+test () {
+  ptw --runner "pytest --testmon"
+}
+
 launch () {
   build/manylinux1_x86_64/launch_game
 }
