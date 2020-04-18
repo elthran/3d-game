@@ -14,7 +14,6 @@ class ManaArmourEffect(Effect):
         print(f"{self.source} is protected by mana armour {target}")
 
     def update(self, time_delta):
-        print("still frozen...")
         self.duration -= time_delta
         if self.duration <= 0:
             self.end_effect()

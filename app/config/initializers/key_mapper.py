@@ -8,7 +8,23 @@ class KeyMapper:
 
         def __init__(self, name, state=OFF):
             self.name = name
+            self.old_state = state
             self.state = state
+
+        @property
+        def has_changed(self):
+            return self.old_state != self.state
+
+        @property
+        def on(self):
+            return self.state == self.ON
+
+        @property
+        def off(self):
+            return self.state == self.OFF
+
+        def update_old_state(self):
+            self.old_state = self.state
 
         def toggle(self):
             if self.state == self.ON:
@@ -21,15 +37,6 @@ class KeyMapper:
 
         def set_off(self):
             self.state = self.OFF
-
-        @property
-        def on(self):
-            return self.state == self.ON
-
-        @property
-        def off(self):
-            return self.state == self.OFF
-
 
     @classmethod
     def initialize(cls, app):

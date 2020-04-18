@@ -14,6 +14,7 @@ class FrostRay(Ability, Command):
         self.name = "Frost Ray"
         self.description = "Shoot a ray of frost at an enemy."
         self.collision_node = CollisionRay(0, 0, 0, 0, 1, 0)
+        self.exhausted = False
         # Sound files
         self.sound_miss_file_path = "resources/sounds/laserNoHit.ogg"
         self.sound_hit_file_path = "resources/sounds/laserHit.ogg"
@@ -64,6 +65,11 @@ class FrostRay(Ability, Command):
 
     def update(self, operation, key, hero, time_delta):
         active = key.on if (self.character.proficiencies.mana.current > 0) else 0
+        if (self.character.proficiencies.mana.current > self.character.proficiencies.mana.maximum * 0.5)\
+                or key.has_changed:
+            self.exhausted = False
+        if not key.has_changed and self.exhausted:
+            active = False
         self.update_direct(active, hero, time_delta)
 
     def update_direct(self, active, hero, time_delta):
@@ -82,6 +88,8 @@ class FrostRay(Ability, Command):
 
         if active:
             self.character.proficiencies.mana.current -= 0.05
+            if self.character.proficiencies.mana.current == 0:
+                self.exhausted = True
             if self.collision_node_queue.getNumEntries() > 0:
                 scored_hit = False
                 self.collision_node_queue.sortEntries()
