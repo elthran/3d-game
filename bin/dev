@@ -11,7 +11,7 @@ boot () {
 }
 
 build () {
-  python setup.py build_apps
+  python setup.py build_apps --platforms manylinux1_x86_64 "$@"
 }
 
 dist () {
