@@ -6,3 +6,5 @@ __pycache__
 build/
 .python-version
 .testmondata
+dist/
+*.egg-info/
