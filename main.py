@@ -224,6 +224,6 @@ class Game(ShowBase):
                     obj.update_health(-10)
 
 
-if __name__ in ['__main__', 'main']:
+if __name__ == "__main__":
     game = Game()
     game.run()
