@@ -11,6 +11,7 @@ pytest-testmon = "*"
 pytest-xdist = "*"
 pytest-watch = "*"
 pytest-spec = "*"
+pytest-mock = "*"
 
 [packages]
 Panda3D = "==1.10.5"
