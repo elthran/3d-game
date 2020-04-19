@@ -10,7 +10,11 @@ class ToolBelt:
 
     def execute(self, keys, hero, time_delta):
         for key in keys:
-            command_instance, operation = self.tools[key.name]
+            try:
+                command_instance, operation = self.tools[key.name]
+            except KeyError:
+                continue
+
             command_instance.update(operation, key, hero, time_delta)
             key.update_old_state()
 
