@@ -1,10 +1,15 @@
 import pytest
 
+class TestGame:
+    def test_init(game_instance):
+        assert game_instance is not None
 
-def test_basic_game_load(game_instance):
-    assert game_instance is not None
+
+    def test_start_game_with_Warrior(game_instance):
+        assert game_instance.start_game('Warrior')
 
 
-def test_update(mocker, game_instance):
-    task_mock = "<class 'panda3d.core.PythonTask'>"
-    assert game_instance.update(task_mock) is not None
+    def test_update_with_Warrior(mocker, game_instance):
+        game_instance.start_game('Warrior')
+        assert started_game.update(started_game.updateTask) is not None
+
