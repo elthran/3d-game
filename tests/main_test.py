@@ -1,9 +1,10 @@
 import pytest
 
-from importlib import import_module
 
-def test_basic_game_load():
-    import sys
-    main = import_module('main')
-    Game = main.Game
-    assert Game() is not None
+def test_basic_game_load(game_instance):
+    assert game_instance is not None
+
+
+def test_update(mocker, game_instance):
+    task_mock = "<class 'panda3d.core.PythonTask'>"
+    assert game_instance.update(task_mock) is not None
