@@ -18,6 +18,10 @@ test () {
   ptw --runner "python -m pytest --testmon --spec"
 }
 
+test-clean () {
+  rm -f .testmondata
+}
+
 launch () {
   build/manylinux1_x86_64/launch_game
 }
