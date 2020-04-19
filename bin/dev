@@ -14,6 +14,10 @@ build () {
   python setup.py build_apps
 }
 
+dist () {
+  python setup.py bdist_apps
+}
+
 test () {
   ptw --runner "python -m pytest --testmon --spec"
 }
