@@ -1,13 +1,26 @@
 import pytest
+from panda3d.core import loadPrcFileData
 
 from importlib import import_module
+
+
+import os
+
+TESTS_CONFIG_PRC = """
+model-path {main_dir}/resources/models
+"""
 
 
 @pytest.fixture(scope="session")
 def game_instance():
     main = import_module('main')
-    Game = main.Game
-    return Game()
+
+    # hack patch model path
+    main_dir = os.path.dirname(main.__file__)
+    loadPrcFileData(name='tests_Config.pry', data=TESTS_CONFIG_PRC.format(main_dir=main_dir))
+
+    game = main.Game()
+    return game
 
 
 @pytest.fixture(scope="function")
