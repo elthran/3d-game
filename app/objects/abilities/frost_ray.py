@@ -22,7 +22,7 @@ class FrostRay(Ability, Command):
 
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
-        self.model = loader.loadModel("resources/models/Misc/bambooLaser")
+        self.model = loader.loadModel("Misc/bambooLaser")
         self.model.reparentTo(self.character.actor)
         self.model.setZ(1.5)
         # This prevents lights from affecting this particular node
@@ -31,7 +31,7 @@ class FrostRay(Ability, Command):
         self.model.hide()
 
         '''The laser's hit animation'''
-        self.model_collision = loader.loadModel("resources/models/Misc/bambooLaserHit")
+        self.model_collision = loader.loadModel("Misc/bambooLaserHit")
         self.model_collision.reparentTo(render)
         self.model_collision.setZ(1.5)
         self.model_collision.setLightOff()

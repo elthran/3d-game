@@ -155,10 +155,10 @@ class Hero(CharacterObject):
 class WarriorHero(Hero):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="resources/models/PandaChan/act_p3d_chan",
-                         model_animation={"stand": "resources/models/PandaChan/a_p3d_chan_idle",
-                                          "walk": "resources/models/PandaChan/a_p3d_chan_run"},
-                         damage_taken_model="resources/models/Misc/playerHit",
+                         model_name="PandaChan/act_p3d_chan",
+                         model_animation={"stand": "PandaChan/a_p3d_chan_idle",
+                                          "walk": "PandaChan/a_p3d_chan_run"},
+                         damage_taken_model="Misc/playerHit",
                          **kwargs)
         self.attributes.agility.level = 2
         self.attributes.intellect.level = 0
@@ -174,10 +174,10 @@ class WarriorHero(Hero):
 class WizardHero(Hero):
     def __init__(self, *args, **kwargs):
         super().__init__(*args,
-                         model_name="resources/models/PandaChan/act_p3d_chan",
-                         model_animation={"stand": "resources/models/PandaChan/a_p3d_chan_idle",
-                                          "walk": "resources/models/PandaChan/a_p3d_chan_run"},
-                         damage_taken_model="resources/models/Misc/playerHit",
+                         model_name="PandaChan/act_p3d_chan",
+                         model_animation={"stand": "PandaChan/a_p3d_chan_idle",
+                                          "walk": "PandaChan/a_p3d_chan_run"},
+                         damage_taken_model="Misc/playerHit",
                          **kwargs)
         self.attributes.agility.level = 2
         self.attributes.intellect.level = 6
