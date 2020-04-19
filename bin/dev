@@ -15,7 +15,7 @@ build () {
 }
 
 test () {
-  ptw --runner "python -m pytest --testmon"
+  ptw --runner "python -m pytest --testmon --spec"
 }
 
 launch () {

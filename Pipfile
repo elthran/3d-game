@@ -10,6 +10,7 @@ pytest-flake8 = "*"
 pytest-testmon = "*"
 pytest-xdist = "*"
 pytest-watch = "*"
+pytest-spec = "*"
 
 [packages]
 Panda3D = "==1.10.5"
