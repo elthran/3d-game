@@ -2,7 +2,7 @@ from app import Keys
 from app.objects.heroes.interfaces import MutationInterface
 
 
-class Undying(MutationInterface):
+class Necromancer(MutationInterface):
     def __init__(self, hero):
         self.hero = hero
         self.add_abilities()

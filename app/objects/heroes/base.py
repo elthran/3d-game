@@ -168,3 +168,4 @@ class Hero(CharacterObject):
             ability.remove_object_from_world()
 
         GameObject.remove_object_from_world(self)
+

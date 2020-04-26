@@ -7,6 +7,7 @@ from app import *
 from app.objects.display_bars import Hud
 from app.objects.heroes.archetype.brute import Brute
 from app.objects.heroes.archetype.scholar import Scholar
+from app.objects.heroes.deity.undying import Undying
 
 MAX_FRAME_RATE = 1 / 60
 
@@ -128,10 +129,15 @@ class Game(ShowBase):
         self.cleanup()
         [menu.hide_menu() for menu in self.menus]
         self.game_started = True
+        self.hero = Hero(starting_position=Vec3(0, 0, 0))
         if hero_type == "Wizard":
-            self.hero = Scholar(starting_position=Vec3(0, 0, 0))
+            self.hero.archetype = Scholar(self.hero)
         elif hero_type == "Warrior":
-            self.hero = Brute(starting_position=Vec3(0, 0, 0))
+            self.hero.archetype = Brute(self.hero)
+        # if hero_type == "Wizard":
+        #     self.hero = Scholar(starting_position=Vec3(0, 0, 0))
+        # elif hero_type == "Warrior":
+        #     self.hero = Brute(starting_position=Vec3(0, 0, 0))
 
         self.hud_health = Hud(maximum_value=self.hero.proficiencies.health.maximum,
                               pos=(-0.2, 0, base.a2dTop - 0.15),
@@ -181,11 +187,14 @@ class Game(ShowBase):
             self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
             self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
 
-            # if self.hero.skill_points > 0:
-            #     self.is_paused = True
-            #     self.choose_skills()
+            if self.hero.skill_points > 0:
+                self.is_paused = True
+                self.choose_skills()
 
             # Add code so you become Undying
+            if self.hero.religion is None:
+                self.hero.religion = Undying(self.hero)
+                print(f"Hero is a {self.hero.religion}")
 
 
         elif self.hero.dead:

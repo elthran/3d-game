@@ -1,27 +1,21 @@
 from app import Keys
-from ..base import Hero
+from app.objects.heroes.interfaces import MutationInterface
 
 
-class Brute(Hero):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.attributes.strength.is_primary = True
-        self.archetype = "Brute"
-
-        self.attributes.agility.level = 2
-        self.attributes.intellect.level = 0
-        self.attributes.strength.level = 5
-        self.attributes.vitality.level = 3
-        # Now we should refresh the proficiencies. This might not be needed now?
-        self.refresh()
-
-        self.initialize()
-
-    def initialize(self):
+class Brute(MutationInterface):
+    def __init__(self, hero):
+        self.hero = hero
         self.add_abilities()
+        self.update_attributes()
 
     def add_abilities(self):
         pass
 
+    def update_attributes(self):
+        self.hero.attributes.strength.is_primary = True
+        self.hero.attributes.agility.level = 2
+        self.hero.attributes.intellect.level = 0
+        self.hero.attributes.strength.level = 5
+        self.hero.attributes.vitality.level = 3
+        self.hero.refresh()
 

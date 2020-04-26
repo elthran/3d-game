@@ -11,7 +11,7 @@ class Menus:
         self.select_skills = SkillPointSelectMenu(game)
 
     def __iter__(self):
-        return iter([self.title, self.game_over, self.select_character])
+        return iter([self.title, self.game_over, self.select_character, self.select_skills])
 
 
 class Menu:
