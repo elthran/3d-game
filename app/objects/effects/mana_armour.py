@@ -7,7 +7,7 @@ class ManaArmourEffect(Effect):
         self.name = "Mana Armour"
         self.description = "25% you lose mana instead of health when taking damage"
         self.status_name = "mana armoured"
-        self.duration = 2
+        self.duration = 10
 
     def apply(self, target):
         super().apply(target)

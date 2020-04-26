@@ -1,4 +1,4 @@
-from app.objects.proficiencies import Proficiency
+from .base import Proficiency
 
 
 class Movement(Proficiency):

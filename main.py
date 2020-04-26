@@ -5,6 +5,8 @@ from panda3d.core import CollisionCapsule
 
 from app import *
 from app.objects.display_bars import Hud
+from app.objects.heroes.archetype.brute import Brute
+from app.objects.heroes.archetype.scholar import Scholar
 
 MAX_FRAME_RATE = 1 / 60
 
@@ -114,18 +116,22 @@ class Game(ShowBase):
 
         self.menus = Menus(self)
         self.game_started = False
+        self.is_paused = False
 
     def choose_hero(self):
         self.menus.select_character.show_menu()
+
+    def choose_skills(self):
+        self.menus.select_skills.show_menu()
 
     def start_game(self, hero_type):
         self.cleanup()
         [menu.hide_menu() for menu in self.menus]
         self.game_started = True
         if hero_type == "Wizard":
-            self.hero = WizardHero(starting_position=Vec3(0, 0, 0))
+            self.hero = Scholar(starting_position=Vec3(0, 0, 0))
         elif hero_type == "Warrior":
-            self.hero = WarriorHero(starting_position=Vec3(0, 0, 0))
+            self.hero = Brute(starting_position=Vec3(0, 0, 0))
 
         self.hud_health = Hud(maximum_value=self.hero.proficiencies.health.maximum,
                               pos=(-0.2, 0, base.a2dTop - 0.15),
@@ -141,8 +147,14 @@ class Game(ShowBase):
         self.sliding_enemies = []
         self.deadEnemies = []
 
+    def learn_skills(self, skill):
+        [menu.hide_menu() for menu in self.menus]
+        self.hero.skill_points -= 1
+        print(f"Learned skill {skill}")
+        self.is_paused = False
+
     def update(self, task):
-        if not self.game_started:
+        if not self.game_started or self.is_paused:
             return task.cont
 
         # Get the amount of time since the last update
@@ -162,12 +174,19 @@ class Game(ShowBase):
             self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
 
             self.kill_count.setText(f"Level: {self.hero.level}. "
-                                    f"Experience Points: {self.hero.experience}. "
+                                    f"Experience Points: {self.hero.experience}/{self.hero.experience_maximum}. "
                                     f"\nMax Health: {self.hero.proficiencies.health.maximum}")
 
             # Make sure to update visuals after all effects, or the frame might look weird
             self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
             self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
+
+            # if self.hero.skill_points > 0:
+            #     self.is_paused = True
+            #     self.choose_skills()
+
+            # Add code so you become Undying
+
 
         elif self.hero.dead:
             # If the game-over screen isn't showing...

@@ -4,3 +4,4 @@ class Attribute:
         self.name = None
         self.description = None
         self.level = 1
+        self.is_primary = False

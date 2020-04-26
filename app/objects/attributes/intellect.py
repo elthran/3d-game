@@ -1,4 +1,4 @@
-from app.objects.attributes import Attribute
+from .base import Attribute
 
 
 class Intellect(Attribute):

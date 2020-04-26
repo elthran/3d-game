@@ -2,7 +2,7 @@ from panda3d.core import CollisionRay, Vec3, PointLight, Vec4, AudioSound
 
 from math import sin
 from random import uniform
-from app.objects.abilities import Ability
+from .base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.freeze import Freeze
 from app.objects.interfaces import Command

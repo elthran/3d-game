@@ -1,4 +1,4 @@
-from app.objects.abilities import Ability
+from .base import Ability
 from app.objects.effects.mana_armour import ManaArmourEffect
 
 
@@ -8,7 +8,7 @@ class ManaArmour(Ability):
         # health.add_observer(self)
         self.name = "Mana Armour"
         self.description = '25% chance to lose mana instead of health'
-        self.mana_cost = 5
+        self.mana_cost = 1
         self.duration = 10
 
     def update(self, operation, key, hero, time_delta):

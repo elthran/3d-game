@@ -2,7 +2,7 @@ from panda3d.core import CollisionSegment
 
 from random import uniform, randint
 
-from app.objects.abilities import Ability
+from .base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.stun import Stun
 

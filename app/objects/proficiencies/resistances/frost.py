@@ -1,4 +1,4 @@
-from app.objects.proficiencies.resistances import Resistance
+from .base import Resistance
 
 
 class Frost(Resistance):

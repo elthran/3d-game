@@ -2,9 +2,6 @@ from direct.gui.OnscreenImage import OnscreenImage
 from direct.gui.OnscreenText import OnscreenText
 from panda3d.core import TextNode
 
-from app.objects import PhysicalObject
-from app.objects.heroes import Hero
-
 
 class User:
     def __init__(self):

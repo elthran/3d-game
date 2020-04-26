@@ -8,6 +8,7 @@ class Menus:
         self.title = TitleMenu(game)
         self.game_over = GameOverMenu(game)
         self.select_character = CharacterSelectMenu(game)
+        self.select_skills = SkillPointSelectMenu(game)
 
     def __iter__(self):
         return iter([self.title, self.game_over, self.select_character])
@@ -154,6 +155,61 @@ class CharacterSelectMenu(Menu):
         button = DirectButton(text="Warrior",
                               command=self.game.start_game,
                               extraArgs=["Warrior"],
+                              pos=(0.8, 0, -0.5),
+                              parent=self.menu,
+                              scale=0.1,
+                              text_font=self.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=self.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+        button.setTransparency(True)
+
+        self.hide_menu()
+
+    def create_images(self):
+        self.images = [OnscreenImage(image='resources/images/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
+                       OnscreenImage(image='resources/images/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
+
+
+class SkillPointSelectMenu(Menu):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+        self.backdrop = DirectFrame(frameColor=(0, 0, 0, 1),
+                                    frameSize=(-1, 1, -1, 1),
+                                    parent=render2d)
+
+        self.menu = DirectFrame(frameColor=(1, 1, 1, 0))
+
+        title_1 = DirectLabel(text="Choose Skill",
+                              scale=0.1,
+                              pos=(0, 0, 0.9),
+                              parent=self.menu,
+                              relief=None,
+                              text_font=self.font,
+                              text_fg=(1, 1, 1, 1))
+
+        button = DirectButton(text="Skill 1",
+                              command=self.game.learn_skills,
+                              extraArgs=["skill 1"],
+                              pos=(-0.8, 0, -0.5),
+                              parent=self.menu,
+                              scale=0.1,
+                              text_font=self.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=self.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+        button.setTransparency(True)
+
+        button = DirectButton(text="Skill 2",
+                              command=self.game.learn_skills,
+                              extraArgs=["skill 2"],
                               pos=(0.8, 0, -0.5),
                               parent=self.menu,
                               scale=0.1,
