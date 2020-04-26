@@ -27,34 +27,17 @@ class GameOver(Menu):
                                                   text_font=self.font,
                                                   relief=None)
 
-        button = DirectButton(text="Restart",
-                              command=self.next_menu,
-                              extraArgs=["CharacterSelect"],
-                              pos=(-0.3, 0, -0.2),
-                              parent=self.screen,
-                              scale=0.07,
-                              text_font=self.font,
-                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
-                              frameTexture=self.buttonImages,
-                              frameSize=(-4, 4, -1, 1),
-                              text_scale=0.75,
-                              relief=DGG.FLAT,
-                              text_pos=(0, -0.2))
-        button.setTransparency(True)
-
-        button = DirectButton(text="Quit",
-                              command=self.exit_menu,
-                              pos=(0.3, 0, -0.2),
-                              parent=self.screen,
-                              scale=0.07,
-                              text_font=self.font,
-                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
-                              frameTexture=self.buttonImages,
-                              frameSize=(-4, 4, -1, 1),
-                              text_scale=0.75,
-                              relief=DGG.FLAT,
-                              text_pos=(0, -0.2))
-        button.setTransparency(True)
+        buttons = [
+            Button(menu=self,
+                   text="Restart",
+                   command=self.next_menu,
+                   extra_args=["CharacterSelect"],
+                   pos=(-0.3, 0, -0.2)),
+            Button(menu=self,
+                   text="Quit",
+                   command=self.exit_menu,
+                   pos=(0.3, 0, -0.2))
+        ]
 
         if self.hero is not None:
             self.modifiable_score_label["text"] = "Total Kills: " + str(self.hero.kills)
@@ -65,13 +48,11 @@ class GameOver(Menu):
     def enter_menu(self):
         self.show_menu()
 
-
     def next_menu(self, menu_name):
         self.hide_menu()
         if menu_name == "CharacterSelect":
             character_select = CharacterSelect(self.game)
             character_select.enter_menu()
-
 
     def exit_menu(self):
         self.hide_menu()

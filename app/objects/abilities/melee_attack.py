@@ -18,7 +18,7 @@ class MeleeAttack(Ability):
         self.wait_timer = 0.2  # How long to wait between attacks
 
     def get_damage(self, time_delta=None):
-        if randint(1,5) > 4:
+        if randint(1,10) == 10:
             effects = [Stun(source=self)]
         else:
             effects = []

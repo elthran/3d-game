@@ -13,64 +13,45 @@ class AttributePointSelect(Menu):
 
         self.menu = DirectFrame(frameColor=(1, 1, 1, 0))
 
-        title_1 = DirectLabel(text="Choose Skill",
-                              scale=0.1,
-                              pos=(0, 0, 0.9),
-                              parent=self.menu,
-                              relief=None,
-                              text_font=self.font,
-                              text_fg=(1, 1, 1, 1))
+        title = [
+            DirectLabel(text="Level Up!",
+                        scale=0.1,
+                        pos=(0, 0, 0.85),
+                        parent=self.menu,
+                        relief=None,
+                        text_font=self.font,
+                        text_fg=(1, 1, 1, 1)),
+            DirectLabel(text="Choose an Attribute to Increase",
+                        scale=0.08,
+                        pos=(0, 0, 0.75),
+                        parent=self.menu,
+                        relief=None,
+                        text_font=self.font,
+                        text_fg=(1, 1, 1, 1))
+        ]
 
-        button = DirectButton(text="Strength",
-                              command=self.exit_menu,
-                              extraArgs=["Strength"],
-                              pos=(-0.8, 0, -0.5),
-                              parent=self.menu,
-                              scale=0.1,
-                              text_font=self.font,
-                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
-                              frameTexture=self.buttonImages,
-                              frameSize=(-4, 4, -1, 1),
-                              text_scale=0.75,
-                              relief=DGG.FLAT,
-                              text_pos=(0, -0.2))
-        button.setTransparency(True)
-
-        button = DirectButton(text="Intelligence",
-                              command=self.exit_menu,
-                              extraArgs=["Intelligence"],
-                              pos=(0.8, 0, -0.5),
-                              parent=self.menu,
-                              scale=0.1,
-                              text_font=self.font,
-                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
-                              frameTexture=self.buttonImages,
-                              frameSize=(-4, 4, -1, 1),
-                              text_scale=0.75,
-                              relief=DGG.FLAT,
-                              text_pos=(0, -0.2))
-        button.setTransparency(True)
-
-        button = DirectButton(text="Vitality",
-                              command=self.exit_menu,
-                              extraArgs=["Vitality"],
-                              pos=(0, 0, -0.5),
-                              parent=self.menu,
-                              scale=0.1,
-                              text_font=self.font,
-                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
-                              frameTexture=self.buttonImages,
-                              frameSize=(-4, 4, -1, 1),
-                              text_scale=0.75,
-                              relief=DGG.FLAT,
-                              text_pos=(0, -0.2))
-        button.setTransparency(True)
+        buttons = [
+            Button(menu=self,
+                   text="Strength",
+                   command=self.exit_menu,
+                   extra_args=["Strength"],
+                   pos=(-0.9, 0, -0.5)),
+            Button(menu=self,
+                   text="Vitality",
+                   command=self.exit_menu,
+                   extra_args=["Vitality"],
+                   pos=(0, 0, -0.5)),
+            Button(menu=self,
+                   text="Intellect",
+                   command=self.exit_menu,
+                   extra_args=["Intellect"],
+                   pos=(0.9, 0, -0.5))
+        ]
 
         self.hide_menu()
 
     def create_images(self):
-        self.images = [OnscreenImage(image='resources/images/wizard.jpg', pos=(-0.8, 0, 0.1), scale=0.4),
-                       OnscreenImage(image='resources/images/warrior.jpg', pos=(0.8, 0, 0.1), scale=0.4)]
+        self.images = []
 
     def enter_menu(self):
         self.show_menu()

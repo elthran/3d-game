@@ -42,3 +42,26 @@ class Menu:
 
     def create_images(self):
         pass
+
+
+class Button:
+    def __init__(self, menu, text, command, extra_args=None, pos=(0, 0, 0)):
+
+        if extra_args is None:
+            extra_args = []
+
+        button = DirectButton(text=text,
+                              command=command,
+                              extraArgs=extra_args,
+                              pos=pos,
+                              parent=menu.menu,
+                              scale=0.1,
+                              text_font=menu.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=menu.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+
+        button.setTransparency(True)
