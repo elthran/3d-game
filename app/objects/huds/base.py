@@ -33,5 +33,6 @@ class Hud:
     def hide(self):
         self.display_bar.hide()
 
-    def update_bar_value(self, new_value):
+    def update_bar_value(self, new_value, maximum_value):
         self.display_bar["value"] = math.floor(new_value)
+        self.display_bar["range"] = math.floor(maximum_value)

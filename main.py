@@ -55,6 +55,8 @@ class Game(ShowBase):
         self.cTrav.setRespectPrevTransform(True)
         self.pusher.setHorizontal(True)
 
+        self.huds = Huds(game)
+
         '''
         Collision detection stuff
         '''
@@ -143,15 +145,12 @@ class Game(ShowBase):
     def start_game(self, hero_type):
         self.cleanup()
 
-        self.game_started = True
         self.hero = Hero(starting_position=Vec3(0, 0, 0))
-        if hero_type == "Wizard":
+        if hero_type == "Scholar":
             self.hero.archetype = Scholar(self.hero)
-        elif hero_type == "Warrior":
+        elif hero_type == "Brute":
             self.hero.archetype = Brute(self.hero)
         self.hero.refresh()
-
-        self.huds = Huds(game)
 
         self.walking_enemies = []
         self.sliding_enemies = []
@@ -186,7 +185,9 @@ class Game(ShowBase):
 
             # Make sure to update visuals after all effects, or the frame might look weird
             self.huds.update(health=self.hero.proficiencies.health.current,
-                             mana=self.hero.proficiencies.mana.current)
+                             mana=self.hero.proficiencies.mana.current,
+                             health_maximum=self.hero.proficiencies.health.maximum,
+                             mana_maximum=self.hero.proficiencies.mana.maximum)
 
             if self.hero.attribute_points > 0:
                 self.state.set_next(States.MENU)

@@ -25,6 +25,6 @@ def game_instance():
 
 @pytest.fixture(scope="function")
 def started_game(game_instance):
-    game_instance.game_started = True
+    # Do we need this?
+    # game_instance.state.set_next(States.RUNNING)
     yield game_instance
-    game_instance.game_started = False
