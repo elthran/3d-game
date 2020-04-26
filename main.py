@@ -125,9 +125,10 @@ class Game(ShowBase):
                                        font=self.default_font)
 
 
+        self.current_task = None
         self.state = GameState(States.MENU, game=self)
-        title_menu = TitleMenu(self)
-        title_menu.enter_menu()
+        self.current_menu = TitleMenu(self)
+        self.current_menu.enter_menu()
 
     def resume(self):
         self.current_task = taskMgr.add(self.update, "update")

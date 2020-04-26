@@ -1,3 +1,6 @@
+from app.objects.constants import States
+
+
 class TestGame:
     def test_init(self, game_instance):
         assert game_instance is not None
@@ -6,6 +9,8 @@ class TestGame:
         assert game_instance.start_game('Warrior') is None
 
     def test_update_with_Warrior(self, game_instance):
+        game_instance.current_menu.hide_menu()
         game_instance.start_game('Warrior')
-        assert game_instance.update(game_instance.updateTask) is not None
+        game_instance.state.set_next(States.RUNNING)
+        assert game_instance.update(game_instance.current_task) is not None
 
