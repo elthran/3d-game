@@ -28,11 +28,13 @@ class CharacterSelect(Menu):
                    text="Brute",
                    command=self.exit_menu,
                    extra_args=["Brute"],
+                   parent=self.menu,
                    pos=(self.brute_x_pos, 0, -0.5)),
             Button(menu=self,
                    text="Scholar",
                    command=self.exit_menu,
                    extra_args=["Scholar"],
+                   parent=self.menu,
                    pos=(self.scholar_x_pos, 0, -0.5))
         ]
 

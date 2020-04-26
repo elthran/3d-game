@@ -1,13 +1,12 @@
-from direct.gui.DirectGui import DGG, DirectDialog, DirectFrame, DirectButton, DirectLabel
 from direct.showbase.ShowBase import ShowBase
 
 from panda3d.core import CollisionCapsule
 
 from app import *
-from app.objects.display_bars import Hud
 from app.objects.heroes.archetype.brute import Brute
 from app.objects.heroes.archetype.scholar import Scholar
 from app.objects.heroes.deity.undying import Undying
+from app.objects.huds import Huds
 from app.objects.menus.home import Home as TitleMenu
 from app.objects.menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
 from app.objects.menus.game_over import GameOver as GameOverMenu
@@ -94,7 +93,6 @@ class Game(ShowBase):
         wall.setX(-8.0)
 
         self.hero = None
-        self.hud = None
         self.walking_enemies = []
         self.sliding_enemies = []
         self.deadEnemies = []
@@ -132,9 +130,11 @@ class Game(ShowBase):
 
     def resume(self):
         self.current_task = taskMgr.add(self.update, "update")
+        self.huds.show()
 
     def pause(self):
         taskMgr.remove(self.current_task)
+        self.huds.hide()
 
     def quit(self):
         self.cleanup()
@@ -151,15 +151,7 @@ class Game(ShowBase):
             self.hero.archetype = Brute(self.hero)
         self.hero.refresh()
 
-        self.hud_health = Hud(maximum_value=self.hero.proficiencies.health.maximum,
-                              pos=(-0.2, 0, base.a2dTop - 0.15),
-                              barColor=(0, 1, 0.25, 1))
-        self.hud_health.show()
-
-        self.hud_mana = Hud(maximum_value=self.hero.proficiencies.mana.maximum,
-                            pos=(-0.2, 0, base.a2dTop - 0.3),
-                            barColor=(0, 0, 2.55, 1))
-        self.hud_mana.show()
+        self.huds = Huds(game)
 
         self.walking_enemies = []
         self.sliding_enemies = []
@@ -192,8 +184,8 @@ class Game(ShowBase):
             self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")
 
             # Make sure to update visuals after all effects, or the frame might look weird
-            self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
-            self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
+            self.huds.update(health=self.hero.proficiencies.health.current,
+                             mana=self.hero.proficiencies.mana.current)
 
             if self.hero.attribute_points > 0:
                 self.state.set_next(States.MENU)

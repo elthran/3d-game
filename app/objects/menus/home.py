@@ -41,10 +41,12 @@ class Home(Menu):
                    text="Start Game",
                    command=self.next_menu,
                    extra_args=["CharacterSelect"],
+                   parent=self.menu,
                    pos=(0, 0, 0.2)),
             Button(menu=self,
                    text="Quit",
                    command=self.exit_menu,
+                   parent=self.menu,
                    pos=(0, 0, -0.2))
         ]
 

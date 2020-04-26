@@ -32,10 +32,12 @@ class GameOver(Menu):
                    text="Restart",
                    command=self.next_menu,
                    extra_args=["CharacterSelect"],
+                   parent=self.screen,
                    pos=(0, 0, 0.2)),
             Button(menu=self,
                    text="Quit",
                    command=self.exit_menu,
+                   parent=self.screen,
                    pos=(0, 0, -0.2))
         ]
 

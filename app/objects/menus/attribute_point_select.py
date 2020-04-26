@@ -35,16 +35,19 @@ class AttributePointSelect(Menu):
                    text="Strength",
                    command=self.exit_menu,
                    extra_args=["Strength"],
+                   parent=self.menu,
                    pos=(-0.9, 0, -0.5)),
             Button(menu=self,
                    text="Vitality",
                    command=self.exit_menu,
                    extra_args=["Vitality"],
+                   parent=self.menu,
                    pos=(0, 0, -0.5)),
             Button(menu=self,
                    text="Intellect",
                    command=self.exit_menu,
                    extra_args=["Intellect"],
+                   parent=self.menu,
                    pos=(0.9, 0, -0.5))
         ]
 

@@ -45,7 +45,7 @@ class Menu:
 
 
 class Button:
-    def __init__(self, menu, text, command, extra_args=None, pos=(0, 0, 0)):
+    def __init__(self, menu, text, command, parent=None, extra_args=None, pos=(0, 0, 0)):
 
         if extra_args is None:
             extra_args = []
@@ -54,7 +54,7 @@ class Button:
                               command=command,
                               extraArgs=extra_args,
                               pos=pos,
-                              parent=menu.menu,
+                              parent=parent,
                               scale=0.1,
                               text_font=menu.font,
                               clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
