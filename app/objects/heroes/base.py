@@ -82,10 +82,7 @@ class Hero(CharacterObject):
 
     def level_up(self):
         self.level += 1
-        self.skill_points += 1
         self.attribute_points += 1
-        # temporary
-        self.attributes.strength.level += 5
 
     def update(self, time_delta, *args, keys=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
@@ -171,10 +168,12 @@ class Hero(CharacterObject):
 
 
     def gain_attribute(self, attribute_name):
-        self.skill_points -= 1
+        self.attribute_points -= 1
         print(f"Learned skill {attribute_name}")
 
         if attribute_name == 'Strength':
             self.attributes.strength.level += 1
         elif attribute_name == 'Intelligence':
             self.attributes.intellect.level += 1
+        elif attribute_name == 'Vitality':
+            self.attributes.vitality.level += 1

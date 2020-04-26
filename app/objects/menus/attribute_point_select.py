@@ -50,6 +50,22 @@ class AttributePointSelect(Menu):
                               relief=DGG.FLAT,
                               text_pos=(0, -0.2))
         button.setTransparency(True)
+
+        button = DirectButton(text="Vitality",
+                              command=self.exit_menu,
+                              extraArgs=["Vitality"],
+                              pos=(0, 0, -0.5),
+                              parent=self.menu,
+                              scale=0.1,
+                              text_font=self.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=self.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+        button.setTransparency(True)
+
         self.hide_menu()
 
     def create_images(self):

@@ -112,8 +112,14 @@ class Game(ShowBase):
             self.spawn_points.append(Vec3(coord, -7.0, 0))
             self.spawn_points.append(Vec3(coord, 7.0, 0))
 
-        self.kill_count = OnscreenText(text="Experience Points: 0",
+        self.top_right_text = OnscreenText(text="Experience Points: 0",
                                        pos=(0.3, 0.8),
+                                       mayChange=True,
+                                       align=TextNode.ALeft,
+                                       font=self.default_font)
+
+        self.bottom_text = OnscreenText(text="Current Status:",
+                                       pos=(0.3, -0.8),
                                        mayChange=True,
                                        align=TextNode.ALeft,
                                        font=self.default_font)
@@ -178,15 +184,19 @@ class Game(ShowBase):
 
             self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
 
-            self.kill_count.setText(f"Level: {self.hero.level}. "
+            self.top_right_text.setText(f"Level: {self.hero.level}. "
                                     f"Experience Points: {self.hero.experience}/{self.hero.experience_maximum}. "
-                                    f"\nMax Health: {self.hero.proficiencies.health.maximum}")
+                                    f"\nHealth: {self.hero.proficiencies.health.current}/{self.hero.proficiencies.health.maximum}"
+                                    f"\nStrength: {self.hero.attributes.strength.level}"
+                                    f"\nDamage: {self.hero.proficiencies.melee_attack.damage}")
+
+            self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")
 
             # Make sure to update visuals after all effects, or the frame might look weird
             self.hud_health.update_bar_value(self.hero.proficiencies.health.current)
             self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
 
-            if self.hero.skill_points > 0:
+            if self.hero.attribute_points > 0:
                 self.state.set_next(States.MENU)
                 attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
                 attribute_point_select_menu.enter_menu()
