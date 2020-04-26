@@ -8,6 +8,11 @@ from app.objects.display_bars import Hud
 from app.objects.heroes.archetype.brute import Brute
 from app.objects.heroes.archetype.scholar import Scholar
 from app.objects.heroes.deity.undying import Undying
+from app.objects.menus.title import Title as TitleMenu
+from app.objects.menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
+from app.objects.menus.game_over import GameOver as GameOverMenu
+from app.objects.constants import States
+from app.game.states import GameState
 
 MAX_FRAME_RATE = 1 / 60
 
@@ -88,8 +93,6 @@ class Game(ShowBase):
         wall.show()
         wall.setX(-8.0)
 
-        self.updateTask = taskMgr.add(self.update, "update")
-
         self.hero = None
         self.hud = None
         self.walking_enemies = []
@@ -115,19 +118,24 @@ class Game(ShowBase):
                                        align=TextNode.ALeft,
                                        font=self.default_font)
 
-        self.menus = Menus(self)
-        self.game_started = False
-        self.is_paused = False
 
-    def choose_hero(self):
-        self.menus.select_character.show_menu()
+        self.state = GameState(States.MENU, game=self)
+        title_menu = TitleMenu(self)
+        title_menu.enter_menu()
 
-    def choose_skills(self):
-        self.menus.select_skills.show_menu()
+    def resume(self):
+        self.current_task = taskMgr.add(self.update, "update")
+
+    def pause(self):
+        taskMgr.remove(self.current_task)
+
+    def quit(self):
+        self.cleanup()
+        base.userExit()
 
     def start_game(self, hero_type):
         self.cleanup()
-        [menu.hide_menu() for menu in self.menus]
+
         self.game_started = True
         self.hero = Hero(starting_position=Vec3(0, 0, 0))
         if hero_type == "Wizard":
@@ -153,16 +161,7 @@ class Game(ShowBase):
         self.sliding_enemies = []
         self.deadEnemies = []
 
-    def learn_skills(self, skill):
-        [menu.hide_menu() for menu in self.menus]
-        self.hero.skill_points -= 1
-        print(f"Learned skill {skill}")
-        self.is_paused = False
-
     def update(self, task):
-        if not self.game_started or self.is_paused:
-            return task.cont
-
         # Get the amount of time since the last update
         time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
 
@@ -188,8 +187,9 @@ class Game(ShowBase):
             self.hud_mana.update_bar_value(self.hero.proficiencies.mana.current)
 
             if self.hero.skill_points > 0:
-                self.is_paused = True
-                self.choose_skills()
+                self.state.set_next(States.MENU)
+                attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
+                attribute_point_select_menu.enter_menu()
 
             # Add code so you become Undying
             if self.hero.religion is None:
@@ -198,11 +198,9 @@ class Game(ShowBase):
 
 
         elif self.hero.dead:
-            # If the game-over screen isn't showing...
-            if self.menus.game_over.screen.isHidden():
-                self.menus.game_over.screen.show()
-                self.menus.game_over.modifiable_score_label["text"] = "Total Kills: " + str(self.hero.kills)
-                self.menus.game_over.modifiable_score_label.setText()
+            self.state.set_next(States.MENU)
+            game_over_menu = GameOverMenu(self, self.hero.kills)
+            game_over_menu.enter_menu()
 
         return task.cont
 
@@ -218,10 +216,6 @@ class Game(ShowBase):
             sliding_enemy.remove_object_from_world()
         if self.hero is not None:
             self.hero.remove_object_from_world()
-
-    def quit(self):
-        self.cleanup()
-        base.userExit()
 
     @staticmethod
     def stop_sliding_crate_monster(entry):

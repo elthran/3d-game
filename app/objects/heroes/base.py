@@ -169,3 +169,12 @@ class Hero(CharacterObject):
 
         GameObject.remove_object_from_world(self)
 
+
+    def gain_attribute(self, attribute_name):
+        self.skill_points -= 1
+        print(f"Learned skill {attribute_name}")
+
+        if attribute_name == 'Strength':
+            self.attributes.strength.level += 1
+        elif attribute_name == 'Intelligence':
+            self.attributes.intellect.level += 1

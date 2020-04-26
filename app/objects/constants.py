@@ -35,3 +35,9 @@ class Masks:
     HERO_AND_NPC = HERO | NPC
     MONSTER_AND_NPC = MONSTER | NPC
     HERO_MONSTER_AND_NPC = HERO | MONSTER | NPC
+
+
+class States:
+    MENU = 'menu'
+    RUNNING = 'running'
+    QUIT = 'quit'

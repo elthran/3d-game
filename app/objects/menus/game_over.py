@@ -1,0 +1,78 @@
+from app.objects.constants import States
+from .base import *
+from .character_select import CharacterSelect
+
+
+class GameOver(Menu):
+    def __init__(self, *args, hero=None):
+        super().__init__(*args)
+        self.hero = hero
+
+        self.screen = DirectDialog(frameSize=(-0.7, 0.7, -0.7, 0.7),
+                                   fadeScreen=0.4,
+                                   relief=DGG.FLAT,
+                                   frameTexture="resources/images/stoneFrame.png")
+
+        label = DirectLabel(text="Game Over!",
+                            parent=self.screen,
+                            scale=0.1,
+                            pos=(0, 0, 0.2),
+                            text_font=self.font,
+                            relief=None)
+
+        self.modifiable_score_label = DirectLabel(text="",
+                                                  parent=self.screen,
+                                                  scale=0.07,
+                                                  pos=(0, 0, 0),
+                                                  text_font=self.font,
+                                                  relief=None)
+
+        button = DirectButton(text="Restart",
+                              command=self.next_menu,
+                              extraArgs=["CharacterSelect"],
+                              pos=(-0.3, 0, -0.2),
+                              parent=self.screen,
+                              scale=0.07,
+                              text_font=self.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=self.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+        button.setTransparency(True)
+
+        button = DirectButton(text="Quit",
+                              command=self.exit_menu,
+                              pos=(0.3, 0, -0.2),
+                              parent=self.screen,
+                              scale=0.07,
+                              text_font=self.font,
+                              clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
+                              frameTexture=self.buttonImages,
+                              frameSize=(-4, 4, -1, 1),
+                              text_scale=0.75,
+                              relief=DGG.FLAT,
+                              text_pos=(0, -0.2))
+        button.setTransparency(True)
+
+        if self.hero is not None:
+            self.modifiable_score_label["text"] = "Total Kills: " + str(self.hero.kills)
+            self.modifiable_score_label.setText()
+
+        self.hide_menu()
+
+    def enter_menu(self):
+        self.show_menu()
+
+
+    def next_menu(self, menu_name):
+        self.hide_menu()
+        if menu_name == "CharacterSelect":
+            character_select = CharacterSelect(self.game)
+            character_select.enter_menu()
+
+
+    def exit_menu(self):
+        self.hide_menu()
+        self.game.state.set_next(States.QUIT)
