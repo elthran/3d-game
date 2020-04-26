@@ -8,7 +8,7 @@ class Freeze(Effect):
         super().__init__(source)
         self.name = "Freeze!"
         self.description = "Freezes you"
-        self.duration = 5
+        self.duration = 2
         self.status_name = "frozen"
 
         self.target = None
@@ -16,16 +16,16 @@ class Freeze(Effect):
     def apply(self, target):
         super().apply(target)
         print(f"{self.source} is freezing {target}")
-        self.target.velocity = Vec3(0, 0, 0)
-        self.target.acceleration = 0
 
     def update(self, time_delta):
         self.duration -= time_delta
         if self.duration <= 0:
             self.end_effect()
+        self.target.proficiencies.movement.override = 0
+        self.target.velocity = Vec3(0, 0, 0)
 
     def end_effect(self):
         super().end_effect()
-        self.target.acceleration = 300
+        self.target.proficiencies.movement.override = None
 
 

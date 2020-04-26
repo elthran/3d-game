@@ -2,6 +2,7 @@ from panda3d.core import CollisionSegment
 
 from random import uniform, randint
 
+from app.objects.effects.freeze import Freeze
 from .base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.stun import Stun
@@ -20,6 +21,8 @@ class MeleeAttack(Ability):
     def get_damage(self, time_delta=None):
         if randint(1,10) == 10:
             effects = [Stun(source=self)]
+        elif randint(1,10) > 8:
+            effects = [Freeze(source=self)]
         else:
             effects = []
         return Damage(source=self.character,

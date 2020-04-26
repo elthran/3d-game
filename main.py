@@ -186,7 +186,7 @@ class Game(ShowBase):
                                     f"\nHealth: {self.hero.proficiencies.health.current}/{self.hero.proficiencies.health.maximum}"
                                     f"\nMana: {self.hero.proficiencies.mana.current}/{self.hero.proficiencies.mana.maximum}"
                                     f"\nExperience: {self.hero.experience}/{self.hero.experience_maximum}"
-                                    f"\nMovement Speed: {self.hero.proficiencies.movement.speed}"
+                                    f"\nMovement Speed: {self.hero.proficiencies.movement.speed_maximum}"
                                     f"\nDamage: {self.hero.proficiencies.melee_attack.damage}")
 
             self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")

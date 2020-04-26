@@ -81,9 +81,8 @@ class TrainingDummyMonster(Monster):
 
         self.proficiencies.melee_attack.base_attack_range = 0.75
         self.proficiencies.melee_attack.base_damage = 0
-        self.proficiencies.movement.base_speed = 7
         self.proficiencies.health.regeneration_base_amount = 0
-        self.acceleration = 100.0
+        self.proficiencies.movement.base_acceleration = 100
         self.refresh()
         self.abilities.melee_attack.enable()
         self.abilities.frost_ray.enable()
@@ -149,7 +148,7 @@ class SlidingCrateMonster(Monster):
                          model_animation={"stand": "Misc/trap-stand",
                                           "walk": "Misc/trap-walk"},
                          **kwargs)
-        self.proficiencies.movement.base_speed = 10
+        self.acceleration = 10
         self.invulnerable = True
 
         self.moveInX = False

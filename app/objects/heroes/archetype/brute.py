@@ -13,7 +13,7 @@ class Brute(MutationInterface):
 
     def update_attributes(self):
         self.hero.attributes.strength.is_primary = True
-        self.hero.attributes.agility.level = 2
+        self.hero.attributes.agility.level = 3
         self.hero.attributes.intellect.level = 0
         self.hero.attributes.strength.level = 5
         self.hero.attributes.vitality.level = 3

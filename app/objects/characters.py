@@ -35,6 +35,10 @@ class CharacterObject(PhysicalObject):
         self.dying = False
         self.dead = False
 
+    @property
+    def acceleration(self):
+        return self.proficiencies.movement.acceleration
+
     def refresh(self):
         """Sets cooldowns to zero and fully restores proficiencies to their maximum values.
         """
@@ -64,10 +68,10 @@ class CharacterObject(PhysicalObject):
             self.proficiencies.health.regeneration_cooldown_current -= 1
 
         speed = self.velocity.length()
-        if speed > self.proficiencies.movement.speed:
+        if speed > self.proficiencies.movement.speed_maximum:
             self.velocity.normalize()
-            self.velocity *= self.proficiencies.movement.speed
-            speed = self.proficiencies.movement.speed
+            self.velocity *= self.proficiencies.movement.speed_maximum
+            speed = self.proficiencies.movement.speed_maximum
 
         if not self.walking:
             friction_value = WorldPhysics.FRICTION * time_delta

@@ -13,12 +13,12 @@ class CharacterSelect(Menu):
         self.menu = DirectFrame(frameColor=(1, 1, 1, 0))
 
         title = DirectLabel(text="Select Hero",
-                              scale=0.1,
-                              pos=(0, 0, 0.9),
-                              parent=self.menu,
-                              relief=None,
-                              text_font=self.font,
-                              text_fg=(1, 1, 1, 1))
+                            scale=0.1,
+                            pos=(0, 0, 0.9),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.font,
+                            text_fg=(1, 1, 1, 1))
 
         self.brute_x_pos = -0.8
         self.scholar_x_pos = 0.8

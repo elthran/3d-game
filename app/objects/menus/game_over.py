@@ -32,11 +32,11 @@ class GameOver(Menu):
                    text="Restart",
                    command=self.next_menu,
                    extra_args=["CharacterSelect"],
-                   pos=(-0.3, 0, -0.2)),
+                   pos=(0, 0, 0.2)),
             Button(menu=self,
                    text="Quit",
                    command=self.exit_menu,
-                   pos=(0.3, 0, -0.2))
+                   pos=(0, 0, -0.2))
         ]
 
         if self.hero is not None:

@@ -13,7 +13,7 @@ class Scholar(MutationInterface):
 
     def update_attributes(self):
         self.hero.attributes.intellect.is_primary = True
-        self.hero.attributes.agility.level = 2
+        self.hero.attributes.agility.level = 3
         self.hero.attributes.intellect.level = 6
         self.hero.attributes.strength.level = 1
         self.hero.attributes.vitality.level = 2

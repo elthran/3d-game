@@ -41,7 +41,6 @@ class PhysicalObject(GameObject):
         base.cTrav.addCollider(self.collider, base.pusher)
 
         self.velocity = Vec3(0, 0, 0)
-        self.acceleration = 300.0
 
         self.damage_taken_model = self.create_damage_taken_model(damage_taken_model)
         self.damage_taken_model_timer = 0
