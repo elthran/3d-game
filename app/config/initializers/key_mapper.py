@@ -1,4 +1,4 @@
-from app.objects.constants import Keys
+from app.game.constants import Keys
 
 
 class KeyMapper:

@@ -2,7 +2,7 @@ from panda3d.core import CollisionNode, CollisionSphere, Vec2, Vec3
 
 from direct.actor.Actor import Actor
 
-from app.objects.game_objects import GameObject
+from app.objects.game_objects.game_objects import GameObject
 
 
 class PhysicalObject(GameObject):

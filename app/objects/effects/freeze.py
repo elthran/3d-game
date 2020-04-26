@@ -18,11 +18,12 @@ class Freeze(Effect):
         print(f"{self.source} is freezing {target}")
 
     def update(self, time_delta):
+        self.target.proficiencies.movement.override = 0
+        self.target.velocity = Vec3(0, 0, 0)
+
         self.duration -= time_delta
         if self.duration <= 0:
             self.end_effect()
-        self.target.proficiencies.movement.override = 0
-        self.target.velocity = Vec3(0, 0, 0)
 
     def end_effect(self):
         super().end_effect()

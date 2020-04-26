@@ -1,4 +1,4 @@
-from app.objects.interfaces import Command
+from app.game.interfaces import Command
 
 
 class ToolBelt:

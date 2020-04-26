@@ -1,4 +1,4 @@
-from app.objects.constants import States
+from app.game.constants import States
 from .base import *
 
 

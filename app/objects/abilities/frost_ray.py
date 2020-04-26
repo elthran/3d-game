@@ -5,7 +5,7 @@ from random import uniform
 from .base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.freeze import Freeze
-from app.objects.interfaces import Command
+from app.game.interfaces import Command
 
 
 class FrostRay(Ability, Command):

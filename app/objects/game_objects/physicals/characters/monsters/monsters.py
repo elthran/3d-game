@@ -4,9 +4,9 @@ from math import copysign
 from panda3d.core import Vec3
 
 from app.objects.abilities import Abilities
-from app.objects.constants import CharacterTypes, Masks
-from app.objects.characters import CharacterObject
-from app.objects.game_objects import GameObject
+from app.game.constants import CharacterTypes, Masks
+from app.objects.game_objects.physicals.characters.characters import CharacterObject
+from app.objects.game_objects.game_objects import GameObject
 
 
 class Monster(CharacterObject):

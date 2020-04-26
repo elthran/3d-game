@@ -1,9 +1,9 @@
 from panda3d.core import CollisionNode, CollisionHandlerQueue, AudioSound
 
-from app.objects.constants import Masks
+from app.game.constants import Masks
 from app.objects.damage import Damage
-from app.objects.game_objects import GameObject
-from app.objects.physicals import PhysicalObject
+from app.objects.game_objects.game_objects import GameObject
+from app.objects.game_objects.physicals.physicals import PhysicalObject
 
 
 class Ability(GameObject):

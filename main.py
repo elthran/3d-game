@@ -3,14 +3,14 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import CollisionCapsule
 
 from app import *
-from app.objects.heroes.archetype.brute import Brute
-from app.objects.heroes.archetype.scholar import Scholar
-from app.objects.heroes.deity.undying import Undying
+from app.objects.game_objects.physicals.characters.heroes.archetype.brute import Brute
+from app.objects.game_objects.physicals.characters.heroes.archetype.scholar import Scholar
+from app.objects.game_objects.physicals.characters.heroes.deity.undying import Undying
 from app.objects.huds import Huds
 from app.objects.menus.home import Home as TitleMenu
 from app.objects.menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
 from app.objects.menus.game_over import GameOver as GameOverMenu
-from app.objects.constants import States
+from app.game.constants import States
 from app.game.states import GameState
 
 MAX_FRAME_RATE = 1 / 60
@@ -179,6 +179,7 @@ class Game(ShowBase):
                                     f"\nMana: {self.hero.proficiencies.mana.current}/{self.hero.proficiencies.mana.maximum}"
                                     f"\nExperience: {self.hero.experience}/{self.hero.experience_maximum}"
                                     f"\nMovement Speed: {self.hero.proficiencies.movement.speed_maximum}"
+                                    f"\nAcceleration: {self.hero.acceleration}"
                                     f"\nDamage: {self.hero.proficiencies.melee_attack.damage}")
 
             self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")
@@ -195,7 +196,6 @@ class Game(ShowBase):
             # Add code so you become Undying
             if self.hero.religion is None:
                 self.hero.religion = Undying(self.hero)
-                print(f"Hero is a {self.hero.religion}")
 
 
         elif self.hero.dead:

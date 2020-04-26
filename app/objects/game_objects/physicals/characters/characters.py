@@ -3,8 +3,8 @@ from panda3d.core import Vec3
 from app.objects.abilities import Abilities
 from app.objects.attributes import Attributes
 from app.objects.proficiencies import Proficiencies
-from app.objects.constants import WorldPhysics, CharacterTypes
-from app.objects.physicals import PhysicalObject
+from app.game.constants import WorldPhysics, CharacterTypes
+from app.objects.game_objects.physicals.physicals import PhysicalObject
 
 
 class CharacterObject(PhysicalObject):

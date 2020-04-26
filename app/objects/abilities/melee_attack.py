@@ -21,7 +21,7 @@ class MeleeAttack(Ability):
     def get_damage(self, time_delta=None):
         if randint(1,10) == 10:
             effects = [Stun(source=self)]
-        elif randint(1,10) > 8:
+        elif randint(1,10) > 6:
             effects = [Freeze(source=self)]
         else:
             effects = []

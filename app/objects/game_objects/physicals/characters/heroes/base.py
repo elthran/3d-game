@@ -1,12 +1,12 @@
 from panda3d.core import Vec2, Vec3, Plane, Point3, TextNode
 from direct.gui.OnscreenText import OnscreenText
 
-from app.objects.movement import Walk
+from app.game.movement import Walk
 from app.objects.abilities import Abilities
-from app.objects.game_objects import GameObject
-from app.objects.tool_belt import ToolBelt, NullCommand
-from app.objects.constants import CharacterTypes, Masks, Keys
-from app.objects.characters import CharacterObject
+from app.objects.game_objects.game_objects import GameObject
+from app.game.tool_belt import ToolBelt, NullCommand
+from app.game.constants import CharacterTypes, Masks, Keys
+from app.objects.game_objects.physicals.characters.characters import CharacterObject
 
 import random
 

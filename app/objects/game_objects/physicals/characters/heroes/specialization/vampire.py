@@ -1,8 +1,7 @@
-from app import Keys
-from app.objects.heroes.interfaces import MutationInterface
+from app.objects.game_objects.physicals.characters.heroes.interfaces import MutationInterface
 
 
-class Undying(MutationInterface):
+class Vampire(MutationInterface):
     def __init__(self, hero):
         self.hero = hero
         self.add_abilities()

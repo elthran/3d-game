@@ -1,5 +1,5 @@
 from app import Keys
-from app.objects.heroes.interfaces import MutationInterface
+from app.objects.game_objects.physicals.characters.heroes.interfaces import MutationInterface
 
 
 class Scholar(MutationInterface):
