@@ -44,7 +44,8 @@ class Ability(GameObject):
 
     def physics_init(self):
         if self.collision_node is None:
-            raise ValueError("Can't initiate physics model without a declared collision_node.")
+            return
+            # raise ValueError("Can't initiate physics model without a declared collision_node.")
         collision_node = CollisionNode(self.__class__.__name__)
         collision_node.addSolid(self.collision_node)
         collision_node.setFromCollideMask(self.from_collider_attack)

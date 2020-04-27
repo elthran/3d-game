@@ -1,6 +1,6 @@
 from app.game.constants import States
 from .base import *
-from .character_select import CharacterSelect
+from .archetype_selection import ArchetypeSelection
 
 
 class GameOver(Menu):
@@ -31,7 +31,7 @@ class GameOver(Menu):
             Button(menu=self,
                    text="Restart",
                    command=self.next_menu,
-                   extra_args=["CharacterSelect"],
+                   extra_args=["ArchetypeSelection"],
                    parent=self.screen,
                    pos=(0, 0, 0.2)),
             Button(menu=self,
@@ -52,9 +52,9 @@ class GameOver(Menu):
 
     def next_menu(self, menu_name):
         self.hide_menu()
-        if menu_name == "CharacterSelect":
-            character_select = CharacterSelect(self.game)
-            character_select.enter_menu()
+        if menu_name == "ArchetypeSelection":
+            archetype_selection = ArchetypeSelection(self.game)
+            archetype_selection.enter_menu()
 
     def exit_menu(self):
         self.hide_menu()

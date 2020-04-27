@@ -83,6 +83,8 @@ class Hero(CharacterObject):
     def level_up(self):
         self.level += 1
         self.attribute_points += 1
+        if self.level % 2 == 1:
+            self.skill_points += 1
 
     def update(self, time_delta, *args, keys=None, **kwargs):
         super().update(time_delta, *args, **kwargs)
@@ -166,10 +168,9 @@ class Hero(CharacterObject):
 
         GameObject.remove_object_from_world(self)
 
-
     def gain_attribute(self, attribute_name):
         self.attribute_points -= 1
-        print(f"Learned skill {attribute_name}")
+        print(f"Attribute {attribute_name} increased")
 
         if attribute_name == 'Strength':
             self.attributes.strength.level += 1
@@ -177,3 +178,16 @@ class Hero(CharacterObject):
             self.attributes.intellect.level += 1
         elif attribute_name == 'Vitality':
             self.attributes.vitality.level += 1
+
+    def learn_skill(self, skill_name):
+        self.skill_points -= 1
+        print(f"Learned skill {skill_name}")
+
+        if skill_name == "Frost Ray":
+            self.abilities.frost_ray.enable()
+        elif skill_name == "Weapon Master":
+            self.abilities.frost_ray.enable()
+        elif skill_name == "Regrowth":
+            self.abilities.regrowth.enable()
+            self.abilities.regrowth.apply()
+

@@ -9,9 +9,11 @@ from app.objects.game_objects.physicals.characters.heroes.deity.undying import U
 from app.objects.huds import Huds
 from app.objects.menus.home import Home as TitleMenu
 from app.objects.menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
+from app.objects.menus.skill_point_select import SkillPointSelect as SkillPointSelectMenu
 from app.objects.menus.game_over import GameOver as GameOverMenu
 from app.game.constants import States
 from app.game.states import GameState
+from app.objects.menus.religion_selection import ReligionSelection
 
 MAX_FRAME_RATE = 1 / 60
 
@@ -113,17 +115,16 @@ class Game(ShowBase):
             self.spawn_points.append(Vec3(coord, 7.0, 0))
 
         self.top_right_text = OnscreenText(text="Experience Points: 0",
-                                       pos=(0.8, 0.9),
-                                       mayChange=True,
-                                       align=TextNode.ALeft,
-                                       font=self.default_font)
+                                           pos=(0.8, 0.9),
+                                           mayChange=True,
+                                           align=TextNode.ALeft,
+                                           font=self.default_font)
 
         self.bottom_text = OnscreenText(text="Current Status:",
-                                       pos=(0.3, -0.8),
-                                       mayChange=True,
-                                       align=TextNode.ALeft,
-                                       font=self.default_font)
-
+                                        pos=(0.3, -0.8),
+                                        mayChange=True,
+                                        align=TextNode.ALeft,
+                                        font=self.default_font)
 
         self.current_task = None
         self.state = GameState(States.MENU, game=self)
@@ -156,6 +157,12 @@ class Game(ShowBase):
         self.sliding_enemies = []
         self.deadEnemies = []
 
+    def select_religion(self, religion):
+        if religion == "Undying":
+            self.hero.religion = Undying(self.hero)
+        attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
+        attribute_point_select_menu.enter_menu()
+
     def update(self, task):
         # Get the amount of time since the last update
         time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
@@ -173,13 +180,16 @@ class Game(ShowBase):
 
             self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
 
-            self.top_right_text.setText(f"Level: {self.hero.level}. "
-                                    f"\nHealth: {self.hero.proficiencies.health.current}/{self.hero.proficiencies.health.maximum}"
-                                    f"\nMana: {self.hero.proficiencies.mana.current}/{self.hero.proficiencies.mana.maximum}"
-                                    f"\nExperience: {self.hero.experience}/{self.hero.experience_maximum}"
-                                    f"\nMovement Speed: {self.hero.proficiencies.movement.speed_maximum}"
-                                    f"\nAcceleration: {self.hero.acceleration}"
-                                    f"\nDamage: {self.hero.proficiencies.melee_attack.damage}")
+            self.top_right_text.setText(f"""
+Level: {self.hero.level}.
+Health: {self.hero.proficiencies.health.current}/{self.hero.proficiencies.health.maximum}
+Mana: {self.hero.proficiencies.mana.current}/{self.hero.proficiencies.mana.maximum}
+Experience: {self.hero.experience}/{self.hero.experience_maximum}
+Movement Speed: {self.hero.proficiencies.movement.speed_maximum}
+Acceleration: {self.hero.acceleration}
+Damage: {self.hero.proficiencies.melee_attack.damage}
+Regeneration: {self.hero.proficiencies.health.regeneration_amount}
+""")
 
             self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")
 
@@ -189,15 +199,18 @@ class Game(ShowBase):
                              health_maximum=self.hero.proficiencies.health.maximum,
                              mana_maximum=self.hero.proficiencies.mana.maximum)
 
-            if self.hero.attribute_points > 0:
+            if self.hero.level == 2 and self.hero.religion is None:
+                self.state.set_next(States.MENU)
+                religion_select_menu = ReligionSelection(self)
+                religion_select_menu.enter_menu()
+            elif self.hero.attribute_points > 0:
                 self.state.set_next(States.MENU)
                 attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
                 attribute_point_select_menu.enter_menu()
-
-            # Add code so you become Undying
-            if self.hero.religion is None:
-                self.hero.religion = Undying(self.hero)
-
+            elif self.hero.skill_points > 0:
+                self.state.set_next(States.MENU)
+                skill_point_select_menu = SkillPointSelectMenu(self, hero=self.hero)
+                skill_point_select_menu.enter_menu()
 
         elif self.hero.dead:
             self.state.set_next(States.MENU)

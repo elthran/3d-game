@@ -2,7 +2,7 @@ from app.game.constants import States
 from .base import *
 
 
-class CharacterSelect(Menu):
+class ArchetypeSelection(Menu):
     def __init__(self, *args):
         super().__init__(*args)
 

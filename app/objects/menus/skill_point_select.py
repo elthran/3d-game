@@ -1,11 +1,11 @@
 from app.game.constants import States
 from .base import *
-from .archetype_selection import ArchetypeSelection
 
 
-class Home(Menu):
-    def __init__(self, *args):
+class SkillPointSelect(Menu):
+    def __init__(self, *args, hero=None):
         super().__init__(*args)
+        self.hero = hero
 
         self.backdrop = DirectFrame(frameColor=(0, 0, 0, 1),
                                     frameSize=(-1, 1, -1, 1),
@@ -14,22 +14,16 @@ class Home(Menu):
         self.menu = DirectFrame(frameColor=(1, 1, 1, 0))
 
         title = [
-            DirectLabel(text="Elthran's World",
+            DirectLabel(text="Level Up!",
                         scale=0.1,
-                        pos=(0, 0, 0.9),
+                        pos=(0, 0, 0.85),
                         parent=self.menu,
                         relief=None,
                         text_font=self.font,
                         text_fg=(1, 1, 1, 1)),
-            DirectLabel(text="featuring",
-                        scale=0.07,
-                        pos=(0, 0, 0.79),
-                        parent=self.menu,
-                        text_font=self.font,
-                        frameColor=(0.5, 0.5, 0.5, 1)),
-            DirectLabel(text="Klondikemarlen",
+            DirectLabel(text="Choose a Skill to Learn",
                         scale=0.08,
-                        pos=(0, 0, 0.65),
+                        pos=(0, 0, 0.75),
                         parent=self.menu,
                         relief=None,
                         text_font=self.font,
@@ -38,29 +32,34 @@ class Home(Menu):
 
         buttons = [
             Button(menu=self,
-                   text="Start Game",
-                   command=self.next_menu,
-                   extra_args=["ArchetypeSelection"],
-                   parent=self.menu,
-                   pos=(0, 0, 0.2)),
-            Button(menu=self,
-                   text="Quit",
+                   text="Frost Ray",
                    command=self.exit_menu,
+                   extra_args=["Frost Ray"],
                    parent=self.menu,
-                   pos=(0, 0, -0.2))
+                   pos=(-0.9, 0, -0.5)),
+            Button(menu=self,
+                   text="Weapon Master",
+                   command=self.exit_menu,
+                   extra_args=["Weapon Master"],
+                   parent=self.menu,
+                   pos=(0, 0, -0.5)),
+            Button(menu=self,
+                   text="Regrowth",
+                   command=self.exit_menu,
+                   extra_args=["Regrowth"],
+                   parent=self.menu,
+                   pos=(0.9, 0, -0.5))
         ]
 
         self.hide_menu()
 
+    def create_images(self):
+        self.images = []
+
     def enter_menu(self):
         self.show_menu()
 
-    def next_menu(self, menu_name):
+    def exit_menu(self, skill_name):
         self.hide_menu()
-        if menu_name == "ArchetypeSelection":
-            archetype_selection = ArchetypeSelection(self.game)
-            archetype_selection.enter_menu()
-
-    def exit_menu(self):
-        self.hide_menu()
-        self.game.state.set_next(States.QUIT)
+        self.hero.learn_skill(skill_name)
+        self.game.state.set_next(States.RUNNING)
