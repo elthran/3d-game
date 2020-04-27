@@ -17,7 +17,7 @@ class ReligionSelection(Menu):
                             pos=(0, 0, 0.9),
                             parent=self.menu,
                             relief=None,
-                            text_font=self.font,
+                            text_font=self.default_font,
                             text_fg=(1, 1, 1, 1))
 
         self.undying_x_pos = 0.0

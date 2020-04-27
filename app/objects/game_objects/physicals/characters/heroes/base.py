@@ -189,6 +189,7 @@ class Hero(CharacterObject):
             self.abilities.frost_ray.enable()
         elif skill_name == "Weapon Master":
             self.abilities.frost_ray.enable()
+            self.tool_belt.add_action(Keys.MOUSE_RIGHT, self.abilities.frost_ray, None)
         elif skill_name == "Regrowth":
             self.abilities.regrowth.enable()
             self.abilities.regrowth.apply()

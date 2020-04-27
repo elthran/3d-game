@@ -21,10 +21,9 @@ class Game(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
 
+        self.disableMouse()
         self.camera.setPos(0, -20, 32)
         self.camera.setP(-60)
-
-        self.world = World(game=self)
 
         self.key_mapper = KeyMapper.initialize(self)
 
@@ -76,6 +75,8 @@ class Game(ShowBase):
             self.hero.archetype = Brute(self.hero)
         self.hero.refresh()
 
+        self.world = World(game=self)
+
     def select_religion(self, religion):
         if religion == "Undying":
             self.hero.religion = Undying(self.hero)
@@ -89,7 +90,7 @@ class Game(ShowBase):
         if not self.hero.dead:
             self.hero.update(time_delta, keys=self.key_mapper)
 
-            self.world.update(time_delta=time_delta, hero=self.hero)
+            self.world.update(time_delta=time_delta)
 
             self.top_right_text.setText(f"""
 Level: {self.hero.level}.
@@ -123,7 +124,7 @@ Regeneration: {self.hero.proficiencies.health.regeneration_amount}
                 skill_point_select_menu = SkillPointSelectMenu(self, hero=self.hero)
                 skill_point_select_menu.enter_menu()
 
-            # self.camera.setPos(self.hero.actor.getX(), self.hero.actor.getY() - 20, 32)
+            self.camera.setPos(self.hero.actor.getX(), self.hero.actor.getY() - 20, 32)
 
         elif self.hero.dead:
             self.state.set_next(States.MENU)
@@ -141,3 +142,4 @@ Regeneration: {self.hero.proficiencies.health.regeneration_amount}
 
 if __name__ == "__main__":
     game = Game()
+    game.run()

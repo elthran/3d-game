@@ -15,17 +15,15 @@ class World:
         background_music.setVolume(0.5)
         background_music.play()
 
-        self.game.disableMouse()
-
         main_light = DirectionalLight("main light")
-        self.game.main_light_node_path = render.attachNewNode(main_light)
-        self.game.main_light_node_path.setHpr(45, -45, 0)
-        render.setLight(self.game.main_light_node_path)
+        self.main_light_node_path = render.attachNewNode(main_light)
+        self.main_light_node_path.setHpr(45, -45, 0)
+        render.setLight(self.main_light_node_path)
 
         ambient_light = AmbientLight("ambient light")
         ambient_light.setColor(Vec4(0.2, 0.2, 0.2, 1))
-        self.game.ambient_light_node_path = render.attachNewNode(ambient_light)
-        render.setLight(self.game.ambient_light_node_path)
+        self.ambient_light_node_path = render.attachNewNode(ambient_light)
+        render.setLight(self.ambient_light_node_path)
 
         render.setShaderAuto()
 
@@ -84,13 +82,13 @@ class World:
         new_enemy = TrainingDummyMonster(starting_position=spawn_point)
         self.walking_enemies.append(new_enemy)
 
-    def update(self, time_delta, hero):
+    def update(self, time_delta):
         self.spawn_timer -= time_delta
-        if self.spawn_timer <= 0 and len(self.walking_enemies) < hero.level:
-            self.spawn_timer = self.spawn_time / hero.level
+        if self.spawn_timer <= 0 and len(self.walking_enemies) < self.game.hero.level:
+            self.spawn_timer = self.spawn_time / self.game.hero.level
             self.spawn_enemy()
 
-        [walking_enemy.update(time_delta, hero=hero) for walking_enemy in self.walking_enemies]
+        [walking_enemy.update(time_delta, hero=self.game.hero) for walking_enemy in self.walking_enemies]
 
         self.walking_enemies = [enemy for enemy in self.walking_enemies if not enemy.dead]
 
