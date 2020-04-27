@@ -19,20 +19,20 @@ class Home(Menu):
                         pos=(0, 0, 0.9),
                         parent=self.menu,
                         relief=None,
-                        text_font=self.font,
+                        text_font=self.default_font,
                         text_fg=(1, 1, 1, 1)),
             DirectLabel(text="featuring",
                         scale=0.07,
                         pos=(0, 0, 0.79),
                         parent=self.menu,
-                        text_font=self.font,
+                        text_font=self.default_font,
                         frameColor=(0.5, 0.5, 0.5, 1)),
             DirectLabel(text="Klondikemarlen",
                         scale=0.08,
                         pos=(0, 0, 0.65),
                         parent=self.menu,
                         relief=None,
-                        text_font=self.font,
+                        text_font=self.default_font,
                         text_fg=(1, 1, 1, 1))
         ]
 

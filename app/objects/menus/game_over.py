@@ -17,14 +17,14 @@ class GameOver(Menu):
                             parent=self.screen,
                             scale=0.1,
                             pos=(0, 0, 0.2),
-                            text_font=self.font,
+                            text_font=self.default_font,
                             relief=None)
 
         self.modifiable_score_label = DirectLabel(text="",
                                                   parent=self.screen,
                                                   scale=0.07,
                                                   pos=(0, 0, 0),
-                                                  text_font=self.font,
+                                                  text_font=self.default_font,
                                                   relief=None)
 
         buttons = [

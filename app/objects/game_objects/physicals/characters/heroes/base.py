@@ -174,10 +174,12 @@ class Hero(CharacterObject):
 
         if attribute_name == 'Strength':
             self.attributes.strength.level += 1
-        elif attribute_name == 'Intelligence':
+        elif attribute_name == 'Intellect':
             self.attributes.intellect.level += 1
         elif attribute_name == 'Vitality':
             self.attributes.vitality.level += 1
+        else:
+            raise ValueError(f"Attribute {attribute_name} is unknown")
 
     def learn_skill(self, skill_name):
         self.skill_points -= 1
@@ -187,6 +189,7 @@ class Hero(CharacterObject):
             self.abilities.frost_ray.enable()
         elif skill_name == "Weapon Master":
             self.abilities.frost_ray.enable()
+            self.tool_belt.add_action(Keys.MOUSE_RIGHT, self.abilities.frost_ray, None)
         elif skill_name == "Regrowth":
             self.abilities.regrowth.enable()
             self.abilities.regrowth.apply()

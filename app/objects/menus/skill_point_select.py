@@ -19,14 +19,14 @@ class SkillPointSelect(Menu):
                         pos=(0, 0, 0.85),
                         parent=self.menu,
                         relief=None,
-                        text_font=self.font,
+                        text_font=self.default_font,
                         text_fg=(1, 1, 1, 1)),
             DirectLabel(text="Choose a Skill to Learn",
                         scale=0.08,
                         pos=(0, 0, 0.75),
                         parent=self.menu,
                         relief=None,
-                        text_font=self.font,
+                        text_font=self.default_font,
                         text_fg=(1, 1, 1, 1))
         ]
 
