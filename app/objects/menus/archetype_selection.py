@@ -17,7 +17,7 @@ class ArchetypeSelection(Menu):
                             pos=(0, 0, 0.9),
                             parent=self.menu,
                             relief=None,
-                            text_font=self.font,
+                            text_font=self.default_font,
                             text_fg=(1, 1, 1, 1))
 
         self.brute_x_pos = -0.8

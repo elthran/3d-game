@@ -174,10 +174,12 @@ class Hero(CharacterObject):
 
         if attribute_name == 'Strength':
             self.attributes.strength.level += 1
-        elif attribute_name == 'Intelligence':
+        elif attribute_name == 'Intellect':
             self.attributes.intellect.level += 1
         elif attribute_name == 'Vitality':
             self.attributes.vitality.level += 1
+        else:
+            raise ValueError(f"Attribute {attribute_name} is unknown")
 
     def learn_skill(self, skill_name):
         self.skill_points -= 1

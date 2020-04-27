@@ -6,7 +6,7 @@ class Menu:
     def __init__(self, game, *args):
         self.game = game
 
-        self.font = self.game.default_font
+        self.default_font = loader.loadFont("resources/fonts/Wbxkomik.ttf")
 
         self.buttonImages = (loader.loadTexture("resources/images/UIButton.png"),  # Normal
                              loader.loadTexture("resources/images/UIButtonPressed.png"),  # Pressed
@@ -56,7 +56,7 @@ class Button:
                               pos=pos,
                               parent=parent,
                               scale=0.1,
-                              text_font=menu.font,
+                              text_font=menu.default_font,
                               clickSound=loader.loadSfx("resources/sounds/UIClick.ogg"),
                               frameTexture=menu.buttonImages,
                               frameSize=(-4, 4, -1, 1),
