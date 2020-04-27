@@ -1,6 +1,6 @@
 from panda3d.core import CollisionNode, CollisionHandlerQueue, AudioSound
 
-from app.game.constants import Masks
+from app.game.constants import Masks, Keys, CharacterTypes
 from app.objects.damage import Damage
 from app.objects.game_objects.game_objects import GameObject
 from app.objects.game_objects.physicals.physicals import PhysicalObject
@@ -11,8 +11,19 @@ class Ability(GameObject):
         super().__init__(*args, **kwargs)
 
         self.character = character
-        self.damage = None
-        self.enabled = False
+        self.level = 0
+
+        # Types (only one can be true)
+        self.is_castable = False  # Means it can be activated
+        self.is_permanent = False  # Means it is always on after being learned
+        self.is_equipped = False
+
+        # Miscellaneous
+        self.cooldown_timer_max = 0
+        self.cooldown_timer_current = 0
+        self.animation_timer_max = 0
+        self.animation_timer_current = 0
+
         # Physics
         self.collision_node = None
         self.collision_node_path = None
@@ -21,10 +32,12 @@ class Ability(GameObject):
         self.from_collider_protect = allies
         self.from_collider_all = Masks.HERO_AND_MONSTER
         self.into_collider = Masks.NONE
+
         # Display
         self.beam_hit_light_node_path = None
         self.model = None  # The basic model of the animation
         self.model_collision = None  # The model when the animation collides with another object
+
         # Sound
         self.sound_miss_file_path = None
         self.sound_hit_file_path = None
@@ -33,14 +46,26 @@ class Ability(GameObject):
         self.sound_hit = None
         self.sound_damage = None
 
-    def enable(self):
-        self.enabled = True
-        self.physics_init()
-        self.sound_init()
-        self.display_init()
+    def add_levels(self, delta):
+        if self.level == 0:
+            if self.is_permanent:
+                self.apply()
+            elif self.is_castable:
+                self.toggle_enabled(True)
 
-    def disable(self):
-        self.remove_object_from_world()
+        self.level += delta
+
+    def toggle_enabled(self, is_on):
+        if is_on:
+            self.is_equipped = True
+            self.physics_init()
+            self.sound_init()
+            self.display_init()
+            if self.character.character_type == CharacterTypes.HERO:
+                self.character.tool_belt.add_action(Keys.MOUSE_RIGHT, self, None)
+        else:
+            self.is_equipped = False
+            self.remove_object_from_world()
 
     def physics_init(self):
         if self.collision_node is None:
@@ -72,6 +97,9 @@ class Ability(GameObject):
 
     def get_damage(self, time_delta=None):
         return Damage()
+
+    def apply(self):
+        pass
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)

@@ -37,7 +37,7 @@ class Hero(CharacterObject):
         self.tool_belt.add_action(Keys.S, walk, walk.down)
         self.tool_belt.add_action(Keys.A, walk, walk.left)
         self.tool_belt.add_action(Keys.D, walk, walk.right)
-        self.abilities.melee_attack.enable()  # Hoping to deprecate this with line below....
+        self.abilities.melee_attack.toggle_enabled(True)  # Hoping to deprecate this with line below....
         self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         self.tool_belt.add_action(Keys.MOUSE_RIGHT, NullCommand(), None)
 
@@ -186,11 +186,9 @@ class Hero(CharacterObject):
         print(f"Learned skill {skill_name}")
 
         if skill_name == "Frost Ray":
-            self.abilities.frost_ray.enable()
+            self.abilities.frost_ray.add_levels(1)
         elif skill_name == "Weapon Master":
-            self.abilities.frost_ray.enable()
-            self.tool_belt.add_action(Keys.MOUSE_RIGHT, self.abilities.frost_ray, None)
+            pass
         elif skill_name == "Regrowth":
-            self.abilities.regrowth.enable()
-            self.abilities.regrowth.apply()
+            self.abilities.regrowth.add_levels(1)
 

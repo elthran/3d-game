@@ -7,6 +7,7 @@ class Regrowth(Ability):
         super().__init__(*args, **kwargs)
         self.name = "Regrowth"
         self.description = "You heal faster"
+        self.is_permanent = True
         self.bonus = 1
 
     def update(self, operation, key, hero, time_delta):
