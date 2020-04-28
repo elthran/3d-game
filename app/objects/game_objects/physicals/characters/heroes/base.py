@@ -20,6 +20,7 @@ class Hero(CharacterObject):
                          damage_taken_model="Misc/playerHit",
                          **kwargs)
 
+        self.identity = "Basic"
         self.character_type = CharacterTypes.HERO
         # Set the collider for Hero's to be Hero.
         self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)

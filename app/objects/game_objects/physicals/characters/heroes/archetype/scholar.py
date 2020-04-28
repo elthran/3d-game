@@ -7,6 +7,7 @@ class Scholar(MutationInterface):
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
+        hero.identity = "Scholar"
 
     def add_abilities(self):
         self.hero.tool_belt.add_action(Keys.F, self.hero.abilities.mana_armour, None)

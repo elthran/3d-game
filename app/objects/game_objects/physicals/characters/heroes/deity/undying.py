@@ -6,9 +6,16 @@ class Undying(MutationInterface):
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
+        hero.identity = "Acolyte of the Undying"
+        self.add_abilities()
+        self.update_attributes()
+        self.update_proficiencies()
 
     def add_abilities(self):
         pass
 
     def update_attributes(self):
         pass
+
+    def update_proficiencies(self):
+        self.hero.proficiencies.resistances.frost.reduction += 0.1

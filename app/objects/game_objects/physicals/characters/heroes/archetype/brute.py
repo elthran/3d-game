@@ -6,6 +6,7 @@ class Brute(MutationInterface):
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
+        hero.identity = "Brute"
 
     def add_abilities(self):
         pass

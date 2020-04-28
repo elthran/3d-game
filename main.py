@@ -4,6 +4,7 @@ from app import *
 from app.game.constants import States
 from app.game.states import GameState
 from app.maps import World
+from app.objects.game_objects.physicals.characters.heroes.deity.burning_sands import BurningSands
 from app.temporary.debug_text import DebugText
 
 MAX_FRAME_RATE = 1 / 60
@@ -58,6 +59,8 @@ class Game(ShowBase):
             self.hero.archetype = Scholar(self.hero)
         elif hero_type == "Brute":
             self.hero.archetype = Brute(self.hero)
+        else:
+            raise ValueError(f"Archetype {hero_type} unknown.")
         self.hero.refresh()
 
         self.world = World(game=self)
@@ -65,6 +68,10 @@ class Game(ShowBase):
     def select_religion(self, religion):
         if religion == "Undying":
             self.hero.religion = Undying(self.hero)
+        elif religion == "Burning Sands":
+            self.hero.religion = BurningSands(self.hero)
+        else:
+            raise ValueError(f"Religion {religion} unknown.")
         attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
         attribute_point_select_menu.enter_menu()
 
