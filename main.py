@@ -13,6 +13,7 @@ from app.objects.menus.game_over import GameOver as GameOverMenu
 from app.game.constants import States
 from app.game.states import GameState
 from app.objects.menus.religion_selection import ReligionSelection
+from app.temporary.debug_text import DebugText
 
 MAX_FRAME_RATE = 1 / 60
 
@@ -38,15 +39,8 @@ class Game(ShowBase):
         self.world = None
 
         self.default_font = loader.loadFont("resources/fonts/Wbxkomik.ttf")
-        self.top_right_text = OnscreenText(text="Experience Points: 0",
-                                           pos=(0.8, 0.9),
-                                           mayChange=True,
-                                           align=TextNode.ALeft)
 
-        self.bottom_text = OnscreenText(text="Current Status:",
-                                        pos=(0.3, -0.8),
-                                        mayChange=True,
-                                        align=TextNode.ALeft)
+        self.debug_text = DebugText()
 
         self.current_task = None
         self.state = GameState(States.MENU, game=self)
@@ -92,18 +86,7 @@ class Game(ShowBase):
 
             self.world.update(time_delta=time_delta)
 
-            self.top_right_text.setText(f"""
-Level: {self.hero.level}.
-Health: {self.hero.proficiencies.health.current}/{self.hero.proficiencies.health.maximum}
-Mana: {self.hero.proficiencies.mana.current}/{self.hero.proficiencies.mana.maximum}
-Experience: {self.hero.experience}/{self.hero.experience_maximum}
-Movement Speed: {self.hero.proficiencies.movement.speed_maximum}
-Acceleration: {self.hero.acceleration}
-Damage: {self.hero.proficiencies.melee_attack.damage}
-Regeneration: {self.hero.proficiencies.health.regeneration_amount}
-""")
-
-            self.bottom_text.setText(f"Afflictions: {[effect.name for effect in self.hero.active_effects]}")
+            self.debug_text.update(hero=self.hero)
 
             # Make sure to update visuals after all effects, or the frame might look weird
             self.huds.update(health=self.hero.proficiencies.health.current,

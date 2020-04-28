@@ -5,6 +5,5 @@ class Proficiency:
         self.description = None  # Displayed to user
         self.override = None
 
-    @property
     def __str__(self):
         raise ValueError('Must be set in child class.')

@@ -7,3 +7,6 @@ class Resistance(Proficiency):
         self.name = 'Resistances'
         self.description = 'Determines resistances to different damage types.'
         self.reduction = 0
+
+    def __str__(self):
+        return f"{self.reduction * 100}%"

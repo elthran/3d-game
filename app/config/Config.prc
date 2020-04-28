@@ -22,12 +22,12 @@ load-display pandagl
 # while -1 lets the window manager choose the position.
 
 win-origin -2 -2
-win-size 1700 900
+win-size 1920 1080
 
 # Uncomment this line if you want to run Panda fullscreen instead of
 # in a window.
 
-fullscreen  #f
+fullscreen
 
 # Set's the frame-rate that the game will run at
 

@@ -1,3 +1,4 @@
+from app.objects.proficiencies.resistances.fire import Fire
 from app.objects.proficiencies.resistances.frost import Frost
 from app.objects.proficiencies.resistances.magical import Magical
 from app.objects.proficiencies.resistances.physical import Physical
@@ -10,4 +11,5 @@ class Resistances:
         self.character = character
         self.physical = Physical(character)
         self.magical = Magical(character)
+        self.fire = Fire(character)
         self.frost = Frost(character)
