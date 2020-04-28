@@ -38,6 +38,24 @@ class ArchetypeSelection(Menu):
                    pos=(self.scholar_x_pos, 0, -0.5))
         ]
 
+
+        labels = [
+            DirectLabel(text="Strong and Tough",
+                        scale=0.04,
+                        pos=(self.brute_x_pos, 0, -0.7),
+                        parent=self.menu,
+                        relief=None,
+                        text_font=self.default_font,
+                        text_fg=(1, 1, 1, 1)),
+            DirectLabel(text="Adept at Magic",
+                        scale=0.04,
+                        pos=(self.scholar_x_pos, 0, -0.7),
+                        parent=self.menu,
+                        relief=None,
+                        text_font=self.default_font,
+                        text_fg=(1, 1, 1, 1))
+        ]
+
         self.hide_menu()
 
     def create_images(self):

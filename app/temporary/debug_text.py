@@ -35,5 +35,5 @@ class DebugText:
         """)
 
         self.bottom_text.setText(f"""
-                    Afflictions: {[effect.name for effect in hero.active_effects]}
+                    Status Effects: {[effect.name for effect in hero.active_effects]}
         """)

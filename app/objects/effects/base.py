@@ -12,7 +12,6 @@ class Effect:
 
     def update(self, time_delta):
         pass
-        # print(f"{self.target} is still {self.status_name}!")
 
     def end_effect(self):
         self.target.active_effects.remove(self)

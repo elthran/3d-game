@@ -72,8 +72,6 @@ class Game(ShowBase):
             self.hero.religion = BurningSands(self.hero)
         else:
             raise ValueError(f"Religion {religion} unknown.")
-        attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
-        attribute_point_select_menu.enter_menu()
 
     def update(self, task):
         # Get the amount of time since the last update
@@ -93,14 +91,19 @@ class Game(ShowBase):
                 self.state.set_next(States.MENU)
                 religion_select_menu = ReligionSelection(self)
                 religion_select_menu.enter_menu()
-            elif self.hero.attribute_points > 0:
-                self.state.set_next(States.MENU)
-                attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
-                attribute_point_select_menu.enter_menu()
-            elif self.hero.skill_points > 0:
+            elif self.hero.level == 3 and self.hero.skill_points > 0:
                 self.state.set_next(States.MENU)
                 skill_point_select_menu = SkillPointSelectMenu(self, hero=self.hero)
                 skill_point_select_menu.enter_menu()
+                self.hero.skill_points = 0
+            elif self.hero.attribute_points > 0:
+                self.hero.attributes.vitality.level += 1
+                self.hero.attributes.strength.level += 1
+                self.hero.attributes.intellect.level += 1
+                self.hero.attribute_points = 0
+            #     self.state.set_next(States.MENU)
+            #     attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
+            #     attribute_point_select_menu.enter_menu()
 
             self.camera.setPos(self.hero.actor.getX(), self.hero.actor.getY() - 20, 32)
 

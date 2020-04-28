@@ -29,26 +29,26 @@ class ReligionSelection(Menu):
                    command=self.exit_menu,
                    extra_args=["Undying"],
                    parent=self.menu,
-                   pos=(self.undying_x_pos, 0, 0.1)),
+                   pos=(self.undying_x_pos, 0, -0.5)),
             Button(menu=self,
                    text="Burning Sands",
                    command=self.exit_menu,
                    extra_args=["Burning Sands"],
                    parent=self.menu,
-                   pos=(self.burning_sands_x_pos, 0, 0.1))
+                   pos=(self.burning_sands_x_pos, 0, -0.5))
         ]
 
         labels = [
             DirectLabel(text="Gain Frost Resistance",
                         scale=0.04,
-                        pos=(self.undying_x_pos, 0, -0.2),
+                        pos=(self.undying_x_pos, 0, -0.7),
                         parent=self.menu,
                         relief=None,
                         text_font=self.default_font,
                         text_fg=(1, 1, 1, 1)),
             DirectLabel(text="Gain Fire Resistance",
                         scale=0.04,
-                        pos=(self.burning_sands_x_pos, 0, -0.2),
+                        pos=(self.burning_sands_x_pos, 0, -0.7),
                         parent=self.menu,
                         relief=None,
                         text_font=self.default_font,
@@ -58,7 +58,12 @@ class ReligionSelection(Menu):
         self.hide_menu()
 
     def create_images(self):
-        self.images = []
+        self.images = [
+            OnscreenImage(image='resources/images/undying.jpg',
+                          pos=(self.undying_x_pos, 0, 0.1), scale=0.4),
+            OnscreenImage(image='resources/images/burning_sands.jpg',
+                          pos=(self.burning_sands_x_pos, 0, 0.1), scale=0.4)
+        ]
 
     def enter_menu(self):
         self.show_menu()
@@ -66,3 +71,4 @@ class ReligionSelection(Menu):
     def exit_menu(self, religion):
         self.hide_menu()
         self.game.select_religion(religion)
+        self.game.state.set_next(States.RUNNING)

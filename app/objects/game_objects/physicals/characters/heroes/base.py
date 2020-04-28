@@ -41,6 +41,7 @@ class Hero(CharacterObject):
         self.abilities.melee_attack.toggle_enabled(True)  # Hoping to deprecate this with line below....
         self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         self.tool_belt.add_action(Keys.MOUSE_RIGHT, NullCommand(), None)
+        # self.tool_belt.add_action(Keys.K, SelectSkillCommand(), None)
 
         # Set basic hero statistics
         self.kills = 0
