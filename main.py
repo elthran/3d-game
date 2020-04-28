@@ -1,18 +1,9 @@
 from direct.showbase.ShowBase import ShowBase
 
 from app import *
-from app.maps.base import World
-from app.objects.game_objects.physicals.characters.heroes.archetype.brute import Brute
-from app.objects.game_objects.physicals.characters.heroes.archetype.scholar import Scholar
-from app.objects.game_objects.physicals.characters.heroes.deity.undying import Undying
-from app.objects.huds import Huds
-from app.objects.menus.home import Home as TitleMenu
-from app.objects.menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
-from app.objects.menus.skill_point_select import SkillPointSelect as SkillPointSelectMenu
-from app.objects.menus.game_over import GameOver as GameOverMenu
 from app.game.constants import States
 from app.game.states import GameState
-from app.objects.menus.religion_selection import ReligionSelection
+from app.maps import World
 from app.temporary.debug_text import DebugText
 
 MAX_FRAME_RATE = 1 / 60
@@ -33,7 +24,7 @@ class Game(ShowBase):
         self.cTrav.setRespectPrevTransform(True)
         self.pusher.setHorizontal(True)
 
-        self.huds = Huds(game)
+        self.huds = Huds(self)
 
         self.hero = None
         self.world = None
@@ -89,10 +80,7 @@ class Game(ShowBase):
             self.debug_text.update(hero=self.hero)
 
             # Make sure to update visuals after all effects, or the frame might look weird
-            self.huds.update(health=self.hero.proficiencies.health.current,
-                             mana=self.hero.proficiencies.mana.current,
-                             health_maximum=self.hero.proficiencies.health.maximum,
-                             mana_maximum=self.hero.proficiencies.mana.maximum)
+            self.huds.update(hero=self.hero)
 
             if self.hero.level == 2 and self.hero.religion is None:
                 self.state.set_next(States.MENU)

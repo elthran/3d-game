@@ -14,9 +14,12 @@ class Huds:
     def __iter__(self):
         return iter([self.hud_health, self.hud_mana])
 
-    def update(self, health=None, mana=None, health_maximum=None, mana_maximum=None):
-        self.hud_health.update_bar_value(new_value=health, maximum_value=health_maximum)
-        self.hud_mana.update_bar_value(new_value=mana, maximum_value=mana_maximum)
+    def update(self, hero):
+        self.hud_health.update_bar_value(new_value=hero.proficiencies.health.current,
+                                         maximum_value=hero.proficiencies.health.maximum)
+
+        self.hud_mana.update_bar_value(new_value=hero.proficiencies.mana.current,
+                                       maximum_value=hero.proficiencies.mana.maximum)
 
     def hide(self):
         for hud in self:

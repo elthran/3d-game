@@ -1,8 +1,8 @@
-import random
+from random import choice
 
 from panda3d.core import Vec3, DirectionalLight, AmbientLight, Vec4, CollisionCapsule, CollisionNode
 
-from app import TrainingDummyMonster
+from app.objects.game_objects.physicals.characters.monsters.melee import Melee
 
 
 class World:
@@ -78,8 +78,8 @@ class World:
         wall.setX(-8.0)
 
     def spawn_enemy(self):
-        spawn_point = random.choice(self.spawn_points)
-        new_enemy = TrainingDummyMonster(starting_position=spawn_point)
+        spawn_point = choice(self.spawn_points)
+        new_enemy = Melee(starting_position=spawn_point)
         self.walking_enemies.append(new_enemy)
 
     def update(self, time_delta):
