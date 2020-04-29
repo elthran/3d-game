@@ -1,10 +1,9 @@
-from panda3d.core import Vec2, Vec3, Plane, Point3, TextNode
-from direct.gui.OnscreenText import OnscreenText
+from panda3d.core import Vec2, Vec3, Plane, Point3
 
 from app.game.movement import Walk
 from app.objects.abilities import Abilities
 from app.objects.game_objects.game_objects import GameObject
-from app.game.tool_belt import ToolBelt, NullCommand
+from app.game.tool_belt import NullCommand
 from app.game.constants import CharacterTypes, Masks, Keys
 from app.objects.game_objects.physicals.characters.characters import CharacterObject
 
@@ -12,7 +11,7 @@ import random
 
 
 class Hero(CharacterObject):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, tool_belt=None, **kwargs):
         super().__init__(*args,
                          model_name="PandaChan/act_p3d_chan",
                          model_animation={"stand": "PandaChan/a_p3d_chan_idle",
@@ -28,9 +27,10 @@ class Hero(CharacterObject):
         # Turn the model to face the other way.
         self.actor.getChild(0).setH(180)
 
-        # Give them the ability package and an empty toolbelt
+        # Give them the ability package and the toolbelt
         self.abilities = Abilities(character=self, enemies=Masks.MONSTER, allies=Masks.HERO)
-        self.tool_belt = ToolBelt()
+        self.tool_belt = tool_belt
+        self.tool_belt.set_hero(self)
 
         # Set basic keys to the hero toolbelt
         walk = Walk(4)
@@ -41,7 +41,6 @@ class Hero(CharacterObject):
         self.abilities.melee_attack.toggle_enabled(True)  # Hoping to deprecate this with line below....
         self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         self.tool_belt.add_action(Keys.MOUSE_RIGHT, NullCommand(), None)
-        # self.tool_belt.add_action(Keys.K, SelectSkillCommand(), None)
 
         # Set basic hero statistics
         self.kills = 0
@@ -59,12 +58,6 @@ class Hero(CharacterObject):
         self.mouse_position_3d = None
         self.last_mouse_pos = Vec2(0, 0)
         self.ground_plane = Plane(Vec3(0, 0, 1), Vec3(0, 0, 0))
-
-        # TBD: Move to User class
-        self.scoreUI = OnscreenText(text="0",
-                                    pos=(-1.3, 0.825),
-                                    mayChange=True,
-                                    align=TextNode.ALeft)
 
     @property
     def experience(self):
@@ -111,8 +104,6 @@ class Hero(CharacterObject):
         self.update_ground_plane_and_mouse_position()
 
         self.update_firing_vector_and_heading()
-
-        self.tool_belt.execute(keys, self, time_delta)
 
         # Check if damage_taken_model can be refreshed
         if self.damage_taken_model and self.damage_taken_model_timer > 0:
@@ -172,25 +163,9 @@ class Hero(CharacterObject):
 
     def gain_attribute(self, attribute_name):
         self.attribute_points -= 1
-        print(f"Attribute {attribute_name} increased")
-
-        if attribute_name == 'Strength':
-            self.attributes.strength.level += 1
-        elif attribute_name == 'Intellect':
-            self.attributes.intellect.level += 1
-        elif attribute_name == 'Vitality':
-            self.attributes.vitality.level += 1
-        else:
-            raise ValueError(f"Attribute {attribute_name} is unknown")
+        self.attributes.increase_attribute_by_name(attribute_name, 1)
 
     def learn_skill(self, skill_name):
         self.skill_points -= 1
-        print(f"Learned skill {skill_name}")
-
-        if skill_name == "Frost Ray":
-            self.abilities.frost_ray.add_levels(1)
-        elif skill_name == "Weapon Master":
-            pass
-        elif skill_name == "Regrowth":
-            self.abilities.regrowth.add_levels(1)
+        self.abilities.increase_skill_level_by_name(skill_name, 1)
 

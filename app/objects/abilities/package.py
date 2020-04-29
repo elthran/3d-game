@@ -20,7 +20,10 @@ class Abilities:
         pass
 
     def get_enabled(self):
-        return [ability for ability in self if ability.enabled]
+        return [ability for ability in self if ability.is_equipped]
+
+    def increase_skill_level_by_name(self, name, delta):
+        getattr(self, name.lower().replace(" ", "_")).level += delta
 
     def __iter__(self):
         return iter([self.frost_ray,

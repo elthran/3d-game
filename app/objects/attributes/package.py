@@ -14,5 +14,8 @@ class Attributes:
         self.strength = Strength(character)
         self.vitality = Vitality(character)
 
+    def increase_attribute_by_name(self, name, delta):
+        getattr(self, name.lower()).level += delta
+
     def refresh(self):
         pass

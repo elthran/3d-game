@@ -25,7 +25,7 @@ class Walk(Command):
         hero.velocity.addX(hero.acceleration * time_delta)
         hero.walking = True
 
-    def update(self, operation, key, hero, time_delta):
+    def tool_belt_update(self, game, operation, key, hero, time_delta):
         self.states_seen += 1
         if key.on:
             self.operations.append(operation)

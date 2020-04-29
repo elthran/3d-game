@@ -3,9 +3,10 @@ from .base import *
 
 
 class AttributePointSelect(Menu):
-    def __init__(self, *args, hero=None):
+    def __init__(self, *args):
         super().__init__(*args)
-        self.hero = hero
+
+        self.hero = None
 
         self.backdrop = DirectFrame(frameColor=(0, 0, 0, 1),
                                     frameSize=(-1, 1, -1, 1),
@@ -13,53 +14,104 @@ class AttributePointSelect(Menu):
 
         self.menu = DirectFrame(frameColor=(1, 1, 1, 0))
 
-        title = [
-            DirectLabel(text="Level Up!",
-                        scale=0.1,
-                        pos=(0, 0, 0.85),
-                        parent=self.menu,
-                        relief=None,
-                        text_font=self.default_font,
-                        text_fg=(1, 1, 1, 1)),
-            DirectLabel(text="Choose an Attribute to Increase",
-                        scale=0.08,
-                        pos=(0, 0, 0.75),
-                        parent=self.menu,
-                        relief=None,
-                        text_font=self.default_font,
-                        text_fg=(1, 1, 1, 1))
-        ]
+        self.titles = {
+            'top': DirectLabel(text="Level Up!",
+                               scale=0.1,
+                               pos=(0, 0, 0.85),
+                               parent=self.menu,
+                               relief=None,
+                               text_font=self.default_font,
+                               text_fg=(1, 1, 1, 1)),
+            'bottom':
+                DirectLabel(text="Choose an Attribute to Increase",
+                            scale=0.08,
+                            pos=(0, 0, 0.75),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.default_font,
+                            text_fg=(1, 1, 1, 1))
+        }
 
-        buttons = [
-            Button(menu=self,
-                   text="Strength",
-                   command=self.exit_menu,
-                   extra_args=["Strength"],
-                   parent=self.menu,
-                   pos=(-0.9, 0, -0.5)),
-            Button(menu=self,
-                   text="Vitality",
-                   command=self.exit_menu,
-                   extra_args=["Vitality"],
-                   parent=self.menu,
-                   pos=(0, 0, -0.5)),
-            Button(menu=self,
-                   text="Intellect",
-                   command=self.exit_menu,
-                   extra_args=["Intellect"],
-                   parent=self.menu,
-                   pos=(0.9, 0, -0.5))
-        ]
+        self.buttons = {
+            'strength':
+                Button(menu=self,
+                       text="Strength",
+                       command=self.gain_attribute,
+                       extra_args=["Strength"],
+                       parent=self.menu,
+                       pos=(-0.9, 0, -0.5)),
+            'vitality':
+                Button(menu=self,
+                       text="Vitality",
+                       command=self.gain_attribute,
+                       extra_args=["Vitality"],
+                       parent=self.menu,
+                       pos=(0, 0, -0.5)),
+            'intellect':
+                Button(menu=self,
+                       text="Intellect",
+                       command=self.gain_attribute,
+                       extra_args=["Intellect"],
+                       parent=self.menu,
+                       pos=(0.9, 0, -0.5))
+        }
+
+        self.labels = {
+            'available_points':
+                DirectLabel(text="",
+                            scale=0.1,
+                            pos=(0.9, 0, 0.1),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.default_font,
+                            text_fg=(1, 1, 1, 1)),
+            'strength':
+                DirectLabel(text="",
+                            scale=0.04,
+                            pos=(-0.9, 0, -0.7),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.default_font,
+                            text_fg=(1, 1, 1, 1)),
+            'vitality':
+                DirectLabel(text="",
+                            scale=0.04,
+                            pos=(0, 0, -0.7),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.default_font,
+                            text_fg=(1, 1, 1, 1)),
+            'intellect':
+                DirectLabel(text="",
+                            scale=0.04,
+                            pos=(0.9, 0, -0.7),
+                            parent=self.menu,
+                            relief=None,
+                            text_font=self.default_font,
+                            text_fg=(1, 1, 1, 1))
+        }
 
         self.hide_menu()
 
     def create_images(self):
         self.images = []
 
-    def enter_menu(self):
+    def enter_menu(self, hero):
+        self.hero = hero
+        self.update_text()
         self.show_menu()
 
-    def exit_menu(self, attribute_name):
+    def update_text(self):
+        self.labels['strength'].setText(str(self.hero.attributes.strength.level))
+        self.labels['vitality'].setText(str(self.hero.attributes.vitality.level))
+        self.labels['intellect'].setText(str(self.hero.attributes.intellect.level))
+        self.labels['available_points'].setText(f"Available Points: {self.hero.attribute_points}")
+
+    def gain_attribute(self, attribute_name):
+        if self.hero.attribute_points > 0:
+            self.game.hero.gain_attribute(attribute_name)
+            self.update_text()
+
+    def exit_menu(self):
         self.hide_menu()
-        self.hero.gain_attribute(attribute_name)
         self.game.state.set_next(States.RUNNING)

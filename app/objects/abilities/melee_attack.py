@@ -29,7 +29,7 @@ class MeleeAttack(Ability):
                       physical=self.character.proficiencies.melee_attack.damage,
                       effects=effects)
 
-    def update(self, operation, key, hero, time_delta):
+    def tool_belt_update(self, game, operation, key, hero, time_delta):
         active = key.on
 
         self.update_direct(active, hero, time_delta)

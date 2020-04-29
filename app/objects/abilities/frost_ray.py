@@ -67,7 +67,7 @@ class FrostRay(Ability, Command):
                       frost=total_damage,
                       effects=[Freeze(source=self.character)])
 
-    def update(self, operation, key, hero, time_delta):
+    def tool_belt_update(self, game, operation, key, hero, time_delta):
         active = key.on if (self.character.proficiencies.mana.current > 0) else 0
         if (self.character.proficiencies.mana.current > self.character.proficiencies.mana.maximum * 0.5)\
                 or key.has_changed:

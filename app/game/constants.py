@@ -1,6 +1,10 @@
 from panda3d.core import BitMask32
 
 
+class Graphics:
+    MAX_FRAME_RATE = 1 / 60
+
+
 class WorldPhysics:
     FRICTION = 150.0
 

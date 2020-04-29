@@ -1,13 +1,13 @@
 from direct.showbase.ShowBase import ShowBase
 
 from app import *
-from app.game.constants import States
+from app.game.commands import AttributeMenuCommand
+from app.game.constants import States, Graphics
 from app.game.states import GameState
+from app.game.tool_belt import ToolBelt
 from app.maps import World
 from app.objects.game_objects.physicals.characters.heroes.deity.burning_sands import BurningSands
 from app.temporary.debug_text import DebugText
-
-MAX_FRAME_RATE = 1 / 60
 
 
 class Game(ShowBase):
@@ -39,6 +39,8 @@ class Game(ShowBase):
         self.current_menu = TitleMenu(self)
         self.current_menu.enter_menu()
 
+        self.background_task = None
+
     def resume(self):
         self.current_task = taskMgr.add(self.update, "update")
         self.huds.show()
@@ -54,7 +56,12 @@ class Game(ShowBase):
     def start_game(self, hero_type):
         self.cleanup()
 
-        self.hero = Hero(starting_position=Vec3(0, 0, 0))
+        tool_belt = ToolBelt(game=self, key_mapper=self.key_mapper)
+        tool_belt.add_action(Keys.K, AttributeMenuCommand(game=self), None)
+        self.background_task = taskMgr.add(tool_belt.update, "tool_belt_update")
+
+        self.hero = Hero(starting_position=Vec3(0, 0, 0), tool_belt=tool_belt)
+
         if hero_type == "Scholar":
             self.hero.archetype = Scholar(self.hero)
         elif hero_type == "Brute":
@@ -75,7 +82,7 @@ class Game(ShowBase):
 
     def update(self, task):
         # Get the amount of time since the last update
-        time_delta = min(globalClock.getDt(), MAX_FRAME_RATE)
+        time_delta = min(globalClock.getDt(), Graphics.MAX_FRAME_RATE)
 
         if not self.hero.dead:
             self.hero.update(time_delta, keys=self.key_mapper)
@@ -96,11 +103,6 @@ class Game(ShowBase):
                 skill_point_select_menu = SkillPointSelectMenu(self, hero=self.hero)
                 skill_point_select_menu.enter_menu()
                 self.hero.skill_points = 0
-            elif self.hero.attribute_points > 0:
-                self.hero.attributes.vitality.level += 1
-                self.hero.attributes.strength.level += 1
-                self.hero.attributes.intellect.level += 1
-                self.hero.attribute_points = 0
             #     self.state.set_next(States.MENU)
             #     attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
             #     attribute_point_select_menu.enter_menu()

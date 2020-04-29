@@ -7,11 +7,6 @@ class User:
     def __init__(self):
         self.score = 0
 
-        self.scoreUI = OnscreenText(text="0",
-                                    pos=(-1.3, 0.825),
-                                    mayChange=True,
-                                    align=TextNode.ALeft)
-
         self.health_icons = []
 
     def set_hero(self, Hero):
@@ -22,9 +17,6 @@ class User:
             # Since our icons have transparent regions, we'll activate transparency.
             icon.setTransparency(True)
             self.health_icons.append(icon)
-
-    def update_score(self):
-        self.scoreUI.setText(str(self.score))
 
     def update_health_UI(self):
         for index, icon in enumerate(self.health_icons):

@@ -10,7 +10,7 @@ class Regrowth(Ability):
         self.is_permanent = True
         self.bonus = 1
 
-    def update(self, operation, key, hero, time_delta):
+    def tool_belt_update(self, game, operation, key, hero, time_delta):
         self.update_direct(hero, time_delta)
 
     def update_direct(self, hero, time_delta):

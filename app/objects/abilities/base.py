@@ -11,7 +11,7 @@ class Ability(GameObject):
         super().__init__(*args, **kwargs)
 
         self.character = character
-        self.level = 0
+        self._level = 0
 
         # Types (only one can be true)
         self.is_castable = False  # Means it can be activated
@@ -46,14 +46,18 @@ class Ability(GameObject):
         self.sound_hit = None
         self.sound_damage = None
 
-    def add_levels(self, delta):
+    @property
+    def level(self):
+        return self._level
+
+    @level.setter
+    def level(self, new_value):
         if self.level == 0:
             if self.is_permanent:
                 self.apply()
             elif self.is_castable:
                 self.toggle_enabled(True)
-
-        self.level += delta
+        self._level = new_value
 
     def toggle_enabled(self, is_on):
         if is_on:

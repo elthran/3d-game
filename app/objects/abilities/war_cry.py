@@ -10,7 +10,7 @@ class WarCry(Ability):
         self.mana_cost = 5
         self.duration = 10
 
-    def update(self, operation, key, hero, time_delta):
+    def tool_belt_update(self, game, operation, key, hero, time_delta):
         active = key.on
         self.update_direct(active, hero, time_delta)
 
