@@ -1,4 +1,7 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectFrame, DirectLabel
+from direct.gui.OnscreenImage import OnscreenImage
+
+
 from .base import *
 
 
@@ -26,13 +29,13 @@ class ArchetypeSelection(Menu):
         buttons = [
             Button(menu=self,
                    text="Brute",
-                   command=self.exit_menu,
+                   command=self.choose_archetype,
                    extra_args=["Brute"],
                    parent=self.menu,
                    pos=(self.brute_x_pos, 0, -0.5)),
             Button(menu=self,
                    text="Scholar",
-                   command=self.exit_menu,
+                   command=self.choose_archetype,
                    extra_args=["Scholar"],
                    parent=self.menu,
                    pos=(self.scholar_x_pos, 0, -0.5))
@@ -67,7 +70,7 @@ class ArchetypeSelection(Menu):
     def enter_menu(self):
         self.show_menu()
 
-    def exit_menu(self, character_name):
+    def choose_archetype(self, archetype_name):
         self.hide_menu()
-        self.game.start_game(character_name)
+        self.game.start_game(archetype_name)
         self.game.state.set_next(States.RUNNING)

@@ -1,10 +1,12 @@
-from direct.gui.DirectGui import DGG, DirectButton, DirectDialog, DirectFrame, DirectLabel
-from direct.gui.OnscreenImage import OnscreenImage
+from direct.gui.DirectGui import DGG, DirectButton
+
+from app.game.constants import States
 
 
 class Menu:
     def __init__(self, game, *args):
         self.game = game
+        self.hero = None
 
         self.default_font = loader.loadFont("resources/fonts/Wbxkomik.ttf")
 
@@ -21,15 +23,8 @@ class Menu:
 
         self.images = []
 
-    def hide_menu(self):
-        if self.backdrop is not None:
-            self.backdrop.hide()
-        if self.menu is not None:
-            self.menu.hide()
-        if self.screen is not None:
-            self.screen.hide()
-        for image in self.images:
-            image.destroy()
+    def create_images(self):
+        pass
 
     def show_menu(self):
         if self.backdrop is not None:
@@ -40,8 +35,41 @@ class Menu:
             self.screen.show()
         self.create_images()
 
-    def create_images(self):
+    def update_text(self):
         pass
+
+    def enter_menu(self, hero=None):
+        self.hero = hero
+        self.update_text()
+        self.show_menu()
+
+    def next_menu(self, next_menu=None):
+        self.hide_menu()
+        if next_menu:
+            next_menu.enter_menu()
+
+    def hide_menu(self):
+        if self.backdrop is not None:
+            self.backdrop.hide()
+        if self.menu is not None:
+            self.menu.hide()
+        if self.screen is not None:
+            self.screen.hide()
+        for image in self.images:
+            image.destroy()
+
+    def exit_menu(self):
+        self.hide_menu()
+        self.game.state.set_next(States.RUNNING)
+
+    def resume_game(self):
+        self.hide_menu()
+        self.game.state.set_next(States.RUNNING)
+
+    def exit_game(self):
+        self.hide_menu()
+        self.game.state.set_next(States.QUIT)
+        self.game.quit()
 
 
 class Button:

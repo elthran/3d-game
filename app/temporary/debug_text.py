@@ -29,6 +29,8 @@ class DebugText:
             ability_text += (f"{ability.name} level {ability.level} (equipped to key: {enabled})\n")
         tool_belt_text = ""
         for button, command in hero.tool_belt.tools.items():
+            if command[0].__class__.__name__ == 'Walk':
+                continue
             tool_belt_text += (f"'{button}' to {command[0].__class__.__name__}\n")
         self.top_right_text.setText(f"""
 Character: {hero.identity}

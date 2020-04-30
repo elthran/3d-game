@@ -36,6 +36,7 @@ class Keys:
     X = "x"
     Y = "y"
     Z = "z"
+    ESCAPE = "escape"
     UP = "up"
     DOWN = "down"
     LEFT = "left"

@@ -1,4 +1,6 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectFrame, DirectLabel
+from direct.gui.OnscreenImage import OnscreenImage
+
 from .base import *
 from .archetype_selection import ArchetypeSelection
 
@@ -52,15 +54,8 @@ class Home(Menu):
 
         self.hide_menu()
 
-    def enter_menu(self):
-        self.show_menu()
-
-    def next_menu(self, menu_name):
+    def next_menu(self, next_menu):
         self.hide_menu()
-        if menu_name == "ArchetypeSelection":
+        if next_menu == "ArchetypeSelection":
             archetype_selection = ArchetypeSelection(self.game)
             archetype_selection.enter_menu()
-
-    def exit_menu(self):
-        self.hide_menu()
-        self.game.state.set_next(States.QUIT)

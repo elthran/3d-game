@@ -1,4 +1,6 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectFrame, DirectLabel
+from direct.gui.OnscreenImage import OnscreenImage
+
 from .base import *
 
 
@@ -26,13 +28,13 @@ class ReligionSelection(Menu):
         buttons = [
             Button(menu=self,
                    text="Undying",
-                   command=self.exit_menu,
+                   command=self.choose_religion,
                    extra_args=["Undying"],
                    parent=self.menu,
                    pos=(self.undying_x_pos, 0, -0.5)),
             Button(menu=self,
                    text="Burning Sands",
-                   command=self.exit_menu,
+                   command=self.choose_religion,
                    extra_args=["Burning Sands"],
                    parent=self.menu,
                    pos=(self.burning_sands_x_pos, 0, -0.5))
@@ -65,10 +67,6 @@ class ReligionSelection(Menu):
                           pos=(self.burning_sands_x_pos, 0, 0.1), scale=0.4)
         ]
 
-    def enter_menu(self):
-        self.show_menu()
-
-    def exit_menu(self, religion):
-        self.hide_menu()
+    def choose_religion(self, religion):
         self.game.select_religion(religion)
-        self.game.state.set_next(States.RUNNING)
+        self.exit_menu()

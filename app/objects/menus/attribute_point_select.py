@@ -1,4 +1,5 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectFrame, DirectLabel
+
 from .base import *
 
 
@@ -93,14 +94,6 @@ class AttributePointSelect(Menu):
 
         self.hide_menu()
 
-    def create_images(self):
-        self.images = []
-
-    def enter_menu(self, hero):
-        self.hero = hero
-        self.update_text()
-        self.show_menu()
-
     def update_text(self):
         self.labels['strength'].setText(str(self.hero.attributes.strength.level))
         self.labels['vitality'].setText(str(self.hero.attributes.vitality.level))
@@ -111,7 +104,3 @@ class AttributePointSelect(Menu):
         if self.hero.attribute_points > 0:
             self.game.hero.gain_attribute(attribute_name)
             self.update_text()
-
-    def exit_menu(self):
-        self.hide_menu()
-        self.game.state.set_next(States.RUNNING)

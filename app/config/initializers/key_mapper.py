@@ -69,6 +69,7 @@ class KeyMapper:
         self.x = self.Key(Keys.X)
         self.y = self.Key(Keys.Y)
         self.z = self.Key(Keys.Z)
+        self.escape = self.Key(Keys.ESCAPE)
         self.mouse_left = self.Key(Keys.MOUSE_LEFT)
         self.mouse_right = self.Key(Keys.MOUSE_RIGHT)
 
@@ -124,6 +125,8 @@ class KeyMapper:
         app.accept("y-up", self.y.set_off)
         app.accept("z", self.z.set_on)
         app.accept("z-up", self.z.set_off)
+        app.accept("escape", self.escape.set_on)
+        app.accept("escape-up", self.escape.set_off)
         app.accept("mouse1", self.mouse_left.set_on)
         app.accept("mouse1-up", self.mouse_left.set_off)
         app.accept("mouse3", self.mouse_right.set_on)

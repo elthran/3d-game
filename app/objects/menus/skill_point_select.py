@@ -1,4 +1,5 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectFrame, DirectLabel
+
 from .base import *
 
 
@@ -33,19 +34,19 @@ class SkillPointSelect(Menu):
         buttons = [
             Button(menu=self,
                    text="Frost Ray",
-                   command=self.exit_menu,
+                   command=self.choose_skill,
                    extra_args=["Frost Ray"],
                    parent=self.menu,
                    pos=(-0.9, 0, -0.5)),
             Button(menu=self,
                    text="Weapon Master",
-                   command=self.exit_menu,
+                   command=self.choose_skill,
                    extra_args=["Weapon Master"],
                    parent=self.menu,
                    pos=(0, 0, -0.5)),
             Button(menu=self,
                    text="Regrowth",
-                   command=self.exit_menu,
+                   command=self.choose_skill,
                    extra_args=["Regrowth"],
                    parent=self.menu,
                    pos=(0.9, 0, -0.5))
@@ -53,13 +54,6 @@ class SkillPointSelect(Menu):
 
         self.hide_menu()
 
-    def create_images(self):
-        self.images = []
-
-    def enter_menu(self):
-        self.show_menu()
-
-    def exit_menu(self, skill_name):
-        self.hide_menu()
+    def choose_skill(self, skill_name):
         self.hero.learn_skill(skill_name)
-        self.game.state.set_next(States.RUNNING)
+        self.exit_menu()

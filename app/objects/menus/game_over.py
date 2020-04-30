@@ -1,4 +1,5 @@
-from app.game.constants import States
+from direct.gui.DirectGui import DirectLabel, DirectDialog
+
 from .base import *
 from .archetype_selection import ArchetypeSelection
 

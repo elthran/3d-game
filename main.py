@@ -1,7 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 
 from app import *
-from app.game.commands import AttributeMenuCommand
+from app.game.commands import AttributeMenuCommand, ExitMenuCommand
 from app.game.constants import States, Graphics
 from app.game.states import GameState
 from app.game.tool_belt import ToolBelt
@@ -57,6 +57,7 @@ class Game(ShowBase):
         self.cleanup()
 
         tool_belt = ToolBelt(game=self, key_mapper=self.key_mapper)
+        tool_belt.add_action(Keys.ESCAPE, ExitMenuCommand(game=self), None)
         tool_belt.add_action(Keys.K, AttributeMenuCommand(game=self), None)
         self.background_task = taskMgr.add(tool_belt.update, "tool_belt_update")
 
