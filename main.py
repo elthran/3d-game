@@ -101,12 +101,9 @@ class Game(ShowBase):
                 religion_select_menu.enter_menu()
             elif self.hero.level == 3 and self.hero.skill_points > 0:
                 self.state.set_next(States.MENU)
-                skill_point_select_menu = SkillPointSelectMenu(self, hero=self.hero)
-                skill_point_select_menu.enter_menu()
+                skill_point_select_menu = SkillPointSelectMenu(self)
+                skill_point_select_menu.enter_menu(hero=self.hero)
                 self.hero.skill_points = 0
-            #     self.state.set_next(States.MENU)
-            #     attribute_point_select_menu = AttributePointSelectMenu(self, hero=self.hero)
-            #     attribute_point_select_menu.enter_menu()
 
             self.camera.setPos(self.hero.actor.getX(), self.hero.actor.getY() - 20, 32)
 

@@ -4,9 +4,8 @@ from .base import *
 
 
 class SkillPointSelect(Menu):
-    def __init__(self, *args, hero=None):
+    def __init__(self, *args):
         super().__init__(*args)
-        self.hero = hero
 
         self.backdrop = DirectFrame(frameColor=(0, 0, 0, 1),
                                     frameSize=(-1, 1, -1, 1),

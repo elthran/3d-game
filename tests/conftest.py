@@ -27,4 +27,5 @@ def game_instance():
 def started_game(game_instance):
     # Do we need this?
     # game_instance.state.set_next(States.RUNNING)
+    game_instance.start_game("Brute")
     yield game_instance

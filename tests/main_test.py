@@ -14,3 +14,5 @@ class TestGame:
         game_instance.state.set_next(States.RUNNING)
         assert game_instance.update(game_instance.current_task) is not None
 
+
+
