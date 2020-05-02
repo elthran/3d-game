@@ -38,7 +38,7 @@ class Hero(CharacterObject):
         self.tool_belt.add_action(Keys.S, walk, walk.down)
         self.tool_belt.add_action(Keys.A, walk, walk.left)
         self.tool_belt.add_action(Keys.D, walk, walk.right)
-        self.abilities.melee_attack.toggle_enabled(True)  # Hoping to deprecate this with line below....
+        self.abilities.melee_attack.equip_to_tool_belt(Keys.MOUSE_LEFT)  # Hoping to deprecate this with line below....
         self.tool_belt.add_action(Keys.MOUSE_LEFT, self.abilities.melee_attack, None)
         self.tool_belt.add_action(Keys.MOUSE_RIGHT, NullCommand(), None)
 

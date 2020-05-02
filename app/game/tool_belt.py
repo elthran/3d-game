@@ -21,6 +21,9 @@ class ToolBelt:
     def add_action(self, name, command_instance, operation):
         self.tools[name] = [command_instance, operation]
 
+    def remove_action(self, name):
+        self.tools.pop(name, None)
+
     def execute(self, keys, hero, time_delta):
         for key in keys:
             try:

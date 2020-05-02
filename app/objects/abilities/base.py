@@ -1,6 +1,7 @@
 from panda3d.core import CollisionNode, CollisionHandlerQueue, AudioSound
 
 from app.game.constants import Masks, Keys, CharacterTypes
+from app.game.tool_belt import NullCommand
 from app.objects.damage import Damage
 from app.objects.game_objects.game_objects import GameObject
 from app.objects.game_objects.physicals.physicals import PhysicalObject
@@ -17,6 +18,9 @@ class Ability(GameObject):
         self.is_castable = False  # Means it can be activated
         self.is_permanent = False  # Means it is always on after being learned
         self.is_equipped = False
+
+        # Temp
+        self.tool_belt_key = None
 
         # Miscellaneous
         self.cooldown_timer_max = 0
@@ -56,20 +60,23 @@ class Ability(GameObject):
             if self.is_permanent:
                 self.apply()
             elif self.is_castable:
-                self.toggle_enabled(True)
+                self.equip_to_tool_belt(Keys.MOUSE_RIGHT)
         self._level = new_value
 
-    def toggle_enabled(self, is_on):
-        if is_on:
-            self.is_equipped = True
-            self.physics_init()
-            self.sound_init()
-            self.display_init()
-            if self.character.character_type == CharacterTypes.HERO:
-                self.character.tool_belt.add_action(Keys.MOUSE_RIGHT, self, None)
-        else:
-            self.is_equipped = False
-            self.remove_object_from_world()
+    def equip_to_tool_belt(self, key=None):
+        self.is_equipped = True
+        self.physics_init()
+        self.sound_init()
+        self.display_init()
+        if key:
+            self.tool_belt_key = key
+            self.character.tool_belt.add_action(key, self, None)
+
+    def unequip_from_tool_belt(self):
+        self.is_equipped = False
+        self.character.tool_belt.remove_action(self.tool_belt_key)
+        self.tool_belt_key = None
+        self.remove_object_from_world()
 
     def physics_init(self):
         if self.collision_node is None:
@@ -103,7 +110,7 @@ class Ability(GameObject):
         return Damage()
 
     def apply(self):
-        pass
+        raise AttributeError("Must be defined")
 
     def update(self, time_delta, *args, **kwargs):
         super().update(time_delta, *args, **kwargs)

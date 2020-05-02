@@ -23,7 +23,7 @@ class Melee(Monster):
         self.proficiencies.health.regeneration_base_amount = 0
         self.proficiencies.movement.base_acceleration = 100
         self.refresh()
-        self.abilities.melee_attack.toggle_enabled(True)
+        self.abilities.melee_attack.equip_to_tool_belt()
 
     def run_logic(self, player, time_delta):
         """
