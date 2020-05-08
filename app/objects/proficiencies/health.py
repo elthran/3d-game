@@ -9,8 +9,8 @@ class Health(GenericSpendableResource):
         self.base_maximum = 5
 
     @property
-    def maximum(self):
-        return self.base_maximum + self.bonus_maximum + self.character.attributes.vitality.level * 1
+    def hero_attribute_bonus(self):
+        return self.character.attributes.vitality.level * 2
 
     def __str__(self):
         return __class__.__name__

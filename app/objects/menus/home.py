@@ -42,7 +42,7 @@ class Home(Menu):
             Button(menu=self,
                    text="Start Game",
                    command=self.next_menu,
-                   extra_args=["ArchetypeSelection"],
+                   extra_args=[ArchetypeSelection(self.game)],
                    parent=self.menu,
                    pos=(0, 0, 0.2)),
             Button(menu=self,
@@ -53,9 +53,3 @@ class Home(Menu):
         ]
 
         self.hide_menu()
-
-    def next_menu(self, next_menu):
-        self.hide_menu()
-        if next_menu == "ArchetypeSelection":
-            archetype_selection = ArchetypeSelection(self.game)
-            archetype_selection.enter_menu()

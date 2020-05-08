@@ -6,7 +6,7 @@ from app.game.constants import States
 class Menu:
     def __init__(self, game, *args):
         self.game = game
-        self.hero = None
+        self.hero = self.game.hero if self.game.hero else None
 
         self.default_font = loader.loadFont("resources/fonts/Wbxkomik.ttf")
 
@@ -35,18 +35,24 @@ class Menu:
             self.screen.show()
         self.create_images()
 
+    def set_buttons(self):
+        pass
+
     def update_text(self):
         pass
 
-    def enter_menu(self, hero=None):
+    def enter_menu(self, *args, hero=None):
         self.hero = hero
+        self.set_buttons()
         self.update_text()
         self.show_menu()
 
     def next_menu(self, next_menu=None):
-        self.hide_menu()
         if next_menu:
-            next_menu.enter_menu()
+            self.hide_menu()
+            next_menu.enter_menu(hero=self.hero)
+        else:
+            self.exit_menu()
 
     def hide_menu(self):
         if self.backdrop is not None:

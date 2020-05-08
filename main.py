@@ -1,7 +1,7 @@
 from direct.showbase.ShowBase import ShowBase
 
 from app import *
-from app.game.commands import AttributeMenuCommand, ExitMenuCommand
+from app.game.commands import AttributeMenuCommand, ExitMenuCommand, SkillPointMenuCommand
 from app.game.constants import States, Graphics
 from app.game.states import GameState
 from app.game.tool_belt import ToolBelt
@@ -59,6 +59,7 @@ class Game(ShowBase):
         tool_belt = ToolBelt(game=self, key_mapper=self.key_mapper)
         tool_belt.add_action(Keys.ESCAPE, ExitMenuCommand(game=self), None)
         tool_belt.add_action(Keys.K, AttributeMenuCommand(game=self), None)
+        tool_belt.add_action(Keys.T, SkillPointMenuCommand(game=self), None)
         self.background_task = taskMgr.add(tool_belt.update, "tool_belt_update")
 
         self.hero = Hero(starting_position=Vec3(0, 0, 0), tool_belt=tool_belt)
@@ -98,7 +99,7 @@ class Game(ShowBase):
             if self.hero.level == 2 and self.hero.religion is None:
                 self.state.set_next(States.MENU)
                 religion_select_menu = ReligionSelection(self)
-                religion_select_menu.enter_menu()
+                religion_select_menu.enter_menu(hero=self.hero)
             elif self.hero.level == 3 and self.hero.skill_points > 0:
                 self.state.set_next(States.MENU)
                 skill_point_select_menu = SkillPointSelectMenu(self)

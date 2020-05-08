@@ -1,4 +1,4 @@
-from app.objects.menus.skill_point_select import SkillPointSelect
+from app.objects.menus.skill_points.base import SkillPointSelect
 
 
 class TestSkillPointSelectMenu:

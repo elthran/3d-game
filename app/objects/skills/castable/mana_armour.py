@@ -1,4 +1,4 @@
-from .base import Ability
+from app.objects.skills.base import Ability
 from app.objects.effects.mana_armour import ManaArmourEffect
 
 
@@ -7,9 +7,13 @@ class ManaArmour(Ability):
         super().__init__(*args, **kwargs)
         # health.add_observer(self)
         self.name = "Mana Armour"
-        self.description = '25% chance to lose mana instead of health'
-        self.mana_cost = 1
-        self.duration = 10
+        self.skill_tree = "Scholar"
+        self.bonus = 0.1
+
+    @property
+    def description(self):
+        return f"Have a {self.bonus * (self.level + 1) * 100}% chance\n" \
+            f"to lose mana instead of health."
 
     def tool_belt_update(self, game, operation, key, hero, time_delta):
         active = key.on

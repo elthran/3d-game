@@ -1,14 +1,19 @@
-from .base import Ability
+from app.objects.skills.base import Ability
 
 
 class WarCry(Ability):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # health.add_observer(self)
-        self.name = "Mana Armour"
-        self.description = '25% chance to lose mana instead of health'
+        self.name = "War Cry"
+        self.skill_tree = "Brute"
+        self.bonus = 1.0
         self.mana_cost = 5
-        self.duration = 10
+        self.duration = 5.0
+
+    @property
+    def description(self):
+        return f"Gain {self.bonus * (self.level + 1) * 100}% melee damage for {self.duration} seconds."
 
     def tool_belt_update(self, game, operation, key, hero, time_delta):
         active = key.on

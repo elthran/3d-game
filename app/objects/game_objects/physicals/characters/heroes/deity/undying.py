@@ -6,7 +6,7 @@ class Undying(MutationInterface):
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
-        hero.identity = "Acolyte of the Undying"
+        hero.religion = "Acolyte of the Undying"
         self.add_abilities()
         self.update_attributes()
         self.update_proficiencies()

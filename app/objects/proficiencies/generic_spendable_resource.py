@@ -7,7 +7,8 @@ class GenericSpendableResource(Proficiency):
         self.name = 'GenericSpendableResource'
         self.description = 'GenericSpendableResource Description'
         self.base_maximum = 5
-        self.bonus_maximum = 0
+        self.bonus_maximum_amount = 0
+        self.bonus_maximum_percentage = 1.00
         self._current = self.base_maximum
         self.regeneration_base_amount = 0.01
         self.regeneration_bonus_amount = 0
@@ -34,8 +35,13 @@ class GenericSpendableResource(Proficiency):
 
     @property
     def maximum(self):
-        return self.base_maximum + self.bonus_maximum
+        return (self.base_maximum + self.bonus_maximum_amount + self.hero_attribute_bonus) \
+               * self.bonus_maximum_percentage
 
     @property
     def regeneration_amount(self):
         return self.regeneration_base_amount + self.regeneration_bonus_amount
+
+    @property
+    def hero_attribute_bonus(self):
+        return 0

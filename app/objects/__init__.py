@@ -8,7 +8,7 @@ from .huds import Huds
 
 from .menus.home import Home as TitleMenu
 from .menus.attribute_point_select import AttributePointSelect as AttributePointSelectMenu
-from .menus.skill_point_select import SkillPointSelect as SkillPointSelectMenu
+from .menus.skill_points.package import SkillPointSelect as SkillPointSelectMenu
 from .menus.game_over import GameOver as GameOverMenu
 from .menus.religion_selection import ReligionSelection
 

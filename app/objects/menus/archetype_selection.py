@@ -67,9 +67,6 @@ class ArchetypeSelection(Menu):
             OnscreenImage(image='resources/images/warrior.jpg', pos=(self.brute_x_pos, 0, 0.1), scale=0.4)
         ]
 
-    def enter_menu(self):
-        self.show_menu()
-
     def choose_archetype(self, archetype_name):
         self.hide_menu()
         self.game.start_game(archetype_name)

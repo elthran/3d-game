@@ -3,7 +3,7 @@ from panda3d.core import CollisionSegment
 from random import uniform, randint
 
 from app.objects.effects.freeze import Freeze
-from .base import Ability
+from app.objects.skills.base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.stun import Stun
 
@@ -13,10 +13,13 @@ class MeleeAttack(Ability):
         super().__init__(*args, **kwargs)
         self.name = "Melee Attack"
         self.collision_node = CollisionSegment(0, 0, 0, 1, 0, 0)
-        self.description = "Swing your currently equipped weapon at an enemy.."
         self.is_castable = True
         self.animation_timer_max = 0.3  # The delay between the start of an attack, and the attack (potentially) landing
         self.cooldown_timer_max = 0.5
+
+    @property
+    def description(self):
+        return "Swing your equipped weapon at an enemy."
 
     def get_damage(self, time_delta=None):
         if randint(1,10) == 10:

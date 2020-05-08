@@ -32,7 +32,7 @@ class GameOver(Menu):
             Button(menu=self,
                    text="Restart",
                    command=self.next_menu,
-                   extra_args=["ArchetypeSelection"],
+                   extra_args=[ArchetypeSelection(self.game)],
                    parent=self.screen,
                    pos=(0, 0, 0.2)),
             Button(menu=self,
@@ -47,15 +47,6 @@ class GameOver(Menu):
             self.modifiable_score_label.setText()
 
         self.hide_menu()
-
-    def enter_menu(self):
-        self.show_menu()
-
-    def next_menu(self, menu_name):
-        self.hide_menu()
-        if menu_name == "ArchetypeSelection":
-            archetype_selection = ArchetypeSelection(self.game)
-            archetype_selection.enter_menu()
 
     def exit_menu(self):
         self.hide_menu()

@@ -3,13 +3,13 @@ from app.objects.game_objects.physicals.characters.heroes.interfaces import Muta
 
 class Brute(MutationInterface):
     def __init__(self, hero):
+        self.name = self.__class__.__name__
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
-        hero.identity = "Brute"
 
     def add_abilities(self):
-        pass
+        self.hero.abilities.activate_brute_skills()
 
     def update_attributes(self):
         self.hero.attributes.strength.is_primary = True

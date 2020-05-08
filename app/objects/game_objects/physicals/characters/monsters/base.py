@@ -1,5 +1,5 @@
 from app.game.constants import CharacterTypes, Masks
-from app.objects.abilities import Abilities
+from app.objects.skills import Abilities
 from app.objects.game_objects.physicals.characters.characters import CharacterObject
 
 

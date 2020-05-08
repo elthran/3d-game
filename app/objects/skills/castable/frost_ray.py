@@ -2,7 +2,7 @@ from panda3d.core import CollisionRay, Vec3, PointLight, Vec4, AudioSound
 
 from math import sin
 from random import uniform
-from .base import Ability
+from app.objects.skills.base import Ability
 from app.objects.damage import Damage
 from app.objects.effects.freeze import Freeze
 from app.game.interfaces import Command
@@ -13,7 +13,7 @@ class FrostRay(Ability, Command):
         super().__init__(*args, **kwargs)
 
         self.name = "Frost Ray"
-        self.description = "Shoot a ray of frost at an enemy."
+        self.skill_tree = "Scholar"
         self.is_castable = True
 
         # Physics
@@ -23,6 +23,11 @@ class FrostRay(Ability, Command):
         self.sound_miss_file_path = "resources/sounds/laserNoHit.ogg"
         self.sound_hit_file_path = "resources/sounds/laserHit.ogg"
         self.sound_damage_file_path = "resources/sounds/FemaleDmgNoise.ogg"
+
+    @property
+    def description(self):
+        return f"Shoot a ray of frost at an enemy,\n" \
+            f"dealing {self.get_raw_damage()} damage per second."
 
     def display_init(self):
         '''The laser model: A nice laser-beam model to show our laser'''
@@ -59,7 +64,14 @@ class FrostRay(Ability, Command):
         # anything.
         # --------------------------------------------------------------
 
-    def get_damage(self, time_delta=None):
+    def get_raw_damage(self):
+        base_damage = 5
+        bonus_damage = self.character.attributes.intellect.level
+        total_damage = (base_damage + bonus_damage)
+        return total_damage
+
+    def get_real_damage(self, time_delta=None):
+        # Should be get_raw_damage * time_delta
         base_damage = 5
         bonus_damage = self.character.attributes.intellect.level
         total_damage = (base_damage + bonus_damage) * time_delta

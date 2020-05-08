@@ -1,6 +1,6 @@
 from panda3d.core import Vec3
 
-from app.objects.abilities import Abilities
+from app.objects.skills import Abilities
 from app.objects.attributes import Attributes
 from app.objects.proficiencies import Proficiencies
 from app.game.constants import WorldPhysics, CharacterTypes

@@ -4,13 +4,14 @@ from app.objects.game_objects.physicals.characters.heroes.interfaces import Muta
 
 class Scholar(MutationInterface):
     def __init__(self, hero):
+        self.name = self.__class__.__name__
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
-        hero.identity = "Scholar"
 
     def add_abilities(self):
-        self.hero.tool_belt.add_action(Keys.F, self.hero.abilities.mana_armour, None)
+        self.hero.abilities.activate_scholar_skills()
+        # self.hero.tool_belt.add_action(Keys.F, self.hero.abilities.mana_armour, None)
 
     def update_attributes(self):
         self.hero.attributes.intellect.is_primary = True

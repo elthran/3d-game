@@ -1,7 +1,7 @@
 from panda3d.core import Vec2, Vec3, Plane, Point3
 
 from app.game.movement import Walk
-from app.objects.abilities import Abilities
+from app.objects.skills import Abilities
 from app.objects.game_objects.game_objects import GameObject
 from app.game.tool_belt import NullCommand
 from app.game.constants import CharacterTypes, Masks, Keys
@@ -19,7 +19,6 @@ class Hero(CharacterObject):
                          damage_taken_model="Misc/playerHit",
                          **kwargs)
 
-        self.identity = "Basic"
         self.character_type = CharacterTypes.HERO
         # Set the collider for Hero's to be Hero.
         self.collider.node().setFromCollideMask(Masks.HERO_AND_MONSTER)
@@ -50,6 +49,7 @@ class Hero(CharacterObject):
         self.attribute_points = 0
         self.archetype = None
         self.religion = None
+        self.specialization = None
 
         # Set mouse coordinates in relation to hero
         self.firing_vector = None
@@ -74,6 +74,15 @@ class Hero(CharacterObject):
     @property
     def experience_maximum(self):
         return self.level * 1
+
+    @property
+    def identity(self):
+        if self.specialization:
+            return self.specialization
+        elif self.archetype:
+            return self.archetype
+        else:
+            return "Basic"
 
     def level_up(self):
         self.level += 1

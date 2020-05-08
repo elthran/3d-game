@@ -1,7 +1,6 @@
 from panda3d.core import CollisionNode, CollisionHandlerQueue, AudioSound
 
-from app.game.constants import Masks, Keys, CharacterTypes
-from app.game.tool_belt import NullCommand
+from app.game.constants import Masks, Keys
 from app.objects.damage import Damage
 from app.objects.game_objects.game_objects import GameObject
 from app.objects.game_objects.physicals.physicals import PhysicalObject
@@ -12,7 +11,9 @@ class Ability(GameObject):
         super().__init__(*args, **kwargs)
 
         self.character = character
+        self.name = None
         self._level = 0
+        self.skill_tree = None  # Which skill tree this will appear in (maximum of 1)
 
         # Types (only one can be true)
         self.is_castable = False  # Means it can be activated
@@ -49,6 +50,10 @@ class Ability(GameObject):
         self.sound_miss = None
         self.sound_hit = None
         self.sound_damage = None
+
+    @property
+    def description(self):
+        raise ValueError("Must set description.")
 
     @property
     def level(self):

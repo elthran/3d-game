@@ -6,7 +6,7 @@ class BurningSands(MutationInterface):
         self.hero = hero
         self.add_abilities()
         self.update_attributes()
-        hero.identity = "Pilgrim of the Burning Sands"
+        hero.religion = "Pilgrim of the Burning Sands"
         self.add_abilities()
         self.update_attributes()
         self.update_proficiencies()
